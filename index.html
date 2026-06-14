@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HL2 Hammer Oracle</title>
+<title>HL2 Hammer Oracle v5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body,#app{background:#050c16}
 #app{width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:20px;cursor:none}
 canvas#bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-#vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.85) 100%);pointer-events:none;z-index:2}
-.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,180,255,0.01) 3px,rgba(0,180,255,0.01) 6px);pointer-events:none;z-index:3}
+#vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.85)100%);pointer-events:none;z-index:2}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,180,255,0.01)3px,rgba(0,180,255,0.01)6px);pointer-events:none;z-index:3}
 #cursor{position:absolute;width:32px;height:32px;pointer-events:none;z-index:100;transform:translate(-50%,-50%)}
 #corner-tl,#corner-tr,#corner-bl,#corner-br{position:absolute;width:28px;height:28px;z-index:10}
 #corner-tl{top:8px;left:8px;border-top:1px solid #00b4ff55;border-left:1px solid #00b4ff55}
@@ -20,7 +20,7 @@ canvas#bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 #corner-br{bottom:8px;right:8px;border-bottom:1px solid #00b4ff55;border-right:1px solid #00b4ff55}
 #side-l,#side-r{position:absolute;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:8px}
 #side-l{left:10px}#side-r{right:10px}
-.side-dot{width:3px;height:3px;background:#00b4ff;border-radius:50%;opacity:0.4;animation:dotP 2s infinite}
+.side-dot{width:3px;height:3px;background:#00b4ff;border-radius:50%;opacity:.4;animation:dotP 2s infinite}
 .side-dot:nth-child(2){animation-delay:.3s}.side-dot:nth-child(3){animation-delay:.6s}.side-dot:nth-child(4){animation-delay:.9s}
 @keyframes dotP{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.8;transform:scale(1.6)}}
 #content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;width:100%}
@@ -48,9 +48,12 @@ canvas#wheel{display:block}
 .btn-sec{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;background:transparent;border:1px solid #ff6a0033;color:#ff6a0066;padding:9px 12px;cursor:none;transition:all .2s}
 .btn-sec:hover{border-color:#ff6a00;color:#ff6a00;box-shadow:0 0 12px #ff6a0022}
 .btn-sec:disabled{opacity:.2}
-#card-area{position:absolute;top:45px;left:50%;transform:translateX(-50%);z-index:15;pointer-events:none;opacity:0;transition:opacity .5s;width:300px}
+/* CARD AREA */
+#card-area{position:absolute;top:30px;left:50%;transform:translateX(-50%);z-index:15;pointer-events:none;opacity:0;transition:opacity .5s;width:min(1240px,calc(100% - 24px));display:flex;justify-content:center;align-items:flex-start;gap:16px}
 #card-area.visible{opacity:1;pointer-events:all}
-.card{width:300px;background:rgba(5,14,28,0.97);border:1px solid #00b4ff33;position:relative;animation:cW 2.5s ease-in-out infinite;overflow:hidden}
+.result-layout{width:100%;display:flex;justify-content:center;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.card-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0}
+.card{width:288px;background:rgba(5,14,28,0.97);border:1px solid #00b4ff33;position:relative;animation:cW 2.5s ease-in-out infinite;overflow:hidden}
 .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,180,255,0.06),transparent 60%);pointer-events:none}
 .card-holo{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity .3s}
 .card:hover .card-holo{opacity:1}
@@ -67,260 +70,81 @@ canvas#wheel{display:block}
 .card.flipped .card-qmark,.card.flipped .card-hint{display:none}
 .card.flipped .card-back{display:block}
 .diff-badge{display:inline-block;font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2px;padding:3px 8px;margin:3px 0 1px;border-radius:1px}
-.diff-easy{background:rgba(77,255,77,0.08);color:#4dff4d;border:1px solid #4dff4d22}
-.diff-med{background:rgba(255,170,0,0.08);color:#ffaa00;border:1px solid #ffaa0022}
-.diff-hard{background:rgba(255,68,68,0.08);color:#ff4444;border:1px solid #ff444422}
+.diff-easy{background:rgba(77,255,77,.08);color:#4dff4d;border:1px solid #4dff4d22}
+.diff-med{background:rgba(255,170,0,.08);color:#ffaa00;border:1px solid #ffaa0022}
+.diff-hard{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid #ff444422}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-1px)}75%{transform:translateX(1px)}}
 .desc-text{font-size:10px;color:#7a9ab8;line-height:1.65;margin-top:2px;margin-bottom:7px}
 .idea-title{font-family:'Orbitron',monospace;font-size:10px;color:#e0f0ff;margin-bottom:9px;letter-spacing:1px;text-align:center;padding-bottom:7px;border-bottom:1px solid #00b4ff15}
 .project-name{font-size:7px;color:#00b4ff33;font-family:'Orbitron',monospace;letter-spacing:2px;margin-bottom:5px;text-align:center}
 #reset-btn{display:none;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;background:transparent;border:1px solid #ff6a0033;color:#ff6a0055;padding:7px 16px;cursor:none;text-transform:uppercase;transition:all .2s;margin-top:7px;width:100%}
-#reset-btn:hover{background:rgba(255,106,0,0.06);border-color:#ff6a0099;color:#ff6a00}
+#reset-btn:hover{background:rgba(255,106,0,.06);border-color:#ff6a0099;color:#ff6a00}
 #reset-btn.visible{display:block}
 canvas#particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30}
 #flash{position:absolute;inset:0;background:#00b4ff;opacity:0;pointer-events:none;z-index:35;transition:opacity .08s}
 #hist-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;background:transparent;border:1px solid #4dff4d22;color:#4dff4d44;padding:9px 12px;cursor:none;transition:all .2s}
 #hist-btn:hover{border-color:#4dff4d66;color:#4dff4d;box-shadow:0 0 10px #4dff4d11}
-#hist-panel{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:20;width:340px;background:rgba(5,14,28,0.97);border:1px solid #4dff4d22;padding:12px;display:none}
+#hist-panel{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:20;width:340px;background:rgba(5,14,28,.97);border:1px solid #4dff4d22;padding:12px;display:none}
 #hist-panel.visible{display:block}
 #hist-panel h3{font-family:'Orbitron',monospace;font-size:8px;color:#4dff4d88;letter-spacing:3px;margin-bottom:8px;text-align:center}
 .hist-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #ffffff08;font-family:'Orbitron',monospace;font-size:8px}
-.hist-num{color:#00b4ff44;width:20px}
-.hist-title{color:#aac8e0;flex:1;padding:0 8px}
-.hist-spin{color:#ff6a0055;font-size:7px}
+.hist-num{color:#00b4ff44;width:20px}.hist-title{color:#aac8e0;flex:1;padding:0 8px}.hist-spin{color:#ff6a0055;font-size:7px}
 #hist-close{font-family:'Orbitron',monospace;font-size:7px;color:#4dff4d55;background:transparent;border:1px solid #4dff4d22;padding:5px 12px;cursor:none;margin-top:8px;width:100%;transition:all .2s}
 #hist-close:hover{color:#4dff4d;border-color:#4dff4d55}
 
-/* --- GENERATED ROOM PANEL --- */
-#card-area{
-  width:min(1140px, calc(100% - 32px));
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:18px;
-  pointer-events:none;
-}
-#card-area.visible{pointer-events:auto}
-.result-layout{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:18px;
-  flex-wrap:wrap;
-}
-.card-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-}
-#room-gen{
-  width:min(470px, calc(100vw - 40px));
-  background:rgba(5,14,28,0.97);
-  border:1px solid #00b4ff33;
-  box-shadow:0 0 24px rgba(0,180,255,0.06);
-  padding:14px;
-  opacity:0;
-  transform:translateX(18px);
-  transition:opacity .45s ease, transform .45s ease;
-  pointer-events:none;
-}
-#room-gen.visible{
-  opacity:1;
-  transform:translateX(0);
-  pointer-events:auto;
-}
-.room-gen-head{
-  margin-bottom:10px;
-  border-bottom:1px solid #00b4ff15;
-  padding-bottom:10px;
-}
-.room-gen-title{
-  font-family:'Orbitron',monospace;
-  font-size:8px;
-  color:#00b4ff99;
-  letter-spacing:3px;
-  text-align:center;
-}
-.room-gen-subtitle{
-  font-family:'Orbitron',monospace;
-  font-size:7px;
-  color:#aac8e0;
-  letter-spacing:1px;
-  text-align:center;
-  margin-top:6px;
-}
-.room-diff-row{
-  display:flex;
-  gap:6px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-.room-diff-btn{
-  font-family:'Orbitron',monospace;
-  font-size:7px;
-  letter-spacing:2px;
-  background:rgba(0,180,255,0.03);
-  border:1px solid rgba(0,180,255,0.18);
-  color:#7dbfe0;
-  padding:7px 10px;
-  cursor:none;
-  transition:all .2s ease;
-  text-transform:uppercase;
-}
-.room-diff-btn:hover{
-  border-color:#00b4ff55;
-  color:#d9f2ff;
-  box-shadow:0 0 12px rgba(0,180,255,0.12);
-}
-.room-diff-btn.active{
-  color:#050c16;
-  border-color:transparent;
-  box-shadow:0 0 14px rgba(0,180,255,0.25);
-}
-.room-diff-btn.diff-easy.active{background:#4dff4d}
-.room-diff-btn.diff-med.active{background:#ffaa00}
-.room-diff-btn.diff-hard.active{background:#ff4444}
-.hammer-viewport-shell{
-  border:1px solid #00b4ff22;
-  background:rgba(3,10,20,0.95);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
-  overflow:hidden;
-}
-.viewport-topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  padding:7px 10px;
-  border-bottom:1px solid rgba(0,180,255,0.12);
-  font-family:'Orbitron',monospace;
-  font-size:6px;
-  letter-spacing:2px;
-  color:#7dbfe0;
-  text-transform:uppercase;
-}
-.viewport-topbar span{
-  white-space:nowrap;
-}
-.viewport-tag{
-  color:#00b4ff;
-}
-.hammer-viewport{
-  position:relative;
-  aspect-ratio:16/9;
-  min-height:260px;
-  overflow:hidden;
-  background:#08111f;
-}
-.viewport-hud{
-  position:absolute;
-  inset:auto 10px 10px 10px;
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  pointer-events:none;
-  font-family:'Orbitron',monospace;
-  font-size:6px;
-  letter-spacing:1px;
-  color:#aac8e0;
-  text-transform:uppercase;
-}
-.viewport-hud .hud-box{
-  padding:5px 6px;
-  border:1px solid rgba(0,180,255,0.12);
-  background:rgba(5,14,28,0.65);
-  backdrop-filter:blur(2px);
-}
-.viewport-svg{
-  width:100%;
-  height:100%;
-  display:block;
-}
-.viewport-label{
-  font-family:'Orbitron',monospace;
-  font-size:7px;
-  letter-spacing:1.5px;
-}
-.viewport-node text{
-  dominant-baseline:middle;
-  text-anchor:middle;
-}
-.viewport-foot{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  flex-wrap:wrap;
-  padding:10px 8px 0;
-  font-family:'Orbitron',monospace;
-  font-size:6px;
-  letter-spacing:1px;
-  color:#aac8e0;
-  text-transform:uppercase;
-}
-.viewport-foot span{
-  color:#00b4ff;
-}
-.room-legend{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:10px;
-  font-family:'Orbitron',monospace;
-  font-size:6px;
-  letter-spacing:1px;
-  color:#aac8e0;
-}
-.legend-item{
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.legend-swatch{
-  width:8px;
-  height:8px;
-  border:1px solid currentColor;
-  display:inline-block;
-}
-
-@media (max-width: 900px){
-  #card-area{
-    position:relative;
-    top:auto;
-    left:auto;
-    transform:none;
-    padding-top:38px;
-    width:100%;
-  }
-  .result-layout{
-    flex-direction:column;
-    align-items:center;
-  }
-  #room-gen{
-    width:min(330px, calc(100vw - 40px));
-    transform:translateY(10px);
-  }
-  #room-gen.visible{transform:translateY(0)}
-}
-
+/* ===== MAP PANEL ===== */
+#map-panel{flex:1;min-width:300px;max-width:720px;background:rgba(5,14,28,.97);border:1px solid #00b4ff22;padding:12px;opacity:0;transform:translateX(16px);transition:opacity .5s,transform .5s;pointer-events:none}
+#map-panel.visible{opacity:1;transform:translateX(0);pointer-events:all}
+.mp-head{border-bottom:1px solid #00b4ff15;padding-bottom:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.mp-title{font-family:'Orbitron',monospace;font-size:8px;color:#00b4ff88;letter-spacing:3px}
+.mp-project{font-family:'Orbitron',monospace;font-size:7px;color:#aac8e055;letter-spacing:1px}
+/* diff + mode buttons */
+.mp-controls{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.mp-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1px;background:transparent;border:1px solid #00b4ff22;color:#00b4ff66;padding:5px 10px;cursor:none;transition:all .2s;text-transform:uppercase}
+.mp-btn:hover{border-color:#00b4ff55;color:#00b4ff}
+.mp-btn.active-easy{background:#4dff4d;color:#050c16;border-color:transparent}
+.mp-btn.active-med{background:#ffaa00;color:#050c16;border-color:transparent}
+.mp-btn.active-hard{background:#ff4444;color:#050c16;border-color:transparent}
+.mp-btn.active-mode{background:#00b4ff22;color:#00b4ff;border-color:#00b4ff55}
+/* viewport */
+.vp-shell{border:1px solid #00b4ff1a;background:#06101e;overflow:hidden}
+.vp-topbar{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;border-bottom:1px solid #00b4ff12;font-family:'Orbitron',monospace;font-size:6px;letter-spacing:2px;color:#7dbfe0;text-transform:uppercase}
+.vp-canvaswrap{position:relative;width:100%;height:340px;overflow:hidden;cursor:none}
+canvas.vp-c{width:100%;height:100%;display:block}
+.vp-overlay{position:absolute;pointer-events:none;font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:#00b4ff44}
+#vp-coords{top:8px;right:8px}
+#vp-zoom{bottom:8px;right:8px;color:#00b4ff55}
+#vp-hint{bottom:8px;left:8px;color:#00b4ff33}
+/* stats */
+.mp-stats{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 0 0;font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:#aac8e0;border-top:1px solid #00b4ff12;margin-top:8px}
+.mp-stats span{color:#00b4ff}
+/* entities */
+.mp-entities{margin-top:8px;padding-top:8px;border-top:1px solid #00b4ff12}
+.mp-ent-title{font-family:'Orbitron',monospace;font-size:6px;color:#ff6a0088;letter-spacing:2px;margin-bottom:5px}
+.mp-ent-list{display:flex;flex-wrap:wrap;gap:4px}
+.mp-ent{font-family:'Orbitron',monospace;font-size:6px;color:#ff6a0066;border:1px solid #ff6a0022;padding:2px 6px;letter-spacing:1px}
+/* legend */
+.mp-legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:8px;font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:#aac8e0}
+.leg{display:flex;align-items:center;gap:4px}
+.leg-sw{width:8px;height:8px;border:1px solid currentColor;display:inline-block}
+/* regen btn */
+.mp-regen{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1px;background:transparent;border:1px solid #00b4ff22;color:#00b4ff55;padding:5px 14px;cursor:none;transition:all .2s;text-transform:uppercase;margin-top:8px}
+.mp-regen:hover{border-color:#00b4ff;color:#00b4ff;box-shadow:0 0 8px #00b4ff22}
+@media(max-width:860px){#card-area{position:relative;top:auto;left:auto;transform:none;padding-top:36px;width:100%}.result-layout{flex-direction:column;align-items:center}#map-panel{max-width:100%;width:100%;min-width:0;transform:translateY(10px)}#map-panel.visible{transform:translateY(0)}}
 </style>
 </head>
 <body>
 <div id="app">
   <canvas id="bg-canvas"></canvas>
-  <div id="vignette"></div>
-  <div class="scanlines"></div>
-  <svg id="cursor" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#00b4ff" stroke-width="0.8" opacity="0.6"/><line x1="16" y1="2" x2="16" y2="10" stroke="#00b4ff" stroke-width="0.8"/><line x1="16" y1="22" x2="16" y2="30" stroke="#00b4ff" stroke-width="0.8"/><line x1="2" y1="16" x2="10" y2="16" stroke="#00b4ff" stroke-width="0.8"/><line x1="22" y1="16" x2="30" y2="16" stroke="#00b4ff" stroke-width="0.8"/><circle cx="16" cy="16" r="1.5" fill="#ff6a00"/><circle cx="16" cy="16" r="5" fill="none" stroke="#ff6a00" stroke-width="0.5" opacity="0.5"/></svg>
+  <div id="vignette"></div><div class="scanlines"></div>
+  <svg id="cursor" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#00b4ff" stroke-width=".8" opacity=".6"/><line x1="16" y1="2" x2="16" y2="10" stroke="#00b4ff" stroke-width=".8"/><line x1="16" y1="22" x2="16" y2="30" stroke="#00b4ff" stroke-width=".8"/><line x1="2" y1="16" x2="10" y2="16" stroke="#00b4ff" stroke-width=".8"/><line x1="22" y1="16" x2="30" y2="16" stroke="#00b4ff" stroke-width=".8"/><circle cx="16" cy="16" r="1.5" fill="#ff6a00"/><circle cx="16" cy="16" r="5" fill="none" stroke="#ff6a00" stroke-width=".5" opacity=".5"/></svg>
   <div id="corner-tl"></div><div id="corner-tr"></div><div id="corner-bl"></div><div id="corner-br"></div>
   <div id="side-l"><div class="side-dot"></div><div class="side-dot"></div><div class="side-dot"></div><div class="side-dot"></div></div>
   <div id="side-r"><div class="side-dot"></div><div class="side-dot"></div><div class="side-dot"></div><div class="side-dot"></div></div>
-  <div id="flash"></div>
-  <canvas id="particles"></canvas>
+  <div id="flash"></div><canvas id="particles"></canvas>
   <div id="content">
     <h1>⬡ Hammer Editor — Project Oracle ⬡</h1>
-    <div id="subtitle">UNION TACTICAL ASSIGNMENT SYSTEM v3.0</div>
+    <div id="subtitle">UNION TACTICAL ASSIGNMENT SYSTEM v5.0</div>
     <div id="stats-bar">
       <div class="stat-item"><div class="stat-dot"></div><span>ONLINE</span></div>
       <div class="stat-item"><div class="stat-dot" style="animation-delay:.4s;background:#4dff4d"></div><span>20 ПРОЕКТОВ</span></div>
@@ -338,21 +162,21 @@ canvas#particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-e
       <button class="btn-sec" id="luck-btn" onclick="spin()">⚡</button>
     </div>
     <div id="card-area">
-    <div class="result-layout">
-      <div class="card-wrap">
-        <div class="card" id="result-card" onclick="flipCard()" onmousemove="holoMove(event)" onmouseleave="holoLeave()">
-          <div class="card-holo" id="card-holo"></div>
-          <div class="card-header"><div class="hl"></div><span>СЕКРЕТНОЕ ЗАДАНИЕ АЛЬЯНСА</span><div class="hl"></div></div>
-          <div class="card-body">
-            <div class="card-qmark">?</div>
-            <div class="card-hint">[ НАЖМИ ЧТОБЫ ОТКРЫТЬ ]</div>
-            <div class="card-back" id="card-back-content"></div>
+      <div class="result-layout">
+        <div class="card-wrap">
+          <div class="card" id="result-card" onclick="flipCard()" onmousemove="holoMove(event)" onmouseleave="holoLeave()">
+            <div class="card-holo" id="card-holo"></div>
+            <div class="card-header"><div class="hl"></div><span>СЕКРЕТНОЕ ЗАДАНИЕ АЛЬЯНСА</span><div class="hl"></div></div>
+            <div class="card-body">
+              <div class="card-qmark">?</div>
+              <div class="card-hint">[ НАЖМИ ЧТОБЫ ОТКРЫТЬ ]</div>
+              <div class="card-back" id="card-back-content"></div>
+            </div>
           </div>
+          <button id="reset-btn" onclick="resetWheel()">↺ Новое задание</button>
         </div>
-        <button id="reset-btn" onclick="resetWheel()">↺ Новое задание</button>
+        <div id="map-panel"></div>
       </div>
-
-      <div id="room-gen" class="room-gen-panel"></div>
     </div>
   </div>
   <div id="hist-panel">
@@ -361,1388 +185,480 @@ canvas#particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-e
     <button id="hist-close" onclick="toggleHist()">[ ЗАКРЫТЬ ]</button>
   </div>
 </div>
-
 <script>
-
-const ideas = [
-  {
-
-//scp
-    {
-  title:"Камера содержания SCP-173",
-
-  easy:"Создай стандартную камеру содержания SCP-173 с бетонными стенами, смотровыми окнами и системой освещения. Добавь предупреждающие знаки и аварийную кнопку блокировки.",
-
-  med:"Реализуй процедуру обслуживания камеры. Игрок должен взаимодействовать с системой шлюзов и освещения, пока объект находится внутри помещения.",
-
-  hard:"Создай полноценный сценарий нарушения условий содержания SCP-173 с отключением света, аварийными сигналами и необходимостью восстановить контроль над сектором."
-},
-
-{
-  title:"Заражённый сектор SCP-008",
-
-  easy:"Построй карантинный блок с медицинскими помещениями и изоляторами.",
-
-  med:"Добавь заражённых NPC, автоматические двери и систему санитарной блокировки.",
-
-  hard:"Реализуй масштабную вспышку SCP-008, эвакуацию персонала и борьбу за восстановление карантина."
-},
-
-{
-  title:"Камера SCP-096",
-
-  easy:"Создай защищённую камеру содержания с наблюдательным пунктом.",
-
-  med:"Добавь систему видеонаблюдения и аварийные протоколы.",
-
-  hard:"Сделай сценарий нарушения условий содержания с разрушением нескольких секторов комплекса."
-},
-
-{
-  title:"Архив SCP-документов",
-
-  easy:"Построй архив с рядами шкафов и терминалов.",
-
-  med:"Добавь систему доступа по уровням допуска.",
-
-  hard:"Создай сюжетную миссию по поиску секретных файлов во время тревоги комплекса."
-},
-
-{
-  title:"Лаборатория аномальных материалов",
-
-  easy:"Небольшая исследовательская лаборатория.",
-
-  med:"Добавь экспериментальные камеры и системы безопасности.",
-
-  hard:"Реализуй катастрофу эксперимента с изменением частей карты."
-},
-
-{
-  title:"Камера SCP-999",
-  easy:"Безопасная зона для дружелюбного объекта.",
-  med:"Добавь взаимодействие персонала с объектом.",
-  hard:"Создай исследовательский комплекс с несколькими экспериментами."
-},
-
-{
-  title:"Хранилище SCP-914",
-  easy:"Помещение с механизмом SCP-914.",
-  med:"Сделай рабочие входные и выходные камеры.",
-  hard:"Реализуй систему улучшения предметов через настройки машины."
-},
-
-{
-  title:"Подземный комплекс Site-19",
-  easy:"Один исследовательский сектор.",
-  med:"Несколько соединённых зон и лабораторий.",
-  hard:"Полноценный мини-Site с транспортной системой."
-},
-
-{
-  title:"Нарушение содержания класса Euclid",
-  easy:"Локальная авария в одном блоке.",
-  med:"Несколько заблокированных помещений.",
-  hard:"Масштабная авария по всему комплексу."
-},
-
-{
-  title:"Крыло D-класса",
-  easy:"Камеры содержания персонала класса D.",
-  med:"Столовая и охраняемые проходы.",
-  hard:"Попытка массового побега."
-},
-
-{
-  title:"Медицинский сектор",
-  easy:"Медицинские кабинеты.",
-  med:"Операционные и изоляторы.",
-  hard:"Массовый приём пострадавших после аварии."
-},
-
-{
-  title:"Камера SCP-049",
-  easy:"Камера содержания и наблюдательный пункт.",
-  med:"Морг и исследовательская лаборатория.",
-  hard:"Вспышка заражения и нападение созданий SCP-049."
-},
-
-{
-  title:"Технический сектор",
-  easy:"Генераторы и серверные.",
-  med:"Рабочая система электроснабжения.",
-  hard:"Восстановление питания после аварии."
-},
-
-{
-  title:"Арсенал МОГ",
-  easy:"Склад оружия.",
-  med:"Охраняемый арсенал.",
-  hard:"Подготовка отряда к операции по зачистке."
-},
-
-{
-  title:"Камера SCP-939",
-  easy:"Содержательная камера.",
-  med:"Система звукового наблюдения.",
-  hard:"Охота объекта по всему сектору."
-},
-
-{
-  title:"Лаборатория меметических угроз",
-  easy:"Научные помещения.",
-  med:"Тестовые камеры.",
-  hard:"Эксперимент выходит из-под контроля."
-},
-
-{
-  title:"Зона хранения артефактов",
-  easy:"Склад аномальных объектов.",
-  med:"Система уровней допуска.",
-  hard:"Одновременное нарушение условий хранения."
-},
-
-{
-  title:"Транспортный туннель Site",
-  easy:"Подземный коридор.",
-  med:"Поезд снабжения.",
-  hard:"Эвакуация через тоннели."
-},
-
-{
-  title:"Камера SCP-106",
-  easy:"Усиленная камера содержания.",
-  med:"Система приманки.",
-  hard:"Прорыв SCP-106 через комплекс."
-},
-
-{
-  title:"Крыло исследований Keter",
-  easy:"Небольшой исследовательский блок.",
-  med:"Дополнительные системы безопасности.",
-  hard:"Несколько опасных объектов в одном секторе."
-},
-
-{
-  title:"Заброшенный Site",
-  easy:"Пустые помещения.",
-  med:"Следы старой катастрофы.",
-  hard:"Исследование давно закрытого комплекса."
-},
-
-{
-  title:"Сектор наблюдения",
-  easy:"Посты охраны.",
-  med:"Рабочая сеть камер.",
-  hard:"Полный центр управления комплексом."
-},
-
-{
-  title:"Командный центр O5",
-  easy:"Конференц-зал.",
-  med:"Система защищённых терминалов.",
-  hard:"Подземный стратегический штаб."
-},
-
-{
-  title:"Лифт в глубокие уровни",
-  easy:"Обычный грузовой лифт.",
-  med:"Несколько остановок.",
-  hard:"Многоуровневая система доступа."
-},
-
-{
-  title:"Сектор испытаний SCP",
-  easy:"Тестовая камера.",
-  med:"Наблюдательные помещения.",
-  hard:"Полноценный испытательный комплекс."
-},
-
-{
-  title:"Объект в Арктике",
-  easy:"Полярная база.",
-  med:"Снежная буря и ограниченная видимость.",
-  hard:"Изоляция комплекса после аварии."
-},
-
-{
-  title:"Подводный Site",
-  easy:"Один исследовательский модуль.",
-  med:"Несколько соединённых отсеков.",
-  hard:"Авария корпуса и затопление комплекса."
-},
-
-{
-  title:"Сектор временных аномалий",
-  easy:"Лаборатория изучения времени.",
-  med:"Нестабильные временные зоны.",
-  hard:"Изменение частей карты во время прохождения."
-},
-
-{
-  title:"Операция МОГ",
-  easy:"Подготовка к выдвижению.",
-  med:"Зачистка сектора.",
-  hard:"Полномасштабная операция против нескольких SCP."
-},
-
-{
-  title:"Финальная эвакуация Site",
-  easy:"Путь к выходу.",
-  med:"Аварийные блокировки и отключения.",
-  hard:"Полное разрушение комплекса и эвакуация персонала."
-},
-    
-    "title": "Камера наблюдения Альянса",
-    "easy": "Создай небольшой пост наблюдения с одной камерой на стене, дисплеем и опорными элементами окружения. Важнее всего сделать читаемую композицию и ощущение контроля со стороны Альянса.",
-    "med": "Построй мини-узел охраны с вращающейся камерой, комнатой оператора и коридором доступа для патруля. Добавь визуальные акценты: провода, мониторы, сигнальные лампы и закрываемые секции.",
-    "hard": "Собери полноценный центр наблюдения с несколькими камерами, диспетчерской, тревожной комнатой и маршрутом проникновения для игрока. Хорошо, если карта будет поддерживать скриптовые события: включение тревоги, блокировку дверей и смену режима безопасности.",
-    "generator": {
-      "easy": [
-        "green",
-        "green",
-        "purple"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "green",
-        "purple"
-      ],
-      "hard": [
-        "green",
-        "green",
-        "red",
-        "purple",
-        "blue"
-      ]
-    }
-  },
-  {
-    "title": "Бункер выживших",
-    "easy": "Построй небольшое убежище с кроватями, ящиками, запасами и простыми источниками света. Сцена должна ощущаться как временное укрытие после хаоса на поверхности.",
-    "med": "Разработай более живой бункер: добавь генератор, запираемые двери, уголок с припасами и короткий обходной маршрут для игрока. Пусть пространство выглядит функциональным и слегка тесным.",
-    "hard": "Сделай полноценную базу сопротивления с несколькими комнатами, общим залом, техническим отсеком и аварийным проходом. Добавь ощущение жизни через NPC, тревожные события и скрытый путь эвакуации.",
-    "generator": {
-      "easy": [
-        "green",
-        "green",
-        "red",
-        "green"
-      ],
-      "med": [
-        "green",
-        "green",
-        "purple",
-        "red",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "green",
-        "green",
-        "purple",
-        "red",
-        "blue"
-      ]
-    }
-  },
-  {
-    "title": "Телепорт Альянса",
-    "easy": "Собери две связанные комнаты с понятной телепортационной связью между ними. Одна зона должна выглядеть как точка входа, а другая — как помещение приемника.",
-    "med": "Добавь эффект зарядки, короткую задержку и визуальный отклик на активацию телепорта. Пусть маршрут игрока проходит через подготовительную комнату, сам телепорт и контрольную точку.",
-    "hard": "Создай двусторонний телепорт с кат-сценой, защитным полем, блокировкой во время активации и возможной поломкой системы. Такой вариант должен выглядеть как важный объект карты, а не просто переход.",
-    "generator": {
-      "easy": [
-        "green",
-        "purple",
-        "green"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "purple",
-        "green",
-        "red"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "green",
-        "blue",
-        "red",
-        "green"
-      ]
-    }
-  },
-  {
-    "title": "Ловушка для метрокопов",
-    "easy": "Сделай простую ловушку с ямой, триггером урона и визуальной подсказкой для игрока. Вся сцена должна читаться мгновенно и работать как небольшая засадная точка.",
-    "med": "Добавь нажимную плиту, падающий потолок или сдвигающийся элемент окружения, который срабатывает после входа врага. Ловушка должна выглядеть как часть заброшенного механизма или старого инженерного решения.",
-    "hard": "Построй многоэтапную ловушку с газом, запиранием двери, шипами, коротким путём отхода и возможностью игрока пережить атаку несколькими способами. Тут уже важна логика события, а не только эффект.",
-    "generator": {
-      "easy": [
-        "yellow",
-        "red",
-        "red"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "red",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "red",
-        "purple",
-        "red",
-        "green",
-        "yellow"
-      ]
-    }
-  },
-  {
-    "title": "Электростанция",
-    "easy": "Создай комнату генераторов и распределительных панелей с индустриальной атмосферой. Важно показать источник энергии и сделать пространство убедительным как технический объект.",
-    "med": "Добавь рабочий рубильник, который меняет освещение, открывает двери или запускает вспомогательную систему. Локация должна ощущаться как часть живой энергетической инфраструктуры.",
-    "hard": "Построй крупную энергосистему с аварийным режимом, перегрузкой, резервным генератором и последствиями для всей карты. Такой уровень хорошо работает на напряжении и постепенной эскалации.",
-    "generator": {
-      "easy": [
-        "green",
-        "purple",
-        "green"
-      ],
-      "med": [
-        "green",
-        "green",
-        "purple",
-        "yellow",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "red",
-        "green",
-        "blue",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Тир для тренировок",
-    "easy": "Построй базовый тренировочный сектор с мишенями, укрытиями и безопасной зоной для игрока. Подойдет простая композиция без сложной логики, но с читаемой боевой структурой.",
-    "med": "Сделай тир с подвижными мишенями, рельсами или поднимающимися целями. Добавь чувство ритма: зона старта, линия огня и финальный участок для проверки меткости.",
-    "hard": "Собери полноценный учебный комплекс с подсчетом очков, этапами стрельбы и финальным экраном результата. Лучше, если карта будет ощущаться как официальная тренировка Альянса или сопротивления.",
-    "generator": {
-      "easy": [
-        "green",
-        "yellow",
-        "green"
-      ],
-      "med": [
-        "green",
-        "purple",
-        "green",
-        "yellow"
-      ],
-      "hard": [
-        "green",
-        "green",
-        "purple",
-        "red",
-        "green",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Подводный тоннель",
-    "easy": "Создай коридор с ощущением глубины, водой за стеклом и холодным освещением. Даже простая версия должна намекать на опасность затопления.",
-    "med": "Добавь разбиваемые стекла, шлюзовые двери и участок, где игрок чувствует давление воды. Карта должна вести через несколько связанных отсеков с постепенным усилением напряжения.",
-    "hard": "Сделай затопляемый отсек, где уровень воды меняется во время прохождения, а игроку приходится искать безопасный маршрут. Хорошо, если появится аварийный путь и финальный люк спасения.",
-    "generator": {
-      "easy": [
-        "blue",
-        "green",
-        "blue"
-      ],
-      "med": [
-        "blue",
-        "green",
-        "red",
-        "blue",
-        "green"
-      ],
-      "hard": [
-        "blue",
-        "green",
-        "purple",
-        "blue",
-        "red",
-        "blue"
-      ]
-    }
-  },
-  {
-    "title": "Лифт Альянса",
-    "easy": "Построй лифтовую шахту и кабину с двумя уровнями. Даже в простой версии важно показать ощущение вертикального перемещения и закрытого инженерного пространства.",
-    "med": "Добавь синхронное открытие дверей, индикаторы этажей, звук моторов и небольшой переходный коридор между остановками. Лифт должен ощущаться как часть большого объекта, а не просто транспортная коробка.",
-    "hard": "Сделай многоэтажный лифт с аварийной остановкой, тревогой, перебоями питания и сюжетной сценой во время движения. Это хороший шанс сделать короткую, но запоминающуюся интерактивную последовательность.",
-    "generator": {
-      "easy": [
-        "green",
-        "yellow",
-        "green"
-      ],
-      "med": [
-        "green",
-        "purple",
-        "green",
-        "yellow",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "red",
-        "purple",
-        "green",
-        "red",
-        "green"
-      ]
-    }
-  },
-  {
-    "title": "Секретная лаборатория",
-    "easy": "Собери стерильную исследовательскую комнату с колбами, столами, оборудованием и аккуратной геометрией. Даже простая версия должна передавать ощущение закрытого эксперимента.",
-    "med": "Добавь стеклянные камеры, терминалы управления и тревожный свет, который меняет настроение карты. Игрок должен чувствовать, что здесь проводили опасные исследования.",
-    "hard": "Создай полноценный научный комплекс с несколькими секторами, аварией, активируемыми экспериментами и побегом из зоны содержания. Лучше, если лаборатория будет меняться по ходу прохождения.",
-    "generator": {
-      "easy": [
-        "green",
-        "purple",
-        "green"
-      ],
-      "med": [
-        "green",
-        "green",
-        "purple",
-        "red",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "green",
-        "red",
-        "blue",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Руины города",
-    "easy": "Сделай разрушенный городской квартал с завалами, выбитыми окнами и несколькими сохранившимися проходами. Важно передать ощущение брошенного пространства после катастрофы.",
-    "med": "Добавь патруль метрокопов, случайные звуки окружения и скрытные пути между зданиями. Карта должна подталкивать игрока к осторожному исследованию руин.",
-    "hard": "Построй живой разрушенный район с NPC, которые прячутся, реагируют на шум и используют альтернативные маршруты. Такой уровень уже ощущается как небольшая сюжетная глава.",
-    "generator": {
-      "easy": [
-        "yellow",
-        "green",
-        "green"
-      ],
-      "med": [
-        "yellow",
-        "green",
-        "red",
-        "green",
-        "purple"
-      ],
-      "hard": [
-        "yellow",
-        "green",
-        "purple",
-        "red",
-        "green",
-        "blue"
-      ]
-    }
-  },
-  {
-    "title": "Верхушка башни",
-    "easy": "Построй высокую платформу или башенный ярус с простым обзором окружения. Уже на этой стадии важно ощущение высоты и открытого пространства.",
-    "med": "Добавь ветер, летящие обломки и несколько точек укрытия на верхнем уровне. Сцена должна работать как напряженная позиция для наблюдения или обороны.",
-    "hard": "Сделай финальную арену на вершине башни, где игрок отбивается от атак с воздуха или сверху. Хорошо подойдут кат-сцена, усиленный визуальный шум и ощущение последнего рубежа.",
-    "generator": {
-      "easy": [
-        "green",
-        "yellow",
-        "green"
-      ],
-      "med": [
-        "green",
-        "purple",
-        "yellow",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "yellow",
-        "purple",
-        "green",
-        "red",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Подземный рынок",
-    "easy": "Создай тесное подземное пространство с прилавками, ящиками и тусклым светом. Локация должна ощущаться как скрытый, но живой торговый узел.",
-    "med": "Добавь несколько NPC, проходов между лавками и скрытый вход в отдельную комнату. Важно, чтобы рынок выглядел плотным, шумным и немного незаконным.",
-    "hard": "Собери полноценный подпольный рынок с квестами, охраной, системой доступа и несколькими маршрутами передвижения. Это хорошая основа для нелинейной сцены.",
-    "generator": {
-      "easy": [
-        "green",
-        "green",
-        "yellow",
-        "green"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "green",
-        "purple",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "green",
-        "purple",
-        "red",
-        "green",
-        "yellow",
-        "green"
-      ]
-    }
-  },
-  {
-    "title": "Переправа на лодке",
-    "easy": "Построй спокойную водную сцену с лодкой, берегом и простым путевым обзором. В этой версии важнее атмосфера маршрута, чем сложная механика.",
-    "med": "Добавь движение по воде, узкие проходы между препятствиями и несколько точек угрозы на берегу. Карта должна ощущаться как короткое путешествие с риском.",
-    "hard": "Сделай боевую переправу под обстрелом, где лодка движется через опасный участок к точке высадки. Можно усилить сцену укрытиями, врагами на берегу и финальным десантом.",
-    "generator": {
-      "easy": [
-        "blue",
-        "green",
-        "blue"
-      ],
-      "med": [
-        "blue",
-        "yellow",
-        "green",
-        "blue",
-        "green"
-      ],
-      "hard": [
-        "blue",
-        "yellow",
-        "red",
-        "blue",
-        "green",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Арсенал повстанцев",
-    "easy": "Собери комнату с оружием, ящиками, патронами и защитной мебелью. Пусть пространство выглядит как скрытый склад, готовящийся к бою.",
-    "med": "Добавь замаскированный вход, охранника, запасной коридор и контроль доступа. Игрок должен чувствовать, что нашел важный тайник сопротивления.",
-    "hard": "Сделай полноценный арсенал с кодовым замком, тревогой, эвакуационным туннелем и маршрутом захвата. Это уже не просто склад, а стратегический объект.",
-    "generator": {
-      "easy": [
-        "green",
-        "green",
-        "purple"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "green",
-        "red",
-        "purple"
-      ],
-      "hard": [
-        "green",
-        "green",
-        "red",
-        "purple",
-        "green",
-        "yellow"
-      ]
-    }
-  },
-  {
-    "title": "Тюрьма Новы Просперо",
-    "easy": "Построй тюремный блок с несколькими камерами, решетками и охраняемым коридором. Пространство должно быть холодным, жестким и хорошо читаемым.",
-    "med": "Добавь патруль, кнопки открытия клеток и служебные проходы для охраны. Сюда хорошо подходит схема карты, где игрок двигается между секторами контроля.",
-    "hard": "Сделай побег из тюрьмы с отключением охраны, несколькими маршрутами и финальной дверью с кодовым замком. Карта должна давать ощущение большой операции по освобождению.",
-    "generator": {
-      "easy": [
-        "green",
-        "red",
-        "green"
-      ],
-      "med": [
-        "green",
-        "green",
-        "purple",
-        "red",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "red",
-        "green",
-        "purple",
-        "red",
-        "green",
-        "yellow"
-      ]
-    }
-  },
-  {
-    "title": "Заброшенная церковь",
-    "easy": "Сделай высокий неф с витражами, пылью и тихой, почти пустой атмосферой. Даже простой вариант должен выглядеть как место, давно лишенное прихожан.",
-    "med": "Добавь скрипящую дверь, летучих мышей, колокольню и переход в боковой зал. Это хороший шанс создать напряжение через звук и вертикальность.",
-    "hard": "Построй церковь как головоломку: алтарь, скрытый механизм, катакомбы и секретный проход. Такой уровень лучше работает как мистическая мини-глава.",
-    "generator": {
-      "easy": [
-        "yellow",
-        "green",
-        "purple"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "purple",
-        "green",
-        "red"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "red",
-        "red",
-        "green",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Маяк",
-    "easy": "Построй маяк с простой вертикальной башней и обзорной площадкой. Важно сохранить силуэт и ощущение ориентирной точки у воды.",
-    "med": "Добавь вращающийся прожектор, лестницу, машинное помещение и звуки моря. Локация должна ощущаться как рабочий объект, а не только декоративная башня.",
-    "hard": "Сделай маяк как сюжетный ориентир, меняющий поведение NPC или направление событий на карте. Можно усилить уровень сигналами, кат-сценой и ночным освещением.",
-    "generator": {
-      "easy": [
-        "green",
-        "blue",
-        "green"
-      ],
-      "med": [
-        "green",
-        "yellow",
-        "green",
-        "blue",
-        "purple"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "blue",
-        "red",
-        "green",
-        "yellow"
-      ]
-    }
-  },
-  {
-    "title": "Поезд Альянса",
-    "easy": "Создай статичный вагон или поезд на станции с грузом, светом и охраной. Здесь важно показать характер транспорта и его принадлежность Альянсу.",
-    "med": "Сделай движущийся поезд, в котором игрок может перемещаться между вагонами. Хорошо работают перестрелки, узкие коридоры и вид на проносящийся пейзаж.",
-    "hard": "Построй экшен-сцену на поезде, где враги запрыгивают в вагоны, отцепляются секции и финал заканчивается взрывом локомотива. Это один из самых кинематографичных вариантов.",
-    "generator": {
-      "easy": [
-        "yellow",
-        "green",
-        "green"
-      ],
-      "med": [
-        "yellow",
-        "green",
-        "red",
-        "green",
-        "purple"
-      ],
-      "hard": [
-        "yellow",
-        "green",
-        "purple",
-        "red",
-        "green",
-        "yellow",
-        "purple"
-      ]
-    }
-  },
-  {
-    "title": "Дамба",
-    "easy": "Построй массивную дамбу с высокой стеной и водой внизу. Уже в этой версии должно чувствоваться давление воды и масштаб инженерного сооружения.",
-    "med": "Добавь шлюзовые ворота, рабочие комнаты и участок с изменением уровня воды. Важно, чтобы игрок видел, как объект влияет на всю местность.",
-    "hard": "Сделай саботаж дамбы: взрывчатка, рушащиеся секции, меняющаяся геометрия уровня и финальная волна воды. Это должна быть большая драматическая сцена.",
-    "generator": {
-      "easy": [
-        "yellow",
-        "green",
-        "blue"
-      ],
-      "med": [
-        "yellow",
-        "green",
-        "purple",
-        "blue",
-        "green"
-      ],
-      "hard": [
-        "yellow",
-        "green",
-        "red",
-        "blue",
-        "purple",
-        "blue"
-      ]
-    }
-  },
-  {
-    "title": "Командный центр Альянса",
-    "easy": "Создай круглый зал или штаб с экранами, стойками и центральной зоной управления. Пространство должно выглядеть как место принятия решений.",
-    "med": "Добавь несколько терминалов, офицерские секции и защищенные проходы между зонами. Карта должна передавать ощущение дисциплины и контроля.",
-    "hard": "Сделай полноценный командный центр с внутренними секторами, мини-пазлом на терминале, тревогой и экстренной блокировкой. Это хороший финальный объект для крупной миссии.",
-    "generator": {
-      "easy": [
-        "green",
-        "purple",
-        "green"
-      ],
-      "med": [
-        "green",
-        "green",
-        "purple",
-        "yellow",
-        "green"
-      ],
-      "hard": [
-        "green",
-        "purple",
-        "green",
-        "red",
-        "purple",
-        "green",
-        "yellow"
-      ]
-    }
-  }
+// ===================== IDEAS DATA =====================
+const ideas=[
+  {title:"Камера наблюдения Альянса",
+   easy:"Создай небольшой пост с одной камерой, дисплеем и опорными элементами окружения.",
+   med:"Мини-узел охраны с вращающейся камерой, комнатой оператора и коридором доступа.",
+   hard:"Полноценный центр наблюдения: несколько камер, диспетчерская, тревожная комната, скриптовые события.",
+   generator:{
+     easy:{rooms:["green","green","purple"],names:["Пост охраны","Зона дисплея","Комната камер"],entities:["npc_metropolice","func_door","env_sprite"]},
+     med:{rooms:["green","yellow","green","purple","green"],names:["Патрульный блок","Переход","Оператор","Узел камер","Коридор"],entities:["npc_metropolice","npc_combine_s","func_rotating","logic_relay"]},
+     hard:{rooms:["green","green","red","purple","green","purple","blue"],names:["КПП","Диспетчерская","Серверный тоннель","Центр наблюдения","Тревожный отсек","Лаборатория слежки","Аварийный сток"],entities:["npc_combine_s","npc_metropolice","func_monitor","logic_relay","ambient_generic","trigger_once"]}
+   }},
+  {title:"Бункер выживших",
+   easy:"Небольшое убежище с кроватями, ящиками, запасами и простыми источниками света.",
+   med:"Живой бункер: генератор, запираемые двери, уголок с припасами и обходной маршрут.",
+   hard:"База сопротивления: несколько комнат, общий зал, технический отсек, аварийный проход.",
+   generator:{
+     easy:{rooms:["green","green","green"],names:["Вход","Жилой отсек","Склад"],entities:["prop_physics","func_door","ambient_generic"]},
+     med:{rooms:["yellow","green","green","red","green"],names:["Замаскированный вход","Жилой блок","Штаб","Технический тоннель","Генераторная"],entities:["npc_citizen","func_door","prop_physics","ambient_generic"]},
+     hard:{rooms:["red","green","green","purple","green","green","blue"],names:["Скрытый лаз","Вход","Жилой зал","Командный центр","Мастерская","Медпункт","Аварийный дренаж"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic","prop_physics"]}
+   }},
+  {title:"Телепорт Альянса",
+   easy:"Две комнаты с телепортационной связью, точка входа и приёмник.",
+   med:"Эффект зарядки, задержка, визуальный отклик. Маршрут через подготовительную комнату.",
+   hard:"Двусторонний телепорт с кат-сценой, защитным полем и возможной поломкой системы.",
+   generator:{
+     easy:{rooms:["green","purple","green"],names:["Зал ожидания","Телепорт-камера","Зона прибытия"],entities:["env_sprite","ambient_generic","trigger_teleport"]},
+     med:{rooms:["green","yellow","purple","green","red"],names:["Зал доступа","Переходной мост","Активационная камера","Зона прибытия","Энергетический тоннель"],entities:["env_sprite","logic_relay","trigger_teleport","ambient_generic","func_door"]},
+     hard:{rooms:["green","purple","blue","purple","green","red","green"],names:["Бюро пропусков","Камера зарядки","Стабилизирующий резервуар","Ядро телепорта","Зона выхода","Кабельный тоннель","КПП Альянса"],entities:["env_sprite","logic_relay","trigger_teleport","env_beam","func_brush","ambient_generic","npc_combine_s"]}
+   }},
+  {title:"Ловушка для метрокопов",
+   easy:"Простая ловушка с ямой, триггером урона и визуальной подсказкой.",
+   med:"Нажимная плита, падающий потолок или сдвигающийся элемент после входа врага.",
+   hard:"Многоэтапная ловушка: газ, запирание, шипы, путь отхода, логика события.",
+   generator:{
+     easy:{rooms:["yellow","red","red"],names:["Приманочный коридор","Ловчая яма","Нижний сток"],entities:["trigger_hurt","func_door","ambient_generic"]},
+     med:{rooms:["green","yellow","red","green","red"],names:["Засадная комната","Нажимная секция","Ловушка-потолок","Отход для игрока","Сточный туннель"],entities:["trigger_hurt","func_movelinear","func_door","trigger_once","ambient_generic"]},
+     hard:{rooms:["green","yellow","red","purple","red","green","yellow"],names:["Комната-приманка","Газовая секция","Шиповая ловушка","Центр управления","Запасной тоннель","Безопасная зона","Выход на поверхность"],entities:["trigger_hurt","func_movelinear","env_smokestack","logic_case","trigger_once","func_door"]}
+   }},
+  {title:"Электростанция",
+   easy:"Комната генераторов и распределительных панелей с индустриальной атмосферой.",
+   med:"Рабочий рубильник, который меняет освещение, открывает двери или запускает систему.",
+   hard:"Крупная энергосистема с аварийным режимом, перегрузкой, резервным генератором.",
+   generator:{
+     easy:{rooms:["green","purple","green"],names:["Генераторный зал","Распредщит","Машинный отсек"],entities:["prop_physics","env_sprite","ambient_generic"]},
+     med:{rooms:["yellow","green","green","purple","green","red"],names:["Вход","Зал генераторов","Пульт управления","Энергетический узел","Аварийный отсек","Кабельный тоннель"],entities:["func_door","prop_physics","logic_relay","env_sprite","ambient_generic"]},
+     hard:{rooms:["yellow","green","green","purple","blue","red","purple","green"],names:["Охраняемый въезд","Зал реакторов","Пульт","Главный узел","Система охлаждения","Кабельная шахта","Резервный генератор","Аварийный выход"],entities:["npc_combine_s","prop_physics","logic_relay","env_sprite","func_door","trigger_once","ambient_generic"]}
+   }},
+  {title:"Тир для тренировок",
+   easy:"Базовый тренировочный сектор с мишенями, укрытиями и безопасной зоной.",
+   med:"Тир с подвижными мишенями, рельсами. Зона старта, линия огня, финальный участок.",
+   hard:"Учебный комплекс с подсчётом очков, этапами стрельбы и финальным экраном результата.",
+   generator:{
+     easy:{rooms:["green","yellow","green"],names:["Зона ожидания","Огневой рубеж","Поле мишеней"],entities:["func_movelinear","prop_physics","ambient_generic"]},
+     med:{rooms:["green","purple","yellow","green","yellow"],names:["Зал инструктажа","Командный пункт","Рубеж 1","Тактическое поле","Рубеж 2"],entities:["func_movelinear","logic_counter","prop_physics","ambient_generic"]},
+     hard:{rooms:["green","purple","yellow","green","yellow","green","purple"],names:["Инструктаж","КП наблюдения","Рубеж снайперов","Тактическая зона","Рубеж CQC","Обходная тропа","Финальный экран"],entities:["func_movelinear","logic_counter","npc_metropolice","prop_physics","ambient_generic","point_viewcontrol"]}
+   }},
+  {title:"Подводный тоннель",
+   easy:"Коридор с глубиной, водой за стеклом и холодным освещением.",
+   med:"Разбиваемые стёкла, шлюзовые двери, участок с давлением воды.",
+   hard:"Затопляемый отсек: уровень воды меняется, аварийный маршрут, финальный люк спасения.",
+   generator:{
+     easy:{rooms:["blue","green","blue"],names:["Входной шлюз","Центральный тоннель","Выходной шлюз"],entities:["func_water","ambient_generic","func_door"]},
+     med:{rooms:["green","blue","red","blue","green"],names:["Водолазный отсек","Тоннель A","Технический лаз","Тоннель B","Выходной бункер"],entities:["func_water","func_door","trigger_hurt","env_sprite","ambient_generic"]},
+     hard:{rooms:["green","blue","purple","blue","red","blue","green"],names:["Экипировка","Затопляемый сектор A","Аварийный узел","Затопляемый сектор B","Аварийный тоннель","Финальный отсек","Люк спасения"],entities:["func_water","logic_relay","func_door","trigger_hurt","env_sprite","ambient_generic"]}
+   }},
+  {title:"Лифт Альянса",
+   easy:"Лифтовая шахта и кабина с двумя уровнями.",
+   med:"Синхронное открытие дверей, индикаторы этажей, звук моторов.",
+   hard:"Многоэтажный лифт с аварийной остановкой, тревогой, перебоями питания.",
+   generator:{
+     easy:{rooms:["green","yellow","green"],names:["Нижний холл","Шахта лифта","Верхний холл"],entities:["func_movelinear","func_door","ambient_generic"]},
+     med:{rooms:["green","yellow","green","purple","green"],names:["Нижний уровень","Лифтовая шахта","Средний этаж","Машинная комната","Верхний уровень"],entities:["func_movelinear","func_door","logic_relay","ambient_generic","env_sprite"]},
+     hard:{rooms:["red","green","yellow","green","yellow","purple","green"],names:["Подземная шахта","Цокольный уровень","Шахта лифта","Средний этаж","Аварийная платформа","Машинный зал","Верхний КПП"],entities:["func_movelinear","func_door","logic_relay","ambient_generic","npc_combine_s","trigger_once"]}
+   }},
+  {title:"Секретная лаборатория",
+   easy:"Стерильная комната с колбами, столами и оборудованием.",
+   med:"Стеклянные камеры, терминалы управления, тревожный свет.",
+   hard:"Научный комплекс: несколько секторов, авария, активируемые эксперименты, побег.",
+   generator:{
+     easy:{rooms:["green","purple","green"],names:["Шлюз","Исследовательская камера","Хранилище образцов"],entities:["func_door","env_sprite","ambient_generic"]},
+     med:{rooms:["green","green","purple","red","purple"],names:["Вход","Операционная","Лаборатория","Дренажный тоннель","Зона содержания"],entities:["npc_combine_s","func_door","env_sprite","logic_relay","ambient_generic"]},
+     hard:{rooms:["red","green","green","purple","purple","red","blue","green"],names:["Секретный лаз","КПП","Операционный зал","Лаборатория A","Лаборатория B","Технический тоннель","Аварийный резервуар","Выход"],entities:["npc_combine_s","npc_zombie","func_door","env_sprite","logic_relay","trigger_once","ambient_generic"]}
+   }},
+  {title:"Руины города",
+   easy:"Разрушенные стены, завалы, HDR освещение.",
+   med:"Скриптованный патруль метрокопов, случайные звуки окружения.",
+   hard:"Живой район: NPC прячутся, патруль реагирует на шум, скрытный проход.",
+   generator:{
+     easy:{rooms:["yellow","green","yellow"],names:["Улица A","Разрушенное здание","Улица B"],entities:["prop_physics","env_sprite","ambient_generic"]},
+     med:{rooms:["yellow","green","red","green","yellow"],names:["Проспект","Жилой квартал","Подвальный лаз","Торговый ряд","Перекрёсток"],entities:["npc_metropolice","prop_physics","func_door","ambient_generic"]},
+     hard:{rooms:["yellow","green","red","green","purple","green","yellow","red"],names:["Въезд в район","Квартал A","Катакомбы","Квартал B","Штаб сопротивления","Площадь","Периметр","Канализация"],entities:["npc_metropolice","npc_combine_s","npc_citizen","func_door","ambient_generic","logic_relay"]}
+   }},
+  {title:"Верхушка башни",
+   easy:"Высокая платформа с перилами и видом на skybox.",
+   med:"Ветер-эффект, летящие обломки prop_physics.",
+   hard:"Финальная арена: вертолёт Альянса атакует, укрытия, скрипты появления врагов.",
+   generator:{
+     easy:{rooms:["red","yellow","green"],names:["Лифтовая шахта","Наружная лестница","Вершина башни"],entities:["func_movelinear","prop_physics","env_sprite"]},
+     med:{rooms:["green","red","yellow","green","purple"],names:["Нижний этаж","Вентшахта","Наружный обход","Крыша","Спутниковый узел"],entities:["func_movelinear","prop_physics","npc_combine_s","env_sprite","ambient_generic"]},
+     hard:{rooms:["green","red","yellow","purple","green","yellow","green"],names:["Основание башни","Техтоннель","Пожарная лестница","Узел связи","Крыша — укрытия","Антенный мост","Вертолётная площадка"],entities:["npc_combine_s","npc_helicopter","prop_physics","logic_relay","func_door","env_sprite","trigger_once"]}
+   }},
+  {title:"Подземный рынок",
+   easy:"Тёмный подвал с ящиками, баррелями и торговцем NPC.",
+   med:"Несколько NPC с диалогами, освещение от ламп, скрытный вход.",
+   hard:"Процедурный рынок: квест-выдача, система валюты, охрана реагирует.",
+   generator:{
+     easy:{rooms:["red","green","red"],names:["Канализационный вход","Торговый зал","Запасной туннель"],entities:["npc_citizen","prop_physics","ambient_generic"]},
+     med:{rooms:["red","green","green","purple","green"],names:["Скрытый вход","Торговый квартал","Склад","Тайник лидера","Служебный туннель"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic"]},
+     hard:{rooms:["red","green","green","purple","green","green","red"],names:["Канализация","Рынок A","Рынок B","Кабинет главаря","Ремонтная мастерская","Продовольственный склад","Аварийный тоннель"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","logic_counter","ambient_generic","prop_physics"]}
+   }},
+  {title:"Переправа на лодке",
+   easy:"Водная сцена с лодкой, берегом и путевым обзором.",
+   med:"Движение по воде, узкие проходы, точки угрозы на берегу.",
+   hard:"Боевая переправа под обстрелом к точке высадки с укрытиями и десантом.",
+   generator:{
+     easy:{rooms:["green","blue","green"],names:["Причал отправления","Водный путь","Причал прибытия"],entities:["func_tracktrain","func_water","ambient_generic"]},
+     med:{rooms:["green","blue","yellow","blue","green"],names:["Отправление","Водный канал","Руины моста","Открытая вода","Высадка"],entities:["func_tracktrain","func_water","npc_metropolice","prop_physics","ambient_generic"]},
+     hard:{rooms:["green","blue","yellow","red","blue","purple","green"],names:["Спуск на воду","Канал A","Разрушенный мост","Подводный тоннель","Канал B","Вражеская застава","Высадка"],entities:["func_tracktrain","func_water","npc_combine_s","npc_metropolice","logic_relay","func_door","ambient_generic"]}
+   }},
+  {title:"Арсенал повстанцев",
+   easy:"Комната с оружием, ящиками и защитной мебелью.",
+   med:"Замаскированный вход, охранник, запасной коридор, контроль доступа.",
+   hard:"Арсенал с кодовым замком, тревогой и маршрутом захвата.",
+   generator:{
+     easy:{rooms:["green","green","purple"],names:["Входной тамбур","Оружейный зал","Тайник командира"],entities:["prop_physics","func_door","ambient_generic"]},
+     med:{rooms:["yellow","red","green","green","purple"],names:["Замаскированный вход","Запасной тоннель","Оружейный зал","Склад боеприпасов","Штабная комната"],entities:["npc_rebel","func_door","prop_physics","logic_relay","ambient_generic"]},
+     hard:{rooms:["red","green","green","green","purple","red","yellow"],names:["Скрытый лаз","Оружейная комната A","Оружейная комната B","Склад боеприпасов","КЦ операции","Путь эвакуации","Выход на улицу"],entities:["npc_rebel","npc_metropolice","func_door","logic_relay","trigger_once","prop_physics","ambient_generic"]}
+   }},
+  {title:"Тюрьма Новы Просперо",
+   easy:"Тюремный блок с клетками, решётками и охраняемым коридором.",
+   med:"Патруль, кнопки открытия клеток, служебные проходы.",
+   hard:"Побег с отключением охраны, несколькими маршрутами и финальным кодовым замком.",
+   generator:{
+     easy:{rooms:["green","red","green"],names:["Охраняемый вход","Тюремный коридор","Блок заключённых"],entities:["npc_metropolice","func_door","ambient_generic"]},
+     med:{rooms:["green","green","purple","red","green"],names:["КПП","Камерный блок A","Пульт управления","Служебный туннель","Камерный блок B"],entities:["npc_metropolice","func_door","logic_relay","ambient_generic","prop_physics"]},
+     hard:{rooms:["green","green","purple","red","green","green","yellow"],names:["КПП","Блок строгого режима","Диспетчерская","Канализационный побег","Блок обычных камер","Двор","Выход"],entities:["npc_metropolice","npc_combine_s","logic_relay","func_door","trigger_once","ambient_generic","prop_physics"]}
+   }},
+  {title:"Заброшенная церковь",
+   easy:"Высокий неф с витражами, пылью и тихой атмосферой.",
+   med:"Скрипящая дверь, летучие мыши, колокольня, переход в боковой зал.",
+   hard:"Церковь-головоломка: алтарь, скрытый механизм, катакомбы и секретный проход.",
+   generator:{
+     easy:{rooms:["yellow","green","purple"],names:["Погост","Главный неф","Алтарная зона"],entities:["prop_physics","ambient_generic","env_sprite"]},
+     med:{rooms:["yellow","green","green","purple","red"],names:["Ворота кладбища","Главный неф","Боковая часовня","Алтарь","Крипта"],entities:["prop_physics","ambient_generic","env_sprite","func_door","func_rotating"]},
+     hard:{rooms:["yellow","green","green","purple","red","red","purple"],names:["Кладбище","Притвор","Главный неф","Алтарь-головоломка","Крипта","Катакомбы","Секретный зал"],entities:["prop_physics","ambient_generic","env_sprite","func_door","logic_relay","trigger_once"]}
+   }},
+  {title:"Маяк",
+   easy:"Вертикальная башня с обзорной площадкой у воды.",
+   med:"Вращающийся прожектор, лестница, машинное помещение, звуки моря.",
+   hard:"Маяк как сюжетный ориентир, меняющий поведение NPC на карте.",
+   generator:{
+     easy:{rooms:["green","yellow","blue"],names:["Основание маяка","Смотровая площадка","Прибрежная зона"],entities:["func_rotating","env_sprite","ambient_generic"]},
+     med:{rooms:["blue","green","yellow","green","purple"],names:["Береговой причал","Машинный зал","Спиральная лестница","Комната прожектора","Сигнальный пульт"],entities:["func_rotating","env_sprite","ambient_generic","func_door","logic_relay"]},
+     hard:{rooms:["blue","green","green","yellow","purple","green","yellow"],names:["Подводная база","Машинный зал","Склад топлива","Лестничный марш","Сигнальный центр","Башня маяка","Вертолётная зона"],entities:["func_rotating","env_sprite","logic_relay","npc_rebel","ambient_generic","trigger_once","prop_physics"]}
+   }},
+  {title:"Поезд Альянса",
+   easy:"Статичный вагон или поезд на станции с грузом и охраной.",
+   med:"Движущийся поезд с перестрелками и узкими коридорами между вагонами.",
+   hard:"Экшен на поезде: враги запрыгивают, отцепляются секции, взрыв локомотива.",
+   generator:{
+     easy:{rooms:["yellow","green","green"],names:["Платформа","Грузовой вагон","Пассажирский вагон"],entities:["func_tracktrain","npc_metropolice","prop_physics"]},
+     med:{rooms:["yellow","green","red","green","purple"],names:["Платформа","Вагон охраны","Технический туннель","Грузовой отсек","Командный вагон"],entities:["func_tracktrain","npc_metropolice","npc_combine_s","prop_physics","logic_relay"]},
+     hard:{rooms:["yellow","green","green","red","green","purple","yellow"],names:["Станция","Вагон А","Вагон Б","Отцепляемая платформа","Вагон В","Локомотив","Финальная платформа"],entities:["func_tracktrain","npc_combine_s","npc_metropolice","prop_physics","logic_relay","trigger_once","env_explosion"]}
+   }},
+  {title:"Дамба",
+   easy:"Массивная стена дамбы с водой внизу.",
+   med:"Шлюзовые ворота, рабочие комнаты, изменение уровня воды.",
+   hard:"Саботаж: взрывчатка, рушащиеся секции, меняющаяся геометрия, волна воды.",
+   generator:{
+     easy:{rooms:["yellow","green","blue"],names:["Верхняя дорога","Пункт управления","Нижнее водохранилище"],entities:["func_water","prop_physics","ambient_generic"]},
+     med:{rooms:["yellow","green","green","blue","green"],names:["Мост","Диспетчерская","Машинный зал","Шлюз","Нижний уровень"],entities:["func_water","func_door","logic_relay","prop_physics","ambient_generic"]},
+     hard:{rooms:["yellow","green","red","green","blue","purple","blue"],names:["Мост","Диспетчерская","Технический тоннель","Машинный зал","Шлюз A","Зона закладки заряда","Шлюз B + волна"],entities:["func_water","func_door","logic_relay","env_explosion","trigger_once","prop_physics","ambient_generic"]}
+   }},
+  {title:"Командный центр Альянса",
+   easy:"Круглый зал с экранами, стойками и центральной зоной управления.",
+   med:"Несколько терминалов, офицерские секции, защищённые проходы.",
+   hard:"Командный центр с мини-пазлом на терминале, тревогой и экстренной блокировкой.",
+   generator:{
+     easy:{rooms:["green","purple","green"],names:["Зал входа","Центральный пульт","Сервисный отсек"],entities:["npc_combine_s","env_sprite","func_door"]},
+     med:{rooms:["green","green","purple","yellow","green"],names:["КПП","Оперативный зал","Главный пульт","Переход","Серверная"],entities:["npc_combine_s","npc_metropolice","env_sprite","logic_relay","func_door"]},
+     hard:{rooms:["red","green","green","purple","green","purple","yellow","green"],names:["Скрытое проникновение","КПП","Оперативный зал","Командный пульт","Серверная","Генераторный узел","Переход эвакуации","Ситуационный центр"],entities:["npc_combine_s","npc_metropolice","logic_relay","env_sprite","func_door","trigger_once","logic_case","ambient_generic"]}
+   }}
 ];
 
-const ROOM_META = {
-  green: { short: 'G', label: 'Комната', hint: 'Основной блок' },
-  red: { short: 'R', label: 'Подземный туннель', hint: 'Шахта / подземка' },
-  yellow: { short: 'Y', label: 'Наземный переход', hint: 'Улица / мост' },
-  blue: { short: 'B', label: 'Вода', hint: 'Канал / затопление' },
-  purple: { short: 'P', label: 'Особая зона', hint: 'Событие / ключевая точка' }
-};
+// ===================== CONSTANTS =====================
+const ROOM_COL={green:'#4dff4d',red:'#ff4444',yellow:'#ffaa00',blue:'#00b4ff',purple:'#cc44ff'};
+const ROOM_LABEL={green:'Комната',red:'Туннель',yellow:'Переход',blue:'Вода',purple:'Особая'};
+const WHEEL_COLS=["#ff6a00","#00b4ff","#4dff4d","#ff4444","#ffaa00","#cc44ff","#00ffcc","#ff66aa","#ffee44","#44aaff"];
+const N=ideas.length,W=320,R=145,CX=160,CY=160;
 
-const ROOM_DIFFS = {
-  easy:  { label: 'ЛЁГКАЯ', className: 'diff-easy',  hint: 'Простой маршрут' },
-  med:   { label: 'СРЕДНЯЯ', className: 'diff-med',   hint: 'Баланс маршрута и событий' },
-  hard:  { label: 'СЛОЖНАЯ', className: 'diff-hard',  hint: 'Сегменты, вода, обходы' }
-};
-
-let currentRoomDiff = 'easy';
-
-function buildViewportPath(len) {
-  const base = [
-    { x: 100, y: 82 },
-    { x: 220, y: 82 },
-    { x: 340, y: 82 },
-    { x: 460, y: 82 },
-    { x: 460, y: 170 },
-    { x: 460, y: 258 },
-    { x: 340, y: 258 },
-    { x: 220, y: 258 },
-    { x: 100, y: 258 },
-    { x: 100, y: 336 },
-    { x: 220, y: 336 },
-    { x: 340, y: 336 }
-  ];
-
-  while (base.length < len) {
-    const last = base[base.length - 1];
-    const step = base.length % 4;
-    const next = { x: last.x, y: last.y };
-    if (step === 0) next.x = Math.min(520, last.x + 120);
-    if (step === 1) next.y = Math.min(336, last.y + 88);
-    if (step === 2) next.x = Math.max(100, last.x - 120);
-    if (step === 3) next.y = Math.min(336, last.y + 88);
-    base.push(next);
-  }
-
-  return base.slice(0, len);
-}
-
-function roomNodeSize(type) {
-  if (type === 'red') return { w: 56, h: 104, rx: 6 };
-  if (type === 'yellow') return { w: 128, h: 42, rx: 6 };
-  if (type === 'blue') return { w: 126, h: 84, rx: 8 };
-  if (type === 'purple') return { w: 140, h: 92, rx: 8 };
-  return { w: 112, h: 72, rx: 7 };
-}
-
-function roomCounts(types) {
-  return types.reduce((acc, type) => {
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, { green: 0, red: 0, yellow: 0, blue: 0, purple: 0 });
-}
-
-function renderViewportSvg(types) {
-  const pts = buildViewportPath(types.length);
-  const connectors = pts.slice(1).map((p, i) => {
-    const a = pts[i];
-    return `<line x1="${a.x}" y1="${a.y}" x2="${p.x}" y2="${p.y}" stroke="rgba(0,180,255,0.28)" stroke-width="3" stroke-linecap="round" />`;
-  }).join('');
-
-  const nodes = types.map((type, i) => {
-    const meta = ROOM_META[type] || ROOM_META.green;
-    const size = roomNodeSize(type);
-    const p = pts[i];
-    const x = p.x - size.w / 2;
-    const y = p.y - size.h / 2;
-
-    let inner = '';
-    if (type === 'green') {
-      inner = `<rect x="10" y="10" width="${size.w - 20}" height="${size.h - 20}" rx="${Math.max(size.rx - 2, 3)}" fill="rgba(77,255,77,0.05)" stroke="rgba(77,255,77,0.22)" stroke-dasharray="4 3" />`;
-    } else if (type === 'red') {
-      inner = `<rect x="16" y="14" width="24" height="${size.h - 28}" rx="4" fill="rgba(255,68,68,0.08)" stroke="rgba(255,68,68,0.22)" stroke-dasharray="2 4" />`;
-    } else if (type === 'yellow') {
-      inner = `<path d="M 14 22 H ${size.w - 14}" stroke="rgba(255,170,0,0.35)" stroke-width="2" stroke-dasharray="6 4" />`;
-    } else if (type === 'blue') {
-      inner = `
-        <path d="M 14 ${size.h * 0.44} C ${size.w * 0.26} ${size.h * 0.34}, ${size.w * 0.52} ${size.h * 0.56}, ${size.w - 14} ${size.h * 0.44}" fill="none" stroke="rgba(0,180,255,0.35)" stroke-width="2"/>
-        <path d="M 14 ${size.h * 0.64} C ${size.w * 0.26} ${size.h * 0.54}, ${size.w * 0.52} ${size.h * 0.76}, ${size.w - 14} ${size.h * 0.64}" fill="none" stroke="rgba(0,180,255,0.26)" stroke-width="2"/>
-      `;
-    } else if (type === 'purple') {
-      inner = `<circle cx="${size.w / 2}" cy="${size.h / 2}" r="${Math.min(size.w, size.h) * 0.22}" fill="rgba(204,68,255,0.12)" stroke="rgba(204,68,255,0.45)" />`;
-    }
-
-    return `
-      <g class="viewport-node" transform="translate(${x}, ${y})">
-        <rect x="0" y="0" width="${size.w}" height="${size.h}" rx="${size.rx}" fill="rgba(5,14,28,0.92)" stroke="${type === 'green' ? '#4dff4d' : type === 'red' ? '#ff4444' : type === 'yellow' ? '#ffaa00' : type === 'blue' ? '#00b4ff' : '#cc44ff'}" stroke-width="1.5" filter="url(#glow)" />
-        ${inner}
-        <text x="${size.w / 2}" y="${size.h / 2 - 8}" fill="${type === 'green' ? '#4dff4d' : type === 'red' ? '#ff6666' : type === 'yellow' ? '#ffd36a' : type === 'blue' ? '#7ddcff' : '#e0b0ff'}" style="font-family: Orbitron, monospace; font-size: 12px; font-weight: 700;">${meta.short}</text>
-        <text x="${size.w / 2}" y="${size.h / 2 + 12}" fill="#d9f2ff" style="font-family: Orbitron, monospace; font-size: 6px; letter-spacing: 1px; text-anchor: middle;">${meta.label}</text>
-      </g>
-    `;
-  }).join('');
-
-  const start = pts[0];
-  const end = pts[pts.length - 1];
-
-  return `
-    <svg viewBox="0 0 620 340" class="viewport-svg" role="img" aria-label="Hammer viewport top-down schematic">
-      <defs>
-        <pattern id="gridSmall" width="32" height="32" patternUnits="userSpaceOnUse">
-          <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(0,180,255,0.08)" stroke-width="1"/>
-        </pattern>
-        <pattern id="gridBig" width="128" height="128" patternUnits="userSpaceOnUse">
-          <path d="M 128 0 L 0 0 0 128" fill="none" stroke="rgba(0,180,255,0.12)" stroke-width="1.2"/>
-        </pattern>
-        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-
-      <rect width="620" height="340" fill="#07111f"/>
-      <rect width="620" height="340" fill="url(#gridSmall)"/>
-      <rect width="620" height="340" fill="url(#gridBig)" opacity="0.85"/>
-      <line x1="310" y1="0" x2="310" y2="340" stroke="rgba(0,180,255,0.12)" stroke-width="1"/>
-      <line x1="0" y1="170" x2="620" y2="170" stroke="rgba(0,180,255,0.12)" stroke-width="1"/>
-
-      <text x="14" y="18" fill="rgba(0,180,255,0.55)" style="font-family: Orbitron, monospace; font-size: 7px; letter-spacing: 2px;">TOP VIEW / ORTHO</text>
-      <text x="606" y="18" fill="rgba(0,180,255,0.55)" text-anchor="end" style="font-family: Orbitron, monospace; font-size: 7px; letter-spacing: 2px;">HAMMER GRID 64</text>
-
-      ${connectors}
-      ${nodes}
-
-      <g opacity="0.55">
-        <circle cx="${start.x}" cy="${start.y}" r="9" fill="none" stroke="#4dff4d" stroke-width="1.4"/>
-        <text x="${start.x + 16}" y="${start.y + 4}" fill="#4dff4d" style="font-family: Orbitron, monospace; font-size: 6px; letter-spacing: 1px;">START</text>
-        <circle cx="${end.x}" cy="${end.y}" r="9" fill="none" stroke="#ff4444" stroke-width="1.4"/>
-        <text x="${end.x + 16}" y="${end.y + 4}" fill="#ff4444" style="font-family: Orbitron, monospace; font-size: 6px; letter-spacing: 1px;">EXIT</text>
-      </g>
-    </svg>
-  `;
-}
-
-function renderRoomGeneratorPanel(idea) {
-  const diff = ROOM_DIFFS[currentRoomDiff] || ROOM_DIFFS.easy;
-  const baseTypes = (idea.generator && idea.generator[currentRoomDiff]) || idea.generator?.easy || ['green', 'green', 'purple'];
-
-  // Determine room count limits based on difficulty
-  let minRooms = 3;
-  let maxRooms = 30;
-  if (currentRoomDiff === 'easy') {
-    maxRooms = 10;
-  } else if (currentRoomDiff === 'medium') {
-    maxRooms = 20;
-  } else if (currentRoomDiff === 'hard') {
-    maxRooms = 30;
-  }
-  // Clamp roomCount to limits
-  const clampedRoomCount = Math.min(Math.max(roomCount, minRooms), maxRooms);
-
-  // Generate types sequence by repeating base pattern
-  let types = [];
-  if (baseTypes.length > 0) {
-    for (let i = 0; i < clampedRoomCount; i++) {
-      types.push(baseTypes[i % baseTypes.length]);
-    }
-  } else {
-    types = Array(clampedRoomCount).fill('green');
-  }
-
-  const stats = roomCounts(types);
-
-  const diffButtons = Object.entries(ROOM_DIFFS).map(([key, val]) => {
-    const active = key === currentRoomDiff ? 'active' : '';
-    return `<button class="room-diff-btn ${val.className} ${active}" onclick="setRoomDifficulty('${key}')">${val.label}</button>`;
-  }).join('');
-
-  const legends = [
-    ['#4dff4d', 'Комната'],
-    ['#ff4444', 'Подземный туннель'],
-    ['#ffaa00', 'Наземный переход'],
-    ['#00b4ff', 'Вода'],
-    ['#cc44ff', 'Особая зона']
-  ].map(([color, label]) => `<div class="legend-item"><span class="legend-swatch" style="color:${color}"></span><span>${label}</span></div>`).join('');
-
-  return `
-    <div class="room-gen-head">
-      <div class="room-gen-title">HAMMER VIEWPORT / TOP-DOWN</div>
-      <div class="room-gen-subtitle" id="room-gen-project">${idea.title}</div>
-      <div class="room-gen-controls">
-        <div class="room-count">
-          <label>Комнат:</label>
-          <input type="range" id="roomCountSlider" min="3" max="30" value="${roomCount}">
-          <span id="roomCountValue">${roomCount}</span>
-        </div>
-        <div class="mode-select">
-          <label>Режим:</label>
-          <select id="generationModeSelect">
-            <option value="exterior">Exterior</option>
-            <option value="interior">Interior</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="room-diff-row">
-      ${diffButtons}
-    </div>
-
-    <div class="hammer-viewport-shell">
-      <div class="viewport-topbar">
-        <span>ORTHO VIEW</span>
-        <span>GRID 64</span>
-        <span class="viewport-tag" id="room-diff-label">${diff.label}</span>
-      </div>
-
-      <div class="hammer-viewport">
-        ${renderViewportSvg(types)}
-        <div class="viewport-hud">
-          <div class="hud-box">ПРОЛОЖЕНИЕ: ${types.length} СЕКЦИЙ</div>
-          <div class="hud-box">${diff.hint}</div>
-        </div>
-      </div>
-
-      <div class="viewport-foot">
-        <div>РАЗМЕР КАРТЫ <span>4096 × 4096</span></div>
-        <div>КОМНАТЫ <span>${stats.green}</span></div>
-        <div>ТУННЕЛИ <span>${stats.red}</span></div>
-        <div>ПЕРЕХОДЫ <span>${stats.yellow}</span></div>
-        <div>ВОДА <span>${stats.blue}</span></div>
-        <div>ОСОБЫЕ <span>${stats.purple}</span></div>
-        <div>СРОЖНОСТЬ <span>${diff.label}</span></div>
-        <div>РЕЖИМ <span>${generationMode === 'exterior' ? 'Exterior' : 'Interior'}</span></div>
-      </div>
-    </div>
-
-    <div class="room-legend">
-      ${legends}
-    </div>
-  `;
-}
-
-function setRoomDifficulty(diff) {
-  if (!ideas[resultIdx] || !ROOM_DIFFS[diff]) return;
-  currentRoomDiff = diff;
-  const roomGen = document.getElementById('room-gen');
-  if (!roomGen) return;
-  roomGen.innerHTML = renderRoomGeneratorPanel(ideas[resultIdx]);
-}
-
-const COLORS=["#ff6a00","#00b4ff","#4dff4d","#ff4444","#ffaa00","#cc44ff","#00ffcc","#ff66aa","#ffee44","#44aaff"];
-const N=ideas.length,W=320,R=145,cx=160,cy=160;
+// ===================== STATE =====================
 let angle=0,spinning=false,resultIdx=-1,particles=[],spinCount=0,history=[],histVisible=false,hoverSector=-1;
+let mapDiff='easy';
+// viewport
+let vp={canvas:null,ctx:null,ox:0,oy:0,scale:1,drag:false,lx:0,ly:0,rooms:[],conns:[]};
 
-// --- AUDIO ---
+// ===================== AUDIO =====================
 let actx=null;
 function getACtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx}
-function playClick(){
-  try{const a=getACtx(),o=a.createOscillator(),g=a.createGain();
-  o.connect(g);g.connect(a.destination);
-  o.frequency.setValueAtTime(1200,a.currentTime);o.frequency.exponentialRampToValueAtTime(400,a.currentTime+0.04);
-  g.gain.setValueAtTime(0.08,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.04);
-  o.start();o.stop(a.currentTime+0.04)}catch(e){}
-}
-function playStop(){
-  try{const a=getACtx();
-  [80,60,40].forEach((f,i)=>{
-    const o=a.createOscillator(),g=a.createGain();
-    o.connect(g);g.connect(a.destination);
-    o.type='sawtooth';o.frequency.setValueAtTime(f,a.currentTime+i*0.12);
-    g.gain.setValueAtTime(0.12,a.currentTime+i*0.12);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+i*0.12+0.4);
-    o.start(a.currentTime+i*0.12);o.stop(a.currentTime+i*0.12+0.4);
-  })}catch(e){}
-}
-function playZap(){
-  try{const a=getACtx(),buf=a.createBuffer(1,a.sampleRate*0.3,a.sampleRate),d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
-  const s=a.createBufferSource(),g=a.createGain(),f=a.createBiquadFilter();
-  s.buffer=buf;f.type='bandpass';f.frequency.value=2000;f.Q.value=0.5;
-  s.connect(f);f.connect(g);g.connect(a.destination);
-  g.gain.setValueAtTime(0.18,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.3);
-  s.start()}catch(e){}
-}
+function playClick(){try{const a=getACtx(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.setValueAtTime(1200,a.currentTime);o.frequency.exponentialRampToValueAtTime(400,a.currentTime+0.04);g.gain.setValueAtTime(0.08,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.04);o.start();o.stop(a.currentTime+0.04)}catch(e){}}
+function playStop(){try{const a=getACtx();[80,60,40].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sawtooth';o.frequency.setValueAtTime(f,a.currentTime+i*.12);g.gain.setValueAtTime(.12,a.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+i*.12+.4);o.start(a.currentTime+i*.12);o.stop(a.currentTime+i*.12+.4)})}catch(e){}}
+function playZap(){try{const a=getACtx(),buf=a.createBuffer(1,a.sampleRate*.3,a.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);const s=a.createBufferSource(),g=a.createGain(),f=a.createBiquadFilter();s.buffer=buf;f.type='bandpass';f.frequency.value=2000;f.Q.value=.5;s.connect(f);f.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.18,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.3);s.start()}catch(e){}}
 
-// --- BG CANVAS ---
-const bgC=document.getElementById('bg-canvas');
-const bgX=bgC.getContext('2d');
+// ===================== BG =====================
+const bgC=document.getElementById('bg-canvas'),bgX=bgC.getContext('2d');
 let bgW=0,bgH=0;
 function resizeBg(){bgW=bgC.width=bgC.offsetWidth;bgH=bgC.height=bgC.offsetHeight}
 resizeBg();window.addEventListener('resize',resizeBg);
-
-const beams=Array.from({length:6},(_,i)=>({x:Math.random()*800,y:-200,angle:Math.PI/2+((Math.random()-.5)*0.4),speed:.4+Math.random()*.3,w:40+Math.random()*80,opacity:.03+Math.random()*.04,hue:i%2?200:30}));
+const beams=Array.from({length:6},(_,i)=>({x:Math.random()*800,y:-200,angle:Math.PI/2+(Math.random()-.5)*.4,speed:.4+Math.random()*.3,w:40+Math.random()*80,opacity:.03+Math.random()*.04,hue:i%2?200:30}));
 let bgFrame=0;
-function drawBg(){
-  bgX.clearRect(0,0,bgW,bgH);
-  bgX.fillStyle='#050c16';bgX.fillRect(0,0,bgW,bgH);
-  bgX.strokeStyle='rgba(0,180,255,0.035)';bgX.lineWidth=1;
-  const gs=50;
-  for(let x=0;x<bgW;x+=gs){bgX.beginPath();bgX.moveTo(x,0);bgX.lineTo(x,bgH);bgX.stroke()}
-  for(let y=0;y<bgH;y+=gs){bgX.beginPath();bgX.moveTo(0,y);bgX.lineTo(bgW,y);bgX.stroke()}
-  beams.forEach(b=>{
-    const bx=b.x+Math.sin(bgFrame*.008+b.y*.002)*80;
-    const grad=bgX.createLinearGradient(bx,0,bx+Math.cos(b.angle)*bgH,bgH);
-    grad.addColorStop(0,`hsla(${b.hue},100%,60%,${b.opacity*1.5})`);
-    grad.addColorStop(1,'transparent');
-    bgX.beginPath();bgX.moveTo(bx-b.w,0);bgX.lineTo(bx+b.w,0);
-    bgX.lineTo(bx+b.w+Math.cos(b.angle)*bgH*0.6,bgH);
-    bgX.lineTo(bx-b.w+Math.cos(b.angle)*bgH*0.6,bgH);
-    bgX.closePath();bgX.fillStyle=grad;bgX.fill();
-    b.y+=b.speed;if(b.y>bgH+400)b.y=-400;
-  });
-  if(bgFrame%3===0){
-    bgX.fillStyle='rgba(0,180,255,0.5)';
-    for(let i=0;i<3;i++){
-      const rx=Math.random()*bgW,ry=Math.random()*bgH;
-      bgX.fillRect(rx,ry,1,4+Math.random()*8);
-    }
-  }
-  bgFrame++;
-  requestAnimationFrame(drawBg);
-}
+function drawBg(){bgX.clearRect(0,0,bgW,bgH);bgX.fillStyle='#050c16';bgX.fillRect(0,0,bgW,bgH);bgX.strokeStyle='rgba(0,180,255,0.035)';bgX.lineWidth=1;for(let x=0;x<bgW;x+=50){bgX.beginPath();bgX.moveTo(x,0);bgX.lineTo(x,bgH);bgX.stroke()}for(let y=0;y<bgH;y+=50){bgX.beginPath();bgX.moveTo(0,y);bgX.lineTo(bgW,y);bgX.stroke()}beams.forEach(b=>{const bx=b.x+Math.sin(bgFrame*.008+b.y*.002)*80;const grad=bgX.createLinearGradient(bx,0,bx+Math.cos(b.angle)*bgH,bgH);grad.addColorStop(0,`hsla(${b.hue},100%,60%,${b.opacity*1.5})`);grad.addColorStop(1,'transparent');bgX.beginPath();bgX.moveTo(bx-b.w,0);bgX.lineTo(bx+b.w,0);bgX.lineTo(bx+b.w+Math.cos(b.angle)*bgH*.6,bgH);bgX.lineTo(bx-b.w+Math.cos(b.angle)*bgH*.6,bgH);bgX.closePath();bgX.fillStyle=grad;bgX.fill();b.y+=b.speed;if(b.y>bgH+400)b.y=-400});if(bgFrame%3===0){bgX.fillStyle='rgba(0,180,255,0.5)';for(let i=0;i<3;i++){const rx=Math.random()*bgW,ry=Math.random()*bgH;bgX.fillRect(rx,ry,1,4+Math.random()*8)}}bgFrame++;requestAnimationFrame(drawBg)}
 drawBg();
 
-// --- WHEEL ---
-const canvas=document.getElementById('wheel');
-const ctx=canvas.getContext('2d');
-function drawWheel(a){
-  ctx.clearRect(0,0,W,W);
-  const slice=Math.PI*2/N;
-  for(let i=0;i<N;i++){
-    const s=a+i*slice,e=s+slice;
-    const col=COLORS[i%COLORS.length];
-    const isHover=(i===hoverSector);
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e);ctx.closePath();
-    ctx.fillStyle=isHover?col+'44':col+'14';
-    ctx.strokeStyle=isHover?col+'99':col+'44';
-    ctx.lineWidth=isHover?1.5:0.7;ctx.fill();ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);ctx.translate(R*.65,0);
-    ctx.font=`bold ${isHover?'20':'15'}px Orbitron,monospace`;
-    ctx.fillStyle=isHover?'#ffffff':col+'88';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('?',0,0);ctx.restore();
-  }
-  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
-  ctx.strokeStyle='#00b4ff22';ctx.lineWidth=1.2;ctx.stroke();
-  ctx.beginPath();ctx.arc(cx,cy,22,0,Math.PI*2);
-  ctx.fillStyle='#050c16';ctx.fill();ctx.strokeStyle='#00b4ff77';ctx.lineWidth=1.2;ctx.stroke();
-  ctx.font='bold 7px Orbitron,monospace';ctx.fillStyle='#00b4ff';
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('HL2',cx,cy);
-}
+// ===================== WHEEL =====================
+const wC=document.getElementById('wheel'),wCtx=wC.getContext('2d');
+function drawWheel(a){wCtx.clearRect(0,0,W,W);const sl=Math.PI*2/N;for(let i=0;i<N;i++){const s=a+i*sl,e=s+sl,col=WHEEL_COLS[i%WHEEL_COLS.length],iH=i===hoverSector;wCtx.beginPath();wCtx.moveTo(CX,CY);wCtx.arc(CX,CY,R,s,e);wCtx.closePath();wCtx.fillStyle=iH?col+'44':col+'14';wCtx.strokeStyle=iH?col+'99':col+'44';wCtx.lineWidth=iH?1.5:.7;wCtx.fill();wCtx.stroke();wCtx.save();wCtx.translate(CX,CY);wCtx.rotate(s+sl/2);wCtx.translate(R*.65,0);wCtx.font=`bold ${iH?20:15}px Orbitron,monospace`;wCtx.fillStyle=iH?'#fff':col+'88';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('?',0,0);wCtx.restore()}wCtx.beginPath();wCtx.arc(CX,CY,R,0,Math.PI*2);wCtx.strokeStyle='#00b4ff22';wCtx.lineWidth=1.2;wCtx.stroke();wCtx.beginPath();wCtx.arc(CX,CY,22,0,Math.PI*2);wCtx.fillStyle='#050c16';wCtx.fill();wCtx.strokeStyle='#00b4ff77';wCtx.lineWidth=1.2;wCtx.stroke();wCtx.font='bold 7px Orbitron,monospace';wCtx.fillStyle='#00b4ff';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('HL2',CX,CY)}
 drawWheel(0);
+wC.addEventListener('mousemove',e=>{const r=wC.getBoundingClientRect(),mx=e.clientX-r.left-CX,my=e.clientY-r.top-CY,d=Math.sqrt(mx*mx+my*my);if(d<R&&d>20){let a=(Math.atan2(my,mx)-angle+Math.PI*4)%(Math.PI*2);hoverSector=Math.floor(a/(Math.PI*2/N))%N}else hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
+wC.addEventListener('mouseleave',()=>{hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
 
-canvas.addEventListener('mousemove',e=>{
-  const r=canvas.getBoundingClientRect();
-  const mx=e.clientX-r.left-cx,my=e.clientY-r.top-cy;
-  const dist=Math.sqrt(mx*mx+my*my);
-  if(dist<R&&dist>20){
-    let a=Math.atan2(my,mx)-angle;
-    a=(a%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-    hoverSector=Math.floor(a/(Math.PI*2/N));
-  }else hoverSector=-1;
-  if(!spinning&&resultIdx===-1)drawWheel(angle);
-});
-canvas.addEventListener('mouseleave',()=>{hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle);});
+// cursor
+const curEl=document.getElementById('cursor');
+document.getElementById('app').addEventListener('mousemove',e=>{const r=document.getElementById('app').getBoundingClientRect();curEl.style.left=(e.clientX-r.left)+'px';curEl.style.top=(e.clientY-r.top)+'px';if(!document.getElementById('wheel-wrap').classList.contains('result-shown')&&!spinning){const dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;document.getElementById('wheel-wrap').style.transform=`perspective(700px) rotateY(${dx*8}deg) rotateX(${-dy*5}deg)`}});
+document.getElementById('app').addEventListener('mouseleave',()=>{if(!document.getElementById('wheel-wrap').classList.contains('result-shown'))document.getElementById('wheel-wrap').style.transform='perspective(700px) rotateY(0) rotateX(0)'});
 
-// --- CURSOR ---
-const cursorEl=document.getElementById('cursor');
-document.getElementById('app').addEventListener('mousemove',e=>{
-  const r=document.getElementById('app').getBoundingClientRect();
-  cursorEl.style.left=(e.clientX-r.left)+'px';
-  cursorEl.style.top=(e.clientY-r.top)+'px';
-  if(!document.getElementById('wheel-wrap').classList.contains('result-shown')&&!spinning){
-    const dx=(e.clientX-r.left)/r.width-.5;
-    const dy=(e.clientY-r.top)/r.height-.5;
-    document.getElementById('wheel-wrap').style.transform=`perspective(700px) rotateY(${dx*8}deg) rotateX(${-dy*5}deg)`;
-  }
-});
-document.getElementById('app').addEventListener('mouseleave',()=>{
-  if(!document.getElementById('wheel-wrap').classList.contains('result-shown'))
-    document.getElementById('wheel-wrap').style.transform='perspective(700px) rotateY(0) rotateX(0)';
-});
-
-// --- PROGRESS ---
+// ===================== SPIN =====================
 let progTimer=null;
-function animProgress(dur){
-  const fill=document.getElementById('progress-fill');
-  const t0=performance.now();
-  clearInterval(progTimer);
-  progTimer=setInterval(()=>{
-    const t=Math.min((performance.now()-t0)/dur,1);
-    fill.style.width=t*100+'%';
-    if(t>=1){clearInterval(progTimer);setTimeout(()=>{fill.style.width='0%'},400)}
-  },16);
-}
+function animProgress(dur){const fill=document.getElementById('progress-fill'),t0=performance.now();clearInterval(progTimer);progTimer=setInterval(()=>{const t=Math.min((performance.now()-t0)/dur,1);fill.style.width=t*100+'%';if(t>=1){clearInterval(progTimer);setTimeout(()=>fill.style.width='0%',400)}},16)}
+function spin(){if(spinning)return;getACtx();spinning=true;document.getElementById('spin-btn').disabled=true;document.getElementById('luck-btn').disabled=true;const dur=3500+Math.random()*2500;animProgress(dur);const total=Math.PI*2*(7+Math.random()*10)+Math.random()*Math.PI*2;const t0=performance.now();let last=-1;function frame(now){const t=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-t,4);angle=ease*total;const cur=Math.floor(((-Math.PI/2-angle%( Math.PI*2)+Math.PI*4)%(Math.PI*2))/(Math.PI*2/N))%N;if(cur!==last){playClick();last=cur}drawWheel(angle);if(t<1){requestAnimationFrame(frame)}else{angle=total%(Math.PI*2);drawWheel(angle);resultIdx=Math.floor(((-Math.PI/2-angle+Math.PI*4)%(Math.PI*2))/(Math.PI*2/N))%N;spinning=false;spinCount++;document.getElementById('spin-counter').textContent='СПИН #'+spinCount;playStop();flashScreen();setTimeout(showCard,500)}}requestAnimationFrame(frame)}
+function flashScreen(col){const f=document.getElementById('flash');f.style.background=col||'#00b4ff';f.style.opacity='.1';setTimeout(()=>f.style.opacity='0',120)}
 
-// --- SPIN ---
-function spin(){
-  if(spinning)return;
-  getACtx();
-  spinning=true;
-  document.getElementById('spin-btn').disabled=true;
-  document.getElementById('luck-btn').disabled=true;
-  const dur=3500+Math.random()*2500;
-  animProgress(dur);
-  const extra=Math.PI*2*(7+Math.random()*10);
-  const stop=Math.random()*Math.PI*2;
-  const total=extra+stop;
-  const t0=performance.now();
-  let lastSector=-1;
-  function frame(now){
-    const t=Math.min((now-t0)/dur,1);
-    const ease=1-Math.pow(1-t,4);
-    angle=ease*total;
-    const slice=Math.PI*2/N;
-    const ptr=-Math.PI/2;
-    let norm=((ptr-angle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-    const cur=Math.floor(norm/slice)%N;
-    if(cur!==lastSector){playClick();lastSector=cur}
-    drawWheel(angle);
-    if(t<1){requestAnimationFrame(frame)}
-    else{
-      angle=total%(Math.PI*2);drawWheel(angle);
-      let norm2=((ptr-angle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-      resultIdx=Math.floor(norm2/slice)%N;
-      spinning=false;spinCount++;
-      document.getElementById('spin-counter').textContent='СПИН #'+spinCount;
-      playStop();flashScreen();
-      setTimeout(showCard,500);
-    }
-  }
-  requestAnimationFrame(frame);
-}
-
-function flashScreen(col){
-  const f=document.getElementById('flash');
-  f.style.background=col||'#00b4ff';f.style.opacity='0.1';
-  setTimeout(()=>f.style.opacity='0',120);
-}
-
-// --- CARD ---
+// ===================== CARD =====================
 function showCard(){
   document.getElementById('wheel-wrap').classList.add('result-shown');
-  const ca = document.getElementById('card-area');
-  const roomGen = document.getElementById('room-gen');
-  const idea = ideas[resultIdx];
-
-  currentRoomDiff = 'easy';
-  ca.classList.add('visible');
-  roomGen.classList.add('visible');
-  roomGen.innerHTML = renderRoomGeneratorPanel(idea);
-
-  document.getElementById('card-back-content').innerHTML =
-    `<div class="project-name">ПРОЕКТ ${resultIdx+1} / ${N} — СПИН #${spinCount}</div>
-<div class="idea-title" id="card-title-txt"></div>
-<div id="diff-block" style="display:none">
-<div><span class="diff-badge diff-easy">◆ ЛЁГКОЕ</span><div class="desc-text" id="dt-e"></div></div>
-<div><span class="diff-badge diff-med">◆ СРЕДНЕЕ</span><div class="desc-text" id="dt-m"></div></div>
-<div><span class="diff-badge diff-hard" id="hard-badge">◆ СЛОЖНОЕ!</span><div class="desc-text" id="dt-h"></div></div>
-</div>`;
+  document.getElementById('card-area').classList.add('visible');
+  mapDiff='easy';
+  buildMapPanel();
+  const idea=ideas[resultIdx];
+  document.getElementById('card-back-content').innerHTML=
+    `<div class="project-name">ПРОЕКТ ${resultIdx+1}/${N} — СПИН #${spinCount}</div>
+     <div class="idea-title" id="ctt"></div>
+     <div id="dblock" style="display:none">
+       <div><span class="diff-badge diff-easy">◆ ЛЁГКОЕ</span><div class="desc-text" id="dte"></div></div>
+       <div><span class="diff-badge diff-med">◆ СРЕДНЕЕ</span><div class="desc-text" id="dtm"></div></div>
+       <div><span class="diff-badge diff-hard" id="hbadge">◆ СЛОЖНОЕ!</span><div class="desc-text" id="dth"></div></div>
+     </div>`;
   document.getElementById('reset-btn').classList.add('visible');
 }
 
 function flipCard(){
-  const card=document.getElementById('result-card');
-  if(card.classList.contains('flipped'))return;
-  card.classList.add('flipped');
-  playZap();flashScreen('#ff6a00');
-  launchParticles();
-  history.unshift({title:ideas[resultIdx].title,spin:spinCount,idx:resultIdx});
-  if(history.length>5)history.pop();
+  const card=document.getElementById('result-card');if(card.classList.contains('flipped'))return;
+  card.classList.add('flipped');playZap();flashScreen('#ff6a00');launchParticles();
+  history.unshift({title:ideas[resultIdx].title,spin:spinCount});if(history.length>5)history.pop();
   const idea=ideas[resultIdx];
-  typeText('card-title-txt',idea.title,()=>{
-    document.getElementById('diff-block').style.display='block';
-    typeText('dt-e',idea.easy,()=>{
-      typeText('dt-m',idea.med,()=>{
-        typeText('dt-h',idea.hard,()=>{
-          const hb=document.getElementById('hard-badge');
-          if(hb)hb.style.animation='shake .18s infinite';
-        });
-      });
-    });
-  });
+  typeText('ctt',idea.title,()=>{document.getElementById('dblock').style.display='block';typeText('dte',idea.easy,()=>{typeText('dtm',idea.med,()=>{typeText('dth',idea.hard,()=>{const hb=document.getElementById('hbadge');if(hb)hb.style.animation='shake .18s infinite'})})})});
 }
-
-function typeText(id,text,cb){
-  const el=document.getElementById(id);if(!el)return;
-  el.innerHTML='';let i=0;
-  const iv=setInterval(()=>{
-    el.innerHTML=text.slice(0,i)+'<span style="border-right:1px solid #00b4ff88"> </span>';
-    i++;if(i>text.length){clearInterval(iv);el.innerHTML=text;if(cb)cb()}
-  },22);
-}
-
-function holoMove(e){
-  const r=document.getElementById('result-card').getBoundingClientRect();
-  const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
-  const holo=document.getElementById('card-holo');
-  holo.style.background=`radial-gradient(circle at ${x*100}% ${y*100}%,rgba(0,180,255,0.15),rgba(255,106,0,0.08),transparent 70%)`;
-  holo.style.opacity='1';
-}
+function typeText(id,text,cb){const el=document.getElementById(id);if(!el)return;el.innerHTML='';let i=0;const iv=setInterval(()=>{el.innerHTML=text.slice(0,i)+'<span style="border-right:1px solid #00b4ff88"> </span>';i++;if(i>text.length){clearInterval(iv);el.innerHTML=text;if(cb)cb()}},22)}
+function holoMove(e){const r=document.getElementById('result-card').getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;const h=document.getElementById('card-holo');h.style.background=`radial-gradient(circle at ${x*100}% ${y*100}%,rgba(0,180,255,.15),rgba(255,106,0,.08),transparent 70%)`;h.style.opacity='1'}
 function holoLeave(){document.getElementById('card-holo').style.opacity='0'}
 
-// --- PARTICLES ---
-const pCanvas=document.getElementById('particles');
-const pCtx=pCanvas.getContext('2d');
-function resizeP(){pCanvas.width=pCanvas.offsetWidth;pCanvas.height=pCanvas.offsetHeight}
-resizeP();window.addEventListener('resize',resizeP);
+// ===================== PARTICLES =====================
+const pC=document.getElementById('particles'),pCtx=pC.getContext('2d');
+function resizeP(){pC.width=pC.offsetWidth;pC.height=pC.offsetHeight}resizeP();window.addEventListener('resize',resizeP);
+function launchParticles(){const aR=document.getElementById('app').getBoundingClientRect(),cR=document.getElementById('result-card').getBoundingClientRect(),ox=cR.left-aR.left+cR.width/2,oy=cR.top-aR.top+cR.height/2;const cols=["#ff6a00","#00b4ff","#4dff4d","#ff4444","#ffaa00","#cc44ff","#ff66aa","#fff","#00ffcc","#ffee44"];particles=[];for(let i=0;i<90;i++){const a=Math.random()*Math.PI*2,spd=2+Math.random()*10;particles.push({x:ox,y:oy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd-3,w:3+Math.random()*11,h:3+Math.random()*11,rot:Math.random()*360,vr:(Math.random()-.5)*16,col:cols[Math.floor(Math.random()*cols.length)],life:1,trail:[]})}animP()}
+function animP(){pCtx.clearRect(0,0,pC.width,pC.height);let alive=false;for(const p of particles){if(p.life<=0)continue;alive=true;p.trail.push({x:p.x,y:p.y,a:p.life});if(p.trail.length>14)p.trail.shift();for(let i=0;i<p.trail.length-1;i++){pCtx.beginPath();pCtx.moveTo(p.trail[i].x,p.trail[i].y);pCtx.lineTo(p.trail[i+1].x,p.trail[i+1].y);pCtx.strokeStyle=`rgba(255,255,255,${p.trail[i].a*(i/p.trail.length)*.45})`;pCtx.lineWidth=1.5;pCtx.stroke()}pCtx.save();pCtx.translate(p.x,p.y);pCtx.rotate(p.rot*Math.PI/180);pCtx.fillStyle=p.col+Math.floor(p.life*255).toString(16).padStart(2,'0');pCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);pCtx.restore();p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.985;p.rot+=p.vr;p.life-=.015}if(alive)requestAnimationFrame(animP);else pCtx.clearRect(0,0,pC.width,pC.height)}
 
-function launchParticles(){
-  const appR=document.getElementById('app').getBoundingClientRect();
-  const cardR=document.getElementById('result-card').getBoundingClientRect();
-  const ox=cardR.left-appR.left+cardR.width/2,oy=cardR.top-appR.top+cardR.height/2;
-  const cols=["#ff6a00","#00b4ff","#4dff4d","#ff4444","#ffaa00","#cc44ff","#ff66aa","#fff","#00ffcc","#ffee44"];
-  particles=[];
-  for(let i=0;i<90;i++){
-    const a=Math.random()*Math.PI*2,spd=2+Math.random()*10;
-    particles.push({x:ox,y:oy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd-3,
-      w:3+Math.random()*11,h:3+Math.random()*11,
-      rot:Math.random()*360,vr:(Math.random()-.5)*16,
-      col:cols[Math.floor(Math.random()*cols.length)],life:1,trail:[]});
-  }
-  animP();
-}
+// ===================== HISTORY =====================
+function toggleHist(){histVisible=!histVisible;const p=document.getElementById('hist-panel');if(histVisible){p.classList.add('visible');const l=document.getElementById('hist-list');l.innerHTML=history.length===0?'<div style="font-family:Orbitron,monospace;font-size:8px;color:#00b4ff22;text-align:center;padding:10px">НЕТ ЗАПИСЕЙ</div>':history.map((h,i)=>`<div class="hist-item"><span class="hist-num">${i+1}</span><span class="hist-title">${h.title}</span><span class="hist-spin">СПИН #${h.spin}</span></div>`).join('')}else p.classList.remove('visible')}
 
-function animP(){
-  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
-  let alive=false;
-  for(const p of particles){
-    if(p.life<=0)continue;alive=true;
-    p.trail.push({x:p.x,y:p.y,a:p.life});
-    if(p.trail.length>14)p.trail.shift();
-    for(let i=0;i<p.trail.length-1;i++){
-      const t0=p.trail[i],t1=p.trail[i+1];
-      pCtx.beginPath();pCtx.moveTo(t0.x,t0.y);pCtx.lineTo(t1.x,t1.y);
-      pCtx.strokeStyle=`rgba(255,255,255,${t0.a*(i/p.trail.length)*.45})`;
-      pCtx.lineWidth=1.5;pCtx.stroke();
+// ===================== RESET =====================
+function resetWheel(){document.getElementById('wheel-wrap').classList.remove('result-shown');document.getElementById('wheel-wrap').style.transform='perspective(700px) rotateY(0) rotateX(0)';document.getElementById('card-area').classList.remove('visible');const mp=document.getElementById('map-panel');mp.classList.remove('visible');mp.innerHTML='';document.getElementById('result-card').classList.remove('flipped');document.getElementById('reset-btn').classList.remove('visible');document.getElementById('spin-btn').disabled=false;document.getElementById('luck-btn').disabled=false;mapDiff='easy';resultIdx=-1;particles=[];pCtx.clearRect(0,0,pC.width,pC.height);drawWheel(angle)}
+
+// ===================== IDLE =====================
+let idleA=0;function idle(){if(!spinning&&resultIdx===-1){idleA+=.0015;angle=idleA;drawWheel(idleA)}requestAnimationFrame(idle)}idle();
+
+// ===================== MAP LAYOUT ENGINE =====================
+// Arranges rooms in a logical TREE from top to bottom (main chain with branches)
+function buildLayout(rooms,names){
+  const NODE_W=96,NODE_H=52,H_GAP=52,V_GAP=68;
+  const n=rooms.length;
+  // Build tree: main spine + optional branches
+  // Determine branch points: every 3rd node can branch off
+  const spine=[],branches=[];
+  let branchEvery=Math.max(2,Math.floor(n/3));
+  for(let i=0;i<n;i++){
+    if(i>0&&i%branchEvery===0&&branches.length<Math.floor(n/4)&&i<n-1){
+      branches.push({from:i-1,node:i});
+      spine.push(i+1<n?i+1:-1);
+    } else {
+      spine.push(i);
     }
-    pCtx.save();pCtx.translate(p.x,p.y);pCtx.rotate(p.rot*Math.PI/180);
-    pCtx.fillStyle=p.col+Math.floor(p.life*255).toString(16).padStart(2,'0');
-    pCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);pCtx.restore();
-    p.x+=p.vx;p.y+=p.vy;p.vy+=0.22;p.vx*=.985;p.rot+=p.vr;p.life-=.015;
   }
-  if(alive)requestAnimationFrame(animP);
-  else pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  // Assign positions
+  const positions=new Array(n);
+  // Spine: vertical chain centred at x=0
+  let spineX=0,spineY=0,lastSpine=-1;
+  const spineNodes=[];
+  for(let i=0;i<n;i++){
+    const isBranch=branches.some(b=>b.node===i);
+    if(!isBranch){spineNodes.push(i)}
+  }
+  spineNodes.forEach((ni,si)=>{positions[ni]={x:0,y:si*(NODE_H+V_GAP)}});
+  // Branches: place to the right of their parent
+  branches.forEach(b=>{
+    const ppos=positions[b.from]||{x:0,y:0};
+    positions[b.node]={x:NODE_W+H_GAP,y:ppos.y};
+  });
+  // Fill any remaining unassigned
+  for(let i=0;i<n;i++){if(!positions[i]){const prev=positions[i-1]||{x:0,y:0};positions[i]={x:0,y:prev.y+NODE_H+V_GAP}}}
+  // Build objects
+  const rects=rooms.map((t,i)=>({t,name:names[i]||`Zone ${i+1}`,w:NODE_W,h:NODE_H,x:positions[i].x,y:positions[i].y,id:i}));
+  // Connections: spine chain + branch edges
+  const conns=[];
+  spineNodes.forEach((ni,si)=>{if(si>0)conns.push([spineNodes[si-1],ni])});
+  branches.forEach(b=>{conns.push([b.from,b.node])});
+  return{rects,conns};
 }
 
-// --- HISTORY ---
-function toggleHist(){
-  histVisible=!histVisible;
-  const p=document.getElementById('hist-panel');
-  if(histVisible){
-    p.classList.add('visible');
-    const list=document.getElementById('hist-list');
-    if(history.length===0){list.innerHTML='<div style="font-family:Orbitron,monospace;font-size:8px;color:#00b4ff22;text-align:center;padding:10px">НЕТ ЗАПИСЕЙ</div>'}
-    else{list.innerHTML=history.map((h,i)=>
-      `<div class="hist-item"><span class="hist-num">${i+1}</span><span class="hist-title">${h.title}</span><span class="hist-spin">СПИН #${h.spin}</span></div>`
-    ).join('')}
-  }else{p.classList.remove('visible')}
+// ===================== MAP PANEL =====================
+function buildMapPanel(){
+  if(resultIdx<0)return;
+  const idea=ideas[resultIdx];
+  const genData=idea.generator[mapDiff]||idea.generator.easy;
+  const mp=document.getElementById('map-panel');
+  mp.innerHTML=`
+  <div class="mp-head">
+    <div><div class="mp-title">⬡ HAMMER VIEWPORT</div><div class="mp-project">${idea.title}</div></div>
+    <button class="mp-regen" onclick="regenMap()">↺ Regenerate</button>
+  </div>
+  <div class="mp-controls">
+    <button class="mp-btn${mapDiff==='easy'?' active-easy':''}" onclick="setMapDiff('easy')">◆ ЛЁГКАЯ</button>
+    <button class="mp-btn${mapDiff==='med'?' active-med':''}" onclick="setMapDiff('med')">◆ СРЕДНЯЯ</button>
+    <button class="mp-btn${mapDiff==='hard'?' active-hard':''}" onclick="setMapDiff('hard')">◆ СЛОЖНАЯ</button>
+  </div>
+  <div class="vp-shell">
+    <div class="vp-topbar">
+      <span>ORTHO / TOP-DOWN</span><span>GRID 32u</span><span style="color:#ff6a00">${mapDiff.toUpperCase()}</span><span id="vpZoomTag">100%</span>
+    </div>
+    <div class="vp-canvaswrap" id="vpWrap">
+      <canvas class="vp-c" id="vpC"></canvas>
+      <div class="vp-overlay" id="vp-coords" style="top:8px;right:8px">0, 0</div>
+      <div class="vp-overlay" id="vp-zoom" style="bottom:8px;right:8px">ZOOM: WHEEL · PAN: DRAG</div>
+      <div class="vp-overlay" id="vp-hint" style="bottom:8px;left:8px">HAMMER GRID 32u</div>
+    </div>
+  </div>
+  <div class="mp-stats" id="mpStats"></div>
+  <div class="mp-entities"><div class="mp-ent-title">◆ РЕКОМЕНДУЕМЫЕ ENTITY</div><div class="mp-ent-list" id="mpEnts"></div></div>
+  <div class="mp-legend">
+    <div class="leg"><span class="leg-sw" style="color:#4dff4d"></span><span>Комната</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#ff4444"></span><span>Туннель</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#ffaa00"></span><span>Переход</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#00b4ff"></span><span>Вода</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#cc44ff"></span><span>Особая зона</span></div>
+  </div>`;
+  mp.classList.add('visible');
+  initVP();
+  regenMap();
 }
 
-// --- RESET ---
-function resetWheel(){
-  document.getElementById('wheel-wrap').classList.remove('result-shown');
-  document.getElementById('wheel-wrap').style.transform='perspective(700px) rotateY(0) rotateX(0)';
-  document.getElementById('card-area').classList.remove('visible');
-  document.getElementById('room-gen').classList.remove('visible');
-  document.getElementById('room-gen').innerHTML='';
-  document.getElementById('result-card').classList.remove('flipped');
-  document.getElementById('reset-btn').classList.remove('visible');
-  document.getElementById('spin-btn').disabled=false;
-  document.getElementById('luck-btn').disabled=false;
-  currentRoomDiff='easy';
-  resultIdx=-1;particles=[];pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
-  drawWheel(angle);
+function setMapDiff(d){mapDiff=d;buildMapPanel()}
+
+function regenMap(){
+  if(resultIdx<0||!vp.canvas)return;
+  const idea=ideas[resultIdx];
+  const genData=idea.generator[mapDiff]||idea.generator.easy;
+  const {rects,conns}=buildLayout(genData.rooms,genData.names);
+  vp.rooms=rects;vp.conns=conns;
+  // auto-fit view
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  rects.forEach(r=>{minX=Math.min(minX,r.x);minY=Math.min(minY,r.y);maxX=Math.max(maxX,r.x+r.w);maxY=Math.max(maxY,r.y+r.h)});
+  const mw=maxX-minX+80,mh=maxY-minY+80;
+  vp.scale=Math.min((vp.canvas.width-40)/mw,(vp.canvas.height-40)/mh,2);
+  vp.ox=vp.canvas.width/2-(minX+mw/2-40)*vp.scale;
+  vp.oy=vp.canvas.height/2-(minY+mh/2-40)*vp.scale;
+  const tag=document.getElementById('vpZoomTag');if(tag)tag.textContent=Math.round(vp.scale*100)+'%';
+  // update stats
+  const c={green:0,red:0,yellow:0,blue:0,purple:0};rects.forEach(r=>c[r.t]=(c[r.t]||0)+1);
+  const st=document.getElementById('mpStats');
+  if(st)st.innerHTML=`<div>РАЗМЕР <span>4096×4096</span></div><div>ВСЕГО <span>${rects.length}</span></div><div>КОМНАТЫ <span>${c.green}</span></div><div>ТУННЕЛИ <span>${c.red}</span></div><div>ПЕРЕХОДЫ <span>${c.yellow}</span></div><div>ВОДА <span>${c.blue}</span></div><div>ОСОБЫЕ <span>${c.purple}</span></div><div>СЛОЖНОСТЬ <span>${mapDiff.toUpperCase()}</span></div>`;
+  const el=document.getElementById('mpEnts');
+  if(el)el.innerHTML=genData.entities.map(e=>`<div class="mp-ent">${e}</div>`).join('');
+  drawVP();
 }
 
-let roomCount = 10;
-let generationMode = 'exterior'; // or 'interior'
-
-// --- IDLE ROTATE ---
-let idleAngle=0;
-function idle(){
-  if(!spinning&&resultIdx===-1){idleAngle+=0.0015;angle=idleAngle;drawWheel(idleAngle)}
-  requestAnimationFrame(idle);
+function initVP(){
+  vp.canvas=document.getElementById('vpC');if(!vp.canvas)return;
+  const wrap=document.getElementById('vpWrap');
+  vp.canvas.width=wrap.offsetWidth||560;vp.canvas.height=wrap.offsetHeight||340;
+  vp.ctx=vp.canvas.getContext('2d');
+  vp.scale=1;vp.ox=vp.canvas.width/2;vp.oy=vp.canvas.height/2;
+  // events
+  vp.canvas.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.12:.89,mx=e.offsetX,my=e.offsetY;vp.ox=(vp.ox-mx)*f+mx;vp.oy=(vp.oy-my)*f+my;vp.scale=Math.max(.1,Math.min(5,vp.scale*f));const t=document.getElementById('vpZoomTag');if(t)t.textContent=Math.round(vp.scale*100)+'%';drawVP()},{passive:false});
+  vp.canvas.addEventListener('mousedown',e=>{vp.drag=true;vp.lx=e.clientX;vp.ly=e.clientY});
+  document.addEventListener('mouseup',()=>vp.drag=false);
+  document.addEventListener('mousemove',e=>{
+    if(vp.drag&&vp.canvas){vp.ox+=e.clientX-vp.lx;vp.oy+=e.clientY-vp.ly;vp.lx=e.clientX;vp.ly=e.clientY;drawVP()}
+    if(vp.canvas){const r=vp.canvas.getBoundingClientRect(),cx2=Math.round((e.clientX-r.left-vp.ox)/vp.scale*32),cy2=Math.round((e.clientY-r.top-vp.oy)/vp.scale*32);const co=document.getElementById('vp-coords');if(co)co.textContent=`${cx2}u, ${cy2}u`}
+  });
+  window.addEventListener('resize',()=>{if(!vp.canvas)return;const w=document.getElementById('vpWrap');if(!w)return;vp.canvas.width=w.offsetWidth;vp.canvas.height=w.offsetHeight;drawVP()});
 }
-idle();
 
+function drawVP(){
+  const c=vp.ctx,cv=vp.canvas;if(!c||!cv)return;
+  const W2=cv.width,H2=cv.height;
+  c.clearRect(0,0,W2,H2);c.fillStyle='#06101e';c.fillRect(0,0,W2,H2);
+  c.save();c.translate(vp.ox,vp.oy);c.scale(vp.scale,vp.scale);
+  // grid
+  const GRID=32;
+  const vl=-vp.ox/vp.scale,vt=-vp.oy/vp.scale,vr=vl+W2/vp.scale,vb=vt+H2/vp.scale;
+  const sx=Math.floor(vl/GRID)*GRID,sy=Math.floor(vt/GRID)*GRID;
+  for(let x=sx;x<vr;x+=GRID){const big=x%128===0;c.strokeStyle=big?'rgba(0,180,255,0.15)':'rgba(0,180,255,0.05)';c.lineWidth=(big?1.2:.5)/vp.scale;c.beginPath();c.moveTo(x,vt);c.lineTo(x,vb);c.stroke()}
+  for(let y=sy;y<vb;y+=GRID){const big=y%128===0;c.strokeStyle=big?'rgba(0,180,255,0.15)':'rgba(0,180,255,0.05)';c.lineWidth=(big?1.2:.5)/vp.scale;c.beginPath();c.moveTo(vl,y);c.lineTo(vr,y);c.stroke()}
+  // axes
+  c.strokeStyle='rgba(0,180,255,0.2)';c.lineWidth=.8/vp.scale;
+  c.beginPath();c.moveTo(0,vt);c.lineTo(0,vb);c.stroke();
+  c.beginPath();c.moveTo(vl,0);c.lineTo(vr,0);c.stroke();
+
+  // connections - L-shaped paths
+  vp.conns.forEach(([ai,bi])=>{
+    const a=vp.rooms[ai],b=vp.rooms[bi];if(!a||!b)return;
+    const ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
+    // determine connector color: use the type of source room
+    const col=ROOM_COL[a.t]||'#4dff4d';
+    // draw filled corridor
+    const cw=12;
+    c.fillStyle=col+'15';
+    if(Math.abs(ax-bx)<4){// vertical
+      c.fillRect(ax-cw/2,Math.min(ay,by),cw,Math.abs(ay-by));
+    } else {// L-shape
+      c.fillRect(Math.min(ax,bx),ay-cw/2,Math.abs(ax-bx)+cw/2,cw);
+      c.fillRect(bx-cw/2,Math.min(ay,by)-cw/2,cw,Math.abs(ay-by)+cw/2);
+    }
+    // outline
+    c.strokeStyle=col+'66';c.lineWidth=1.5/vp.scale;c.setLineDash([6/vp.scale,4/vp.scale]);
+    c.beginPath();c.moveTo(ax,ay);
+    if(Math.abs(ax-bx)<4){c.lineTo(bx,by)}
+    else{c.lineTo(bx,ay);c.lineTo(bx,by)}
+    c.stroke();c.setLineDash([]);
+    // door icon at midpoint
+    const mx=(Math.abs(ax-bx)<4)?bx:(bx),my=(Math.abs(ax-bx)<4)?( ay+by)/2:ay;
+    c.strokeStyle='#ffaa00cc';c.lineWidth=1.5/vp.scale;
+    c.strokeRect(mx-5/vp.scale,my-8/vp.scale,10/vp.scale,16/vp.scale);
+  });
+
+  // rooms
+  const fontSize=Math.max(6,10/vp.scale);
+  const fs2=Math.max(5,7/vp.scale);
+  vp.rooms.forEach((r,i)=>{
+    const col=ROOM_COL[r.t]||'#4dff4d';
+    // glow
+    c.shadowColor=col;c.shadowBlur=14;
+    // body
+    c.fillStyle=col+'1a';c.strokeStyle=col;c.lineWidth=1.5/vp.scale;
+    c.beginPath();c.roundRect(r.x,r.y,r.w,r.h,4/vp.scale);c.fill();c.stroke();
+    c.shadowBlur=0;
+    // inner border
+    c.strokeStyle=col+'33';c.lineWidth=.7/vp.scale;c.setLineDash([3/vp.scale,3/vp.scale]);
+    c.strokeRect(r.x+4/vp.scale,r.y+4/vp.scale,r.w-8/vp.scale,r.h-8/vp.scale);
+    c.setLineDash([]);
+    // type icon & labels
+    c.fillStyle=col;c.font=`bold ${fontSize}px Orbitron,monospace`;c.textAlign='center';c.textBaseline='middle';
+    c.fillText(ROOM_LABEL[r.t]||'?',r.x+r.w/2,r.y+r.h/2-fontSize*.6);
+    c.fillStyle='#c8e8ff';c.font=`${fs2}px Orbitron,monospace`;
+    c.fillText(r.name,r.x+r.w/2,r.y+r.h/2+fontSize*.5);
+    // index
+    c.fillStyle=col+'88';c.font=`${fs2*.9}px Orbitron,monospace`;
+    c.fillText(`#${i+1}`,r.x+4/vp.scale+fs2*.5,r.y+fs2*.8);
+    // start/exit markers
+    if(i===0){c.strokeStyle='#4dff4d';c.lineWidth=2/vp.scale;c.beginPath();c.roundRect(r.x-3/vp.scale,r.y-3/vp.scale,r.w+6/vp.scale,r.h+6/vp.scale,6/vp.scale);c.stroke();c.fillStyle='#4dff4d';c.font=`${fs2}px Orbitron,monospace`;c.fillText('СТАРТ',r.x+r.w/2,r.y-8/vp.scale)}
+    if(i===vp.rooms.length-1){c.strokeStyle='#ff4444';c.lineWidth=2/vp.scale;c.beginPath();c.roundRect(r.x-3/vp.scale,r.y-3/vp.scale,r.w+6/vp.scale,r.h+6/vp.scale,6/vp.scale);c.stroke();c.fillStyle='#ff4444';c.font=`${fs2}px Orbitron,monospace`;c.fillText('ВЫХОД',r.x+r.w/2,r.y-8/vp.scale)}
+  });
+  c.restore();
+}
 </script>
 </body>
 </html>
-
