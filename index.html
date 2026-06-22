@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HL2 Hammer Oracle v5</title>
+<title>HL2 Hammer Oracle v7</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -193,180 +193,1195 @@ const ideas=[
    med:"Мини-узел охраны с вращающейся камерой, комнатой оператора и коридором доступа.",
    hard:"Полноценный центр наблюдения: несколько камер, диспетчерская, тревожная комната, скриптовые события.",
    generator:{
-     easy:{rooms:["green","green","purple"],names:["Пост охраны","Зона дисплея","Комната камер"],entities:["npc_metropolice","func_door","env_sprite"]},
-     med:{rooms:["green","yellow","green","purple","green"],names:["Патрульный блок","Переход","Оператор","Узел камер","Коридор"],entities:["npc_metropolice","npc_combine_s","func_rotating","logic_relay"]},
-     hard:{rooms:["green","green","red","purple","green","purple","blue"],names:["КПП","Диспетчерская","Серверный тоннель","Центр наблюдения","Тревожный отсек","Лаборатория слежки","Аварийный сток"],entities:["npc_combine_s","npc_metropolice","func_monitor","logic_relay","ambient_generic","trigger_once"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'КПП Въезд',parent:null},
+         {id:1,t:'green',name:'Пост охраны',parent:0},
+         {id:2,t:'purple',name:'Комната камер',parent:1},
+         {id:3,t:'green',name:'Зал дисплеев',parent:2},
+         {id:4,t:'red',name:'Кабельный лаз',parent:1}
+       ],entities:["npc_metropolice","func_door","env_sprite","prop_physics"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Патрульный блок',parent:null},
+         {id:1,t:'green',name:'Оперативный зал',parent:0},
+         {id:2,t:'green',name:'Комната оператора',parent:1},
+         {id:3,t:'purple',name:'Узел камер',parent:2},
+         {id:4,t:'purple',name:'Серверная',parent:2},
+         {id:5,t:'red',name:'Технический тоннель',parent:1},
+         {id:6,t:'green',name:'Аварийный отсек',parent:5},
+         {id:7,t:'yellow',name:'Выходной коридор',parent:6}
+       ],entities:["npc_metropolice","npc_combine_s","func_rotating","logic_relay","env_sprite"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'КПП Периметр',parent:null},
+         {id:1,t:'green',name:'Диспетчерская',parent:0},
+         {id:2,t:'purple',name:'Центр наблюдения',parent:1},
+         {id:3,t:'purple',name:'Лаборатория слежки',parent:2},
+         {id:4,t:'green',name:'Тревожный отсек',parent:2},
+         {id:5,t:'green',name:'Зал офицеров',parent:1},
+         {id:6,t:'red',name:'Серверный тоннель',parent:5},
+         {id:7,t:'blue',name:'Аварийный сток',parent:6},
+         {id:8,t:'red',name:'Кабельная шахта',parent:3},
+         {id:9,t:'purple',name:'Резервный узел',parent:8},
+         {id:10,t:'yellow',name:'Выход',parent:4}
+       ],entities:["npc_combine_s","npc_metropolice","func_monitor","logic_relay","ambient_generic","trigger_once","env_sprite"]
+     }
    }},
   {title:"Бункер выживших",
    easy:"Небольшое убежище с кроватями, ящиками, запасами и простыми источниками света.",
    med:"Живой бункер: генератор, запираемые двери, уголок с припасами и обходной маршрут.",
    hard:"База сопротивления: несколько комнат, общий зал, технический отсек, аварийный проход.",
    generator:{
-     easy:{rooms:["green","green","green"],names:["Вход","Жилой отсек","Склад"],entities:["prop_physics","func_door","ambient_generic"]},
-     med:{rooms:["yellow","green","green","red","green"],names:["Замаскированный вход","Жилой блок","Штаб","Технический тоннель","Генераторная"],entities:["npc_citizen","func_door","prop_physics","ambient_generic"]},
-     hard:{rooms:["red","green","green","purple","green","green","blue"],names:["Скрытый лаз","Вход","Жилой зал","Командный центр","Мастерская","Медпункт","Аварийный дренаж"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic","prop_physics"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Замаскированный вход',parent:null},
+         {id:1,t:'red',name:'Лаз',parent:0},
+         {id:2,t:'green',name:'Жилой отсек',parent:1},
+         {id:3,t:'green',name:'Склад',parent:2},
+         {id:4,t:'green',name:'Отдых',parent:2}
+       ],entities:["prop_physics","func_door","ambient_generic","npc_citizen"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'red',name:'Скрытый лаз',parent:null},
+         {id:1,t:'yellow',name:'Вход',parent:0},
+         {id:2,t:'green',name:'Жилой блок',parent:1},
+         {id:3,t:'green',name:'Штаб',parent:2},
+         {id:4,t:'green',name:'Медпункт',parent:2},
+         {id:5,t:'red',name:'Технический тоннель',parent:3},
+         {id:6,t:'purple',name:'Генераторная',parent:5},
+         {id:7,t:'green',name:'Запасной выход',parent:5}
+       ],entities:["npc_citizen","func_door","prop_physics","ambient_generic","npc_rebel"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Канализационный вход',parent:null},
+         {id:1,t:'yellow',name:'Тамбур',parent:0},
+         {id:2,t:'green',name:'Общий зал',parent:1},
+         {id:3,t:'green',name:'Жилые комнаты',parent:2},
+         {id:4,t:'purple',name:'Командный центр',parent:2},
+         {id:5,t:'green',name:'Мастерская',parent:2},
+         {id:6,t:'green',name:'Медпункт',parent:3},
+         {id:7,t:'red',name:'Технический тоннель',parent:4},
+         {id:8,t:'purple',name:'Серверная',parent:4},
+         {id:9,t:'blue',name:'Аварийный дренаж',parent:7},
+         {id:10,t:'yellow',name:'Запасной выход',parent:9}
+       ],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic","prop_physics","npc_combine_s"]
+     }
    }},
   {title:"Телепорт Альянса",
    easy:"Две комнаты с телепортационной связью, точка входа и приёмник.",
    med:"Эффект зарядки, задержка, визуальный отклик. Маршрут через подготовительную комнату.",
    hard:"Двусторонний телепорт с кат-сценой, защитным полем и возможной поломкой системы.",
    generator:{
-     easy:{rooms:["green","purple","green"],names:["Зал ожидания","Телепорт-камера","Зона прибытия"],entities:["env_sprite","ambient_generic","trigger_teleport"]},
-     med:{rooms:["green","yellow","purple","green","red"],names:["Зал доступа","Переходной мост","Активационная камера","Зона прибытия","Энергетический тоннель"],entities:["env_sprite","logic_relay","trigger_teleport","ambient_generic","func_door"]},
-     hard:{rooms:["green","purple","blue","purple","green","red","green"],names:["Бюро пропусков","Камера зарядки","Стабилизирующий резервуар","Ядро телепорта","Зона выхода","Кабельный тоннель","КПП Альянса"],entities:["env_sprite","logic_relay","trigger_teleport","env_beam","func_brush","ambient_generic","npc_combine_s"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Зал ожидания',parent:null},
+         {id:1,t:'purple',name:'Телепорт-камера',parent:0},
+         {id:2,t:'red',name:'Энергетический лаз',parent:0},
+         {id:3,t:'green',name:'Зона прибытия',parent:1},
+         {id:4,t:'purple',name:'Стабилизатор',parent:1}
+       ],entities:["env_sprite","ambient_generic","trigger_teleport","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Бюро пропусков',parent:null},
+         {id:1,t:'green',name:'Зал доступа',parent:0},
+         {id:2,t:'purple',name:'Зарядная камера',parent:1},
+         {id:3,t:'purple',name:'Ядро телепорта',parent:2},
+         {id:4,t:'red',name:'Энергетический тоннель',parent:2},
+         {id:5,t:'green',name:'Зона выхода',parent:3},
+         {id:6,t:'blue',name:'Охлаждающий резервуар',parent:4},
+         {id:7,t:'yellow',name:'Выходной шлюз',parent:5}
+       ],entities:["env_sprite","logic_relay","trigger_teleport","ambient_generic","func_door","env_beam"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'КПП Альянса',parent:null},
+         {id:1,t:'green',name:'Зал регистрации',parent:0},
+         {id:2,t:'purple',name:'Камера зарядки A',parent:1},
+         {id:3,t:'purple',name:'Камера зарядки B',parent:1},
+         {id:4,t:'purple',name:'Ядро телепорта',parent:2},
+         {id:5,t:'blue',name:'Стабилизирующий резервуар',parent:3},
+         {id:6,t:'red',name:'Кабельный тоннель',parent:4},
+         {id:7,t:'green',name:'Зона прибытия A',parent:4},
+         {id:8,t:'green',name:'Зона прибытия B',parent:5},
+         {id:9,t:'purple',name:'Резервный узел',parent:6},
+         {id:10,t:'yellow',name:'Финальный КПП',parent:7}
+       ],entities:["env_sprite","logic_relay","trigger_teleport","env_beam","func_brush","ambient_generic","npc_combine_s","trigger_once"]
+     }
    }},
   {title:"Ловушка для метрокопов",
    easy:"Простая ловушка с ямой, триггером урона и визуальной подсказкой.",
    med:"Нажимная плита, падающий потолок или сдвигающийся элемент после входа врага.",
    hard:"Многоэтапная ловушка: газ, запирание, шипы, путь отхода, логика события.",
    generator:{
-     easy:{rooms:["yellow","red","red"],names:["Приманочный коридор","Ловчая яма","Нижний сток"],entities:["trigger_hurt","func_door","ambient_generic"]},
-     med:{rooms:["green","yellow","red","green","red"],names:["Засадная комната","Нажимная секция","Ловушка-потолок","Отход для игрока","Сточный туннель"],entities:["trigger_hurt","func_movelinear","func_door","trigger_once","ambient_generic"]},
-     hard:{rooms:["green","yellow","red","purple","red","green","yellow"],names:["Комната-приманка","Газовая секция","Шиповая ловушка","Центр управления","Запасной тоннель","Безопасная зона","Выход на поверхность"],entities:["trigger_hurt","func_movelinear","env_smokestack","logic_case","trigger_once","func_door"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Приманочный коридор',parent:null},
+         {id:1,t:'red',name:'Ловчая яма',parent:0},
+         {id:2,t:'red',name:'Нижний сток',parent:1},
+         {id:3,t:'green',name:'Комната наблюдения',parent:0},
+         {id:4,t:'yellow',name:'Путь отхода',parent:3}
+       ],entities:["trigger_hurt","func_door","ambient_generic","trigger_once"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'Засадная комната',parent:null},
+         {id:1,t:'yellow',name:'Нажимная секция',parent:0},
+         {id:2,t:'red',name:'Ловушка-потолок',parent:1},
+         {id:3,t:'red',name:'Сточный туннель',parent:2},
+         {id:4,t:'green',name:'Отход для игрока',parent:0},
+         {id:5,t:'purple',name:'Пульт управления',parent:4},
+         {id:6,t:'yellow',name:'Запасной выход',parent:4},
+         {id:7,t:'red',name:'Газовая секция',parent:1}
+       ],entities:["trigger_hurt","func_movelinear","func_door","trigger_once","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'Комната-приманка',parent:null},
+         {id:1,t:'yellow',name:'Газовая секция',parent:0},
+         {id:2,t:'red',name:'Шиповая ловушка',parent:1},
+         {id:3,t:'red',name:'Запасной тоннель',parent:2},
+         {id:4,t:'purple',name:'Центр управления',parent:0},
+         {id:5,t:'green',name:'Безопасная зона',parent:4},
+         {id:6,t:'red',name:'Вентиляционный лаз',parent:1},
+         {id:7,t:'yellow',name:'Выход на поверхность',parent:5},
+         {id:8,t:'purple',name:'Резервный пульт',parent:3},
+         {id:9,t:'blue',name:'Дренажная система',parent:3}
+       ],entities:["trigger_hurt","func_movelinear","env_smokestack","logic_case","trigger_once","func_door"]
+     }
    }},
   {title:"Электростанция",
    easy:"Комната генераторов и распределительных панелей с индустриальной атмосферой.",
    med:"Рабочий рубильник, который меняет освещение, открывает двери или запускает систему.",
    hard:"Крупная энергосистема с аварийным режимом, перегрузкой, резервным генератором.",
    generator:{
-     easy:{rooms:["green","purple","green"],names:["Генераторный зал","Распредщит","Машинный отсек"],entities:["prop_physics","env_sprite","ambient_generic"]},
-     med:{rooms:["yellow","green","green","purple","green","red"],names:["Вход","Зал генераторов","Пульт управления","Энергетический узел","Аварийный отсек","Кабельный тоннель"],entities:["func_door","prop_physics","logic_relay","env_sprite","ambient_generic"]},
-     hard:{rooms:["yellow","green","green","purple","blue","red","purple","green"],names:["Охраняемый въезд","Зал реакторов","Пульт","Главный узел","Система охлаждения","Кабельная шахта","Резервный генератор","Аварийный выход"],entities:["npc_combine_s","prop_physics","logic_relay","env_sprite","func_door","trigger_once","ambient_generic"]}
-   }},
-  {title:"Тир для тренировок",
-   easy:"Базовый тренировочный сектор с мишенями, укрытиями и безопасной зоной.",
-   med:"Тир с подвижными мишенями, рельсами. Зона старта, линия огня, финальный участок.",
-   hard:"Учебный комплекс с подсчётом очков, этапами стрельбы и финальным экраном результата.",
-   generator:{
-     easy:{rooms:["green","yellow","green"],names:["Зона ожидания","Огневой рубеж","Поле мишеней"],entities:["func_movelinear","prop_physics","ambient_generic"]},
-     med:{rooms:["green","purple","yellow","green","yellow"],names:["Зал инструктажа","Командный пункт","Рубеж 1","Тактическое поле","Рубеж 2"],entities:["func_movelinear","logic_counter","prop_physics","ambient_generic"]},
-     hard:{rooms:["green","purple","yellow","green","yellow","green","purple"],names:["Инструктаж","КП наблюдения","Рубеж снайперов","Тактическая зона","Рубеж CQC","Обходная тропа","Финальный экран"],entities:["func_movelinear","logic_counter","npc_metropolice","prop_physics","ambient_generic","point_viewcontrol"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Вход',parent:null},
+         {id:1,t:'green',name:'Генераторный зал',parent:0},
+         {id:2,t:'purple',name:'Распредщит',parent:1},
+         {id:3,t:'green',name:'Машинный отсек',parent:2},
+         {id:4,t:'red',name:'Кабельный лаз',parent:1}
+       ],entities:["prop_physics","env_sprite","ambient_generic","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Охраняемый въезд',parent:null},
+         {id:1,t:'green',name:'Зал генераторов',parent:0},
+         {id:2,t:'purple',name:'Главный пульт',parent:1},
+         {id:3,t:'green',name:'Трансформаторная',parent:1},
+         {id:4,t:'purple',name:'Энергетический узел',parent:2},
+         {id:5,t:'red',name:'Кабельный тоннель',parent:3},
+         {id:6,t:'green',name:'Аварийный отсек',parent:4},
+         {id:7,t:'yellow',name:'Аварийный выход',parent:6}
+       ],entities:["func_door","prop_physics","logic_relay","env_sprite","ambient_generic","npc_metropolice"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'КПП',parent:null},
+         {id:1,t:'green',name:'Зал реакторов',parent:0},
+         {id:2,t:'purple',name:'Главный узел',parent:1},
+         {id:3,t:'blue',name:'Система охлаждения',parent:2},
+         {id:4,t:'green',name:'Турбинный зал',parent:1},
+         {id:5,t:'red',name:'Кабельная шахта',parent:2},
+         {id:6,t:'purple',name:'Резервный генератор',parent:5},
+         {id:7,t:'green',name:'Пульт управления',parent:2},
+         {id:8,t:'blue',name:'Аварийный резервуар',parent:3},
+         {id:9,t:'yellow',name:'Аварийный выход A',parent:4},
+         {id:10,t:'yellow',name:'Аварийный выход B',parent:6}
+       ],entities:["npc_combine_s","prop_physics","logic_relay","env_sprite","func_door","trigger_once","ambient_generic"]
+     }
    }},
   {title:"Подводный тоннель",
    easy:"Коридор с глубиной, водой за стеклом и холодным освещением.",
    med:"Разбиваемые стёкла, шлюзовые двери, участок с давлением воды.",
    hard:"Затопляемый отсек: уровень воды меняется, аварийный маршрут, финальный люк спасения.",
    generator:{
-     easy:{rooms:["blue","green","blue"],names:["Входной шлюз","Центральный тоннель","Выходной шлюз"],entities:["func_water","ambient_generic","func_door"]},
-     med:{rooms:["green","blue","red","blue","green"],names:["Водолазный отсек","Тоннель A","Технический лаз","Тоннель B","Выходной бункер"],entities:["func_water","func_door","trigger_hurt","env_sprite","ambient_generic"]},
-     hard:{rooms:["green","blue","purple","blue","red","blue","green"],names:["Экипировка","Затопляемый сектор A","Аварийный узел","Затопляемый сектор B","Аварийный тоннель","Финальный отсек","Люк спасения"],entities:["func_water","logic_relay","func_door","trigger_hurt","env_sprite","ambient_generic"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Водолазный отсек',parent:null},
+         {id:1,t:'blue',name:'Входной шлюз',parent:0},
+         {id:2,t:'blue',name:'Центральный тоннель',parent:1},
+         {id:3,t:'green',name:'Промежуточная база',parent:2},
+         {id:4,t:'blue',name:'Выходной шлюз',parent:3}
+       ],entities:["func_water","ambient_generic","func_door","env_sprite"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'Водолазный отсек',parent:null},
+         {id:1,t:'blue',name:'Тоннель A',parent:0},
+         {id:2,t:'red',name:'Технический лаз',parent:1},
+         {id:3,t:'blue',name:'Открытый участок',parent:1},
+         {id:4,t:'green',name:'Промежуточная база',parent:3},
+         {id:5,t:'blue',name:'Тоннель B',parent:4},
+         {id:6,t:'purple',name:'Аварийный узел',parent:5},
+         {id:7,t:'green',name:'Выходной бункер',parent:6}
+       ],entities:["func_water","func_door","trigger_hurt","env_sprite","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'Снаряжение',parent:null},
+         {id:1,t:'blue',name:'Сектор A',parent:0},
+         {id:2,t:'purple',name:'Аварийный узел',parent:1},
+         {id:3,t:'blue',name:'Сектор B',parent:2},
+         {id:4,t:'red',name:'Технический тоннель',parent:2},
+         {id:5,t:'blue',name:'Затопленный зал',parent:3},
+         {id:6,t:'blue',name:'Сектор C',parent:5},
+         {id:7,t:'purple',name:'Шлюзовая станция',parent:6},
+         {id:8,t:'green',name:'Аварийный люк',parent:7},
+         {id:9,t:'red',name:'Дренажный коридор',parent:4}
+       ],entities:["func_water","logic_relay","func_door","trigger_hurt","env_sprite","ambient_generic"]
+     }
    }},
   {title:"Лифт Альянса",
    easy:"Лифтовая шахта и кабина с двумя уровнями.",
    med:"Синхронное открытие дверей, индикаторы этажей, звук моторов.",
    hard:"Многоэтажный лифт с аварийной остановкой, тревогой, перебоями питания.",
    generator:{
-     easy:{rooms:["green","yellow","green"],names:["Нижний холл","Шахта лифта","Верхний холл"],entities:["func_movelinear","func_door","ambient_generic"]},
-     med:{rooms:["green","yellow","green","purple","green"],names:["Нижний уровень","Лифтовая шахта","Средний этаж","Машинная комната","Верхний уровень"],entities:["func_movelinear","func_door","logic_relay","ambient_generic","env_sprite"]},
-     hard:{rooms:["red","green","yellow","green","yellow","purple","green"],names:["Подземная шахта","Цокольный уровень","Шахта лифта","Средний этаж","Аварийная платформа","Машинный зал","Верхний КПП"],entities:["func_movelinear","func_door","logic_relay","ambient_generic","npc_combine_s","trigger_once"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Нижний холл',parent:null},
+         {id:1,t:'yellow',name:'Шахта лифта',parent:0},
+         {id:2,t:'red',name:'Техническая ниша',parent:0},
+         {id:3,t:'green',name:'Верхний холл',parent:1},
+         {id:4,t:'yellow',name:'Выходной коридор',parent:3}
+       ],entities:["func_movelinear","func_door","ambient_generic"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'Нижний уровень',parent:null},
+         {id:1,t:'yellow',name:'Лифтовая шахта',parent:0},
+         {id:2,t:'red',name:'Кабельный лаз',parent:1},
+         {id:3,t:'green',name:'Средний этаж',parent:1},
+         {id:4,t:'purple',name:'Машинная комната',parent:2},
+         {id:5,t:'green',name:'Верхний уровень',parent:3},
+         {id:6,t:'yellow',name:'Выходной коридор',parent:5},
+         {id:7,t:'red',name:'Пожарный выход',parent:5}
+       ],entities:["func_movelinear","func_door","logic_relay","ambient_generic","env_sprite"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Подземная шахта',parent:null},
+         {id:1,t:'green',name:'Цокольный уровень',parent:0},
+         {id:2,t:'yellow',name:'Шахта лифта',parent:1},
+         {id:3,t:'purple',name:'Машинный зал',parent:2},
+         {id:4,t:'green',name:'1-й этаж',parent:2},
+         {id:5,t:'yellow',name:'Аварийная платформа',parent:3},
+         {id:6,t:'green',name:'2-й этаж',parent:4},
+         {id:7,t:'green',name:'3-й этаж',parent:6},
+         {id:8,t:'purple',name:'Пентхаус',parent:7},
+         {id:9,t:'yellow',name:'Аварийный выход',parent:5},
+         {id:10,t:'red',name:'Технический тоннель',parent:3}
+       ],entities:["func_movelinear","func_door","logic_relay","ambient_generic","npc_combine_s","trigger_once"]
+     }
    }},
   {title:"Секретная лаборатория",
    easy:"Стерильная комната с колбами, столами и оборудованием.",
    med:"Стеклянные камеры, терминалы управления, тревожный свет.",
    hard:"Научный комплекс: несколько секторов, авария, активируемые эксперименты, побег.",
    generator:{
-     easy:{rooms:["green","purple","green"],names:["Шлюз","Исследовательская камера","Хранилище образцов"],entities:["func_door","env_sprite","ambient_generic"]},
-     med:{rooms:["green","green","purple","red","purple"],names:["Вход","Операционная","Лаборатория","Дренажный тоннель","Зона содержания"],entities:["npc_combine_s","func_door","env_sprite","logic_relay","ambient_generic"]},
-     hard:{rooms:["red","green","green","purple","purple","red","blue","green"],names:["Секретный лаз","КПП","Операционный зал","Лаборатория A","Лаборатория B","Технический тоннель","Аварийный резервуар","Выход"],entities:["npc_combine_s","npc_zombie","func_door","env_sprite","logic_relay","trigger_once","ambient_generic"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Шлюз входа',parent:null},
+         {id:1,t:'green',name:'Операционная',parent:0},
+         {id:2,t:'purple',name:'Лаборатория',parent:1},
+         {id:3,t:'green',name:'Хранилище образцов',parent:2},
+         {id:4,t:'red',name:'Дренажный лаз',parent:1}
+       ],entities:["func_door","env_sprite","ambient_generic","npc_combine_s"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'red',name:'Секретный лаз',parent:null},
+         {id:1,t:'green',name:'КПП',parent:0},
+         {id:2,t:'green',name:'Операционный зал',parent:1},
+         {id:3,t:'purple',name:'Лаборатория A',parent:2},
+         {id:4,t:'purple',name:'Зона содержания',parent:2},
+         {id:5,t:'red',name:'Дренажный тоннель',parent:3},
+         {id:6,t:'blue',name:'Охлаждающая камера',parent:4},
+         {id:7,t:'yellow',name:'Запасной выход',parent:5}
+       ],entities:["npc_combine_s","func_door","env_sprite","logic_relay","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Секретный вход',parent:null},
+         {id:1,t:'yellow',name:'КПП-шлюз',parent:0},
+         {id:2,t:'green',name:'Операционный зал',parent:1},
+         {id:3,t:'purple',name:'Лаборатория A',parent:2},
+         {id:4,t:'purple',name:'Лаборатория B',parent:2},
+         {id:5,t:'green',name:'Камера испытаний',parent:3},
+         {id:6,t:'blue',name:'Резервуар охлаждения',parent:4},
+         {id:7,t:'red',name:'Технический тоннель',parent:3},
+         {id:8,t:'purple',name:'Реакторный зал',parent:7},
+         {id:9,t:'green',name:'Зал эвакуации',parent:5},
+         {id:10,t:'yellow',name:'Аварийный выход',parent:9}
+       ],entities:["npc_combine_s","npc_zombie","func_door","env_sprite","logic_relay","trigger_once","ambient_generic"]
+     }
    }},
   {title:"Руины города",
    easy:"Разрушенные стены, завалы, HDR освещение.",
    med:"Скриптованный патруль метрокопов, случайные звуки окружения.",
    hard:"Живой район: NPC прячутся, патруль реагирует на шум, скрытный проход.",
    generator:{
-     easy:{rooms:["yellow","green","yellow"],names:["Улица A","Разрушенное здание","Улица B"],entities:["prop_physics","env_sprite","ambient_generic"]},
-     med:{rooms:["yellow","green","red","green","yellow"],names:["Проспект","Жилой квартал","Подвальный лаз","Торговый ряд","Перекрёсток"],entities:["npc_metropolice","prop_physics","func_door","ambient_generic"]},
-     hard:{rooms:["yellow","green","red","green","purple","green","yellow","red"],names:["Въезд в район","Квартал A","Катакомбы","Квартал B","Штаб сопротивления","Площадь","Периметр","Канализация"],entities:["npc_metropolice","npc_combine_s","npc_citizen","func_door","ambient_generic","logic_relay"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Улица A',parent:null},
+         {id:1,t:'green',name:'Разрушенное здание',parent:0},
+         {id:2,t:'yellow',name:'Перекрёсток',parent:0},
+         {id:3,t:'green',name:'Подвал',parent:1},
+         {id:4,t:'yellow',name:'Улица B',parent:2}
+       ],entities:["prop_physics","env_sprite","ambient_generic","npc_metropolice"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Главный проспект',parent:null},
+         {id:1,t:'green',name:'Жилой квартал A',parent:0},
+         {id:2,t:'yellow',name:'Переулок',parent:0},
+         {id:3,t:'red',name:'Подвальный лаз',parent:1},
+         {id:4,t:'green',name:'Жилой квартал B',parent:2},
+         {id:5,t:'yellow',name:'Торговый ряд',parent:2},
+         {id:6,t:'red',name:'Канализация',parent:3},
+         {id:7,t:'yellow',name:'Задний двор',parent:4}
+       ],entities:["npc_metropolice","prop_physics","func_door","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'Въезд в район',parent:null},
+         {id:1,t:'green',name:'Квартал A',parent:0},
+         {id:2,t:'yellow',name:'Центральная улица',parent:0},
+         {id:3,t:'red',name:'Катакомбы',parent:1},
+         {id:4,t:'green',name:'Квартал B',parent:2},
+         {id:5,t:'purple',name:'Штаб сопротивления',parent:3},
+         {id:6,t:'yellow',name:'Площадь',parent:4},
+         {id:7,t:'red',name:'Канализация',parent:3},
+         {id:8,t:'green',name:'Квартал C',parent:6},
+         {id:9,t:'yellow',name:'Периметр',parent:8},
+         {id:10,t:'purple',name:'Тайная явка',parent:5}
+       ],entities:["npc_metropolice","npc_combine_s","npc_citizen","func_door","ambient_generic","logic_relay"]
+     }
    }},
   {title:"Верхушка башни",
    easy:"Высокая платформа с перилами и видом на skybox.",
    med:"Ветер-эффект, летящие обломки prop_physics.",
    hard:"Финальная арена: вертолёт Альянса атакует, укрытия, скрипты появления врагов.",
    generator:{
-     easy:{rooms:["red","yellow","green"],names:["Лифтовая шахта","Наружная лестница","Вершина башни"],entities:["func_movelinear","prop_physics","env_sprite"]},
-     med:{rooms:["green","red","yellow","green","purple"],names:["Нижний этаж","Вентшахта","Наружный обход","Крыша","Спутниковый узел"],entities:["func_movelinear","prop_physics","npc_combine_s","env_sprite","ambient_generic"]},
-     hard:{rooms:["green","red","yellow","purple","green","yellow","green"],names:["Основание башни","Техтоннель","Пожарная лестница","Узел связи","Крыша — укрытия","Антенный мост","Вертолётная площадка"],entities:["npc_combine_s","npc_helicopter","prop_physics","logic_relay","func_door","env_sprite","trigger_once"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Основание башни',parent:null},
+         {id:1,t:'red',name:'Лифтовая шахта',parent:0},
+         {id:2,t:'yellow',name:'Наружная лестница',parent:0},
+         {id:3,t:'green',name:'Технический этаж',parent:1},
+         {id:4,t:'green',name:'Вершина башни',parent:3}
+       ],entities:["func_movelinear","prop_physics","env_sprite","ambient_generic"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'Нижний этаж',parent:null},
+         {id:1,t:'red',name:'Вентшахта',parent:0},
+         {id:2,t:'yellow',name:'Внешний обход',parent:0},
+         {id:3,t:'green',name:'Средний этаж',parent:1},
+         {id:4,t:'purple',name:'Узел связи',parent:3},
+         {id:5,t:'green',name:'Крыша',parent:3},
+         {id:6,t:'yellow',name:'Антенный мост',parent:5},
+         {id:7,t:'red',name:'Пожарный выход',parent:2}
+       ],entities:["func_movelinear","prop_physics","npc_combine_s","env_sprite","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'Основание башни',parent:null},
+         {id:1,t:'red',name:'Техтоннель',parent:0},
+         {id:2,t:'green',name:'1-й этаж',parent:1},
+         {id:3,t:'yellow',name:'Пожарная лестница',parent:2},
+         {id:4,t:'purple',name:'Узел связи',parent:2},
+         {id:5,t:'green',name:'Крыша — укрытия',parent:3},
+         {id:6,t:'yellow',name:'Антенный мост',parent:5},
+         {id:7,t:'red',name:'Шахта бегства',parent:4},
+         {id:8,t:'green',name:'Вертолётная площадка',parent:6},
+         {id:9,t:'purple',name:'Командный бункер',parent:4}
+       ],entities:["npc_combine_s","npc_helicopter","prop_physics","logic_relay","func_door","env_sprite","trigger_once"]
+     }
    }},
   {title:"Подземный рынок",
    easy:"Тёмный подвал с ящиками, баррелями и торговцем NPC.",
    med:"Несколько NPC с диалогами, освещение от ламп, скрытный вход.",
    hard:"Процедурный рынок: квест-выдача, система валюты, охрана реагирует.",
    generator:{
-     easy:{rooms:["red","green","red"],names:["Канализационный вход","Торговый зал","Запасной туннель"],entities:["npc_citizen","prop_physics","ambient_generic"]},
-     med:{rooms:["red","green","green","purple","green"],names:["Скрытый вход","Торговый квартал","Склад","Тайник лидера","Служебный туннель"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic"]},
-     hard:{rooms:["red","green","green","purple","green","green","red"],names:["Канализация","Рынок A","Рынок B","Кабинет главаря","Ремонтная мастерская","Продовольственный склад","Аварийный тоннель"],entities:["npc_citizen","npc_rebel","func_door","logic_relay","logic_counter","ambient_generic","prop_physics"]}
+     easy:{
+       tree:[
+         {id:0,t:'red',name:'Канализационный вход',parent:null},
+         {id:1,t:'green',name:'Торговый зал',parent:0},
+         {id:2,t:'green',name:'Склад товаров',parent:1},
+         {id:3,t:'red',name:'Запасной туннель',parent:1},
+         {id:4,t:'green',name:'Тайник',parent:2}
+       ],entities:["npc_citizen","prop_physics","ambient_generic","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'red',name:'Скрытый вход',parent:null},
+         {id:1,t:'green',name:'Рынок A',parent:0},
+         {id:2,t:'green',name:'Рынок B',parent:0},
+         {id:3,t:'purple',name:'Тайник лидера',parent:1},
+         {id:4,t:'green',name:'Склад',parent:2},
+         {id:5,t:'red',name:'Служебный туннель',parent:3},
+         {id:6,t:'yellow',name:'Аварийный выход',parent:5},
+         {id:7,t:'green',name:'Оружейная',parent:3}
+       ],entities:["npc_citizen","npc_rebel","func_door","logic_relay","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Канализация A',parent:null},
+         {id:1,t:'red',name:'Канализация B',parent:null},
+         {id:2,t:'green',name:'Рынок A',parent:0},
+         {id:3,t:'green',name:'Рынок B',parent:1},
+         {id:4,t:'purple',name:'Кабинет главаря',parent:2},
+         {id:5,t:'green',name:'Мастерская',parent:2},
+         {id:6,t:'green',name:'Продсклад',parent:3},
+         {id:7,t:'green',name:'Оружейная',parent:3},
+         {id:8,t:'red',name:'Аварийный тоннель',parent:4},
+         {id:9,t:'purple',name:'Командный узел',parent:4},
+         {id:10,t:'yellow',name:'Выход на улицу',parent:8}
+       ],entities:["npc_citizen","npc_rebel","func_door","logic_relay","logic_counter","ambient_generic","prop_physics"]
+     }
    }},
   {title:"Переправа на лодке",
    easy:"Водная сцена с лодкой, берегом и путевым обзором.",
    med:"Движение по воде, узкие проходы, точки угрозы на берегу.",
    hard:"Боевая переправа под обстрелом к точке высадки с укрытиями и десантом.",
    generator:{
-     easy:{rooms:["green","blue","green"],names:["Причал отправления","Водный путь","Причал прибытия"],entities:["func_tracktrain","func_water","ambient_generic"]},
-     med:{rooms:["green","blue","yellow","blue","green"],names:["Отправление","Водный канал","Руины моста","Открытая вода","Высадка"],entities:["func_tracktrain","func_water","npc_metropolice","prop_physics","ambient_generic"]},
-     hard:{rooms:["green","blue","yellow","red","blue","purple","green"],names:["Спуск на воду","Канал A","Разрушенный мост","Подводный тоннель","Канал B","Вражеская застава","Высадка"],entities:["func_tracktrain","func_water","npc_combine_s","npc_metropolice","logic_relay","func_door","ambient_generic"]}
-   }},
-  {title:"Арсенал повстанцев",
-   easy:"Комната с оружием, ящиками и защитной мебелью.",
-   med:"Замаскированный вход, охранник, запасной коридор, контроль доступа.",
-   hard:"Арсенал с кодовым замком, тревогой и маршрутом захвата.",
-   generator:{
-     easy:{rooms:["green","green","purple"],names:["Входной тамбур","Оружейный зал","Тайник командира"],entities:["prop_physics","func_door","ambient_generic"]},
-     med:{rooms:["yellow","red","green","green","purple"],names:["Замаскированный вход","Запасной тоннель","Оружейный зал","Склад боеприпасов","Штабная комната"],entities:["npc_rebel","func_door","prop_physics","logic_relay","ambient_generic"]},
-     hard:{rooms:["red","green","green","green","purple","red","yellow"],names:["Скрытый лаз","Оружейная комната A","Оружейная комната B","Склад боеприпасов","КЦ операции","Путь эвакуации","Выход на улицу"],entities:["npc_rebel","npc_metropolice","func_door","logic_relay","trigger_once","prop_physics","ambient_generic"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Причал отправления',parent:null},
+         {id:1,t:'blue',name:'Водный путь A',parent:0},
+         {id:2,t:'yellow',name:'Промежуточный берег',parent:1},
+         {id:3,t:'blue',name:'Водный путь B',parent:2},
+         {id:4,t:'green',name:'Причал прибытия',parent:3}
+       ],entities:["func_tracktrain","func_water","ambient_generic"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'База отправления',parent:null},
+         {id:1,t:'blue',name:'Водный канал',parent:0},
+         {id:2,t:'yellow',name:'Руины моста',parent:1},
+         {id:3,t:'blue',name:'Открытая вода',parent:2},
+         {id:4,t:'red',name:'Подводный тоннель',parent:2},
+         {id:5,t:'green',name:'Промежуточный берег',parent:3},
+         {id:6,t:'blue',name:'Финальный участок',parent:5},
+         {id:7,t:'green',name:'Точка высадки',parent:6}
+       ],entities:["func_tracktrain","func_water","npc_metropolice","prop_physics","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'Секретный причал',parent:null},
+         {id:1,t:'blue',name:'Канал A',parent:0},
+         {id:2,t:'yellow',name:'Руины моста',parent:1},
+         {id:3,t:'red',name:'Подводный тоннель',parent:2},
+         {id:4,t:'blue',name:'Канал B',parent:3},
+         {id:5,t:'green',name:'Промежуточный берег',parent:2},
+         {id:6,t:'purple',name:'Вражеская застава',parent:5},
+         {id:7,t:'blue',name:'Финальный участок',parent:4},
+         {id:8,t:'green',name:'Точка высадки',parent:7},
+         {id:9,t:'yellow',name:'Пляжный периметр',parent:8}
+       ],entities:["func_tracktrain","func_water","npc_combine_s","npc_metropolice","logic_relay","func_door","ambient_generic"]
+     }
    }},
   {title:"Тюрьма Новы Просперо",
    easy:"Тюремный блок с клетками, решётками и охраняемым коридором.",
    med:"Патруль, кнопки открытия клеток, служебные проходы.",
    hard:"Побег с отключением охраны, несколькими маршрутами и финальным кодовым замком.",
    generator:{
-     easy:{rooms:["green","red","green"],names:["Охраняемый вход","Тюремный коридор","Блок заключённых"],entities:["npc_metropolice","func_door","ambient_generic"]},
-     med:{rooms:["green","green","purple","red","green"],names:["КПП","Камерный блок A","Пульт управления","Служебный туннель","Камерный блок B"],entities:["npc_metropolice","func_door","logic_relay","ambient_generic","prop_physics"]},
-     hard:{rooms:["green","green","purple","red","green","green","yellow"],names:["КПП","Блок строгого режима","Диспетчерская","Канализационный побег","Блок обычных камер","Двор","Выход"],entities:["npc_metropolice","npc_combine_s","logic_relay","func_door","trigger_once","ambient_generic","prop_physics"]}
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'КПП',parent:null},
+         {id:1,t:'green',name:'Охраняемый коридор',parent:0},
+         {id:2,t:'red',name:'Блок А — камеры',parent:1},
+         {id:3,t:'green',name:'Пост надзирателя',parent:1},
+         {id:4,t:'red',name:'Блок Б — камеры',parent:3}
+       ],entities:["npc_metropolice","func_door","ambient_generic"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'КПП',parent:null},
+         {id:1,t:'green',name:'Камерный блок A',parent:0},
+         {id:2,t:'purple',name:'Пульт управления',parent:1},
+         {id:3,t:'red',name:'Служебный туннель',parent:2},
+         {id:4,t:'green',name:'Камерный блок B',parent:1},
+         {id:5,t:'green',name:'Двор',parent:4},
+         {id:6,t:'yellow',name:'Выходной коридор',parent:5},
+         {id:7,t:'red',name:'Канализационный лаз',parent:3}
+       ],entities:["npc_metropolice","func_door","logic_relay","ambient_generic","prop_physics"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'КПП главный',parent:null},
+         {id:1,t:'green',name:'Строгий режим',parent:0},
+         {id:2,t:'purple',name:'Диспетчерская',parent:1},
+         {id:3,t:'green',name:'Блок обычных камер',parent:1},
+         {id:4,t:'red',name:'Побег — канализация',parent:2},
+         {id:5,t:'green',name:'Двор',parent:3},
+         {id:6,t:'yellow',name:'Выход',parent:5},
+         {id:7,t:'red',name:'Вентиляционный тоннель',parent:4},
+         {id:8,t:'green',name:'Зона охраны',parent:2},
+         {id:9,t:'purple',name:'Серверная тюрьмы',parent:8},
+         {id:10,t:'yellow',name:'Финальный КПП',parent:6}
+       ],entities:["npc_metropolice","npc_combine_s","logic_relay","func_door","trigger_once","ambient_generic","prop_physics"]
+     }
    }},
   {title:"Заброшенная церковь",
    easy:"Высокий неф с витражами, пылью и тихой атмосферой.",
    med:"Скрипящая дверь, летучие мыши, колокольня, переход в боковой зал.",
    hard:"Церковь-головоломка: алтарь, скрытый механизм, катакомбы и секретный проход.",
    generator:{
-     easy:{rooms:["yellow","green","purple"],names:["Погост","Главный неф","Алтарная зона"],entities:["prop_physics","ambient_generic","env_sprite"]},
-     med:{rooms:["yellow","green","green","purple","red"],names:["Ворота кладбища","Главный неф","Боковая часовня","Алтарь","Крипта"],entities:["prop_physics","ambient_generic","env_sprite","func_door","func_rotating"]},
-     hard:{rooms:["yellow","green","green","purple","red","red","purple"],names:["Кладбище","Притвор","Главный неф","Алтарь-головоломка","Крипта","Катакомбы","Секретный зал"],entities:["prop_physics","ambient_generic","env_sprite","func_door","logic_relay","trigger_once"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Погост',parent:null},
+         {id:1,t:'green',name:'Притвор',parent:0},
+         {id:2,t:'green',name:'Главный неф',parent:1},
+         {id:3,t:'purple',name:'Алтарная зона',parent:2},
+         {id:4,t:'red',name:'Крипта',parent:2}
+       ],entities:["prop_physics","ambient_generic","env_sprite","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Ворота кладбища',parent:null},
+         {id:1,t:'yellow',name:'Погост',parent:0},
+         {id:2,t:'green',name:'Главный неф',parent:1},
+         {id:3,t:'green',name:'Боковая часовня',parent:2},
+         {id:4,t:'purple',name:'Алтарь',parent:2},
+         {id:5,t:'red',name:'Крипта',parent:4},
+         {id:6,t:'green',name:'Колокольня',parent:3},
+         {id:7,t:'red',name:'Подземный лаз',parent:5}
+       ],entities:["prop_physics","ambient_generic","env_sprite","func_door","func_rotating"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'Кладбище',parent:null},
+         {id:1,t:'green',name:'Притвор',parent:0},
+         {id:2,t:'green',name:'Главный неф',parent:1},
+         {id:3,t:'green',name:'Боковая часовня L',parent:2},
+         {id:4,t:'green',name:'Боковая часовня R',parent:2},
+         {id:5,t:'purple',name:'Алтарь-головоломка',parent:2},
+         {id:6,t:'red',name:'Крипта',parent:5},
+         {id:7,t:'red',name:'Катакомбы A',parent:6},
+         {id:8,t:'red',name:'Катакомбы B',parent:6},
+         {id:9,t:'purple',name:'Секретный зал',parent:7},
+         {id:10,t:'green',name:'Колокольня',parent:4}
+       ],entities:["prop_physics","ambient_generic","env_sprite","func_door","logic_relay","trigger_once"]
+     }
    }},
   {title:"Маяк",
    easy:"Вертикальная башня с обзорной площадкой у воды.",
    med:"Вращающийся прожектор, лестница, машинное помещение, звуки моря.",
    hard:"Маяк как сюжетный ориентир, меняющий поведение NPC на карте.",
    generator:{
-     easy:{rooms:["green","yellow","blue"],names:["Основание маяка","Смотровая площадка","Прибрежная зона"],entities:["func_rotating","env_sprite","ambient_generic"]},
-     med:{rooms:["blue","green","yellow","green","purple"],names:["Береговой причал","Машинный зал","Спиральная лестница","Комната прожектора","Сигнальный пульт"],entities:["func_rotating","env_sprite","ambient_generic","func_door","logic_relay"]},
-     hard:{rooms:["blue","green","green","yellow","purple","green","yellow"],names:["Подводная база","Машинный зал","Склад топлива","Лестничный марш","Сигнальный центр","Башня маяка","Вертолётная зона"],entities:["func_rotating","env_sprite","logic_relay","npc_rebel","ambient_generic","trigger_once","prop_physics"]}
+     easy:{
+       tree:[
+         {id:0,t:'blue',name:'Прибрежная зона',parent:null},
+         {id:1,t:'green',name:'Основание маяка',parent:0},
+         {id:2,t:'yellow',name:'Лестница',parent:1},
+         {id:3,t:'green',name:'Машинный зал',parent:1},
+         {id:4,t:'purple',name:'Комната прожектора',parent:2}
+       ],entities:["func_rotating","env_sprite","ambient_generic","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'blue',name:'Береговой причал',parent:null},
+         {id:1,t:'green',name:'Машинный зал',parent:0},
+         {id:2,t:'yellow',name:'Спиральная лестница',parent:1},
+         {id:3,t:'green',name:'Склад топлива',parent:1},
+         {id:4,t:'purple',name:'Сигнальный пульт',parent:2},
+         {id:5,t:'green',name:'Башня маяка',parent:4},
+         {id:6,t:'blue',name:'Подводный отсек',parent:3},
+         {id:7,t:'yellow',name:'Смотровая площадка',parent:5}
+       ],entities:["func_rotating","env_sprite","ambient_generic","func_door","logic_relay"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'blue',name:'Подводная база',parent:null},
+         {id:1,t:'green',name:'Машинный зал',parent:0},
+         {id:2,t:'green',name:'Склад топлива',parent:1},
+         {id:3,t:'yellow',name:'Лестничный марш A',parent:1},
+         {id:4,t:'yellow',name:'Лестничный марш B',parent:2},
+         {id:5,t:'purple',name:'Сигнальный центр',parent:3},
+         {id:6,t:'green',name:'Башня маяка',parent:5},
+         {id:7,t:'blue',name:'Дозорная зона',parent:4},
+         {id:8,t:'yellow',name:'Вертолётная площадка',parent:6},
+         {id:9,t:'purple',name:'Ретранслятор',parent:5}
+       ],entities:["func_rotating","env_sprite","logic_relay","npc_rebel","ambient_generic","trigger_once","prop_physics"]
+     }
    }},
   {title:"Поезд Альянса",
    easy:"Статичный вагон или поезд на станции с грузом и охраной.",
    med:"Движущийся поезд с перестрелками и узкими коридорами между вагонами.",
    hard:"Экшен на поезде: враги запрыгивают, отцепляются секции, взрыв локомотива.",
    generator:{
-     easy:{rooms:["yellow","green","green"],names:["Платформа","Грузовой вагон","Пассажирский вагон"],entities:["func_tracktrain","npc_metropolice","prop_physics"]},
-     med:{rooms:["yellow","green","red","green","purple"],names:["Платформа","Вагон охраны","Технический туннель","Грузовой отсек","Командный вагон"],entities:["func_tracktrain","npc_metropolice","npc_combine_s","prop_physics","logic_relay"]},
-     hard:{rooms:["yellow","green","green","red","green","purple","yellow"],names:["Станция","Вагон А","Вагон Б","Отцепляемая платформа","Вагон В","Локомотив","Финальная платформа"],entities:["func_tracktrain","npc_combine_s","npc_metropolice","prop_physics","logic_relay","trigger_once","env_explosion"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Платформа',parent:null},
+         {id:1,t:'green',name:'Вагон охраны',parent:0},
+         {id:2,t:'green',name:'Грузовой вагон',parent:1},
+         {id:3,t:'red',name:'Технический отсек',parent:1},
+         {id:4,t:'green',name:'Пассажирский вагон',parent:2}
+       ],entities:["func_tracktrain","npc_metropolice","prop_physics"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Станция',parent:null},
+         {id:1,t:'green',name:'Вагон А (охрана)',parent:0},
+         {id:2,t:'green',name:'Вагон Б (груз)',parent:1},
+         {id:3,t:'red',name:'Технический туннель',parent:1},
+         {id:4,t:'purple',name:'Командный вагон',parent:2},
+         {id:5,t:'green',name:'Вагон В (пассажиры)',parent:2},
+         {id:6,t:'yellow',name:'Конечная платформа',parent:4},
+         {id:7,t:'red',name:'Подкузовной лаз',parent:3}
+       ],entities:["func_tracktrain","npc_metropolice","npc_combine_s","prop_physics","logic_relay"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'Станция отправления',parent:null},
+         {id:1,t:'green',name:'Вагон А',parent:0},
+         {id:2,t:'green',name:'Вагон Б',parent:1},
+         {id:3,t:'purple',name:'Командный вагон',parent:2},
+         {id:4,t:'green',name:'Вагон В',parent:2},
+         {id:5,t:'red',name:'Отцепленная платформа',parent:3},
+         {id:6,t:'green',name:'Вагон Г',parent:4},
+         {id:7,t:'red',name:'Подкузовной тоннель',parent:5},
+         {id:8,t:'purple',name:'Локомотив',parent:6},
+         {id:9,t:'yellow',name:'Финальная платформа',parent:8}
+       ],entities:["func_tracktrain","npc_combine_s","npc_metropolice","prop_physics","logic_relay","trigger_once","env_explosion"]
+     }
    }},
   {title:"Дамба",
    easy:"Массивная стена дамбы с водой внизу.",
    med:"Шлюзовые ворота, рабочие комнаты, изменение уровня воды.",
    hard:"Саботаж: взрывчатка, рушащиеся секции, меняющаяся геометрия, волна воды.",
    generator:{
-     easy:{rooms:["yellow","green","blue"],names:["Верхняя дорога","Пункт управления","Нижнее водохранилище"],entities:["func_water","prop_physics","ambient_generic"]},
-     med:{rooms:["yellow","green","green","blue","green"],names:["Мост","Диспетчерская","Машинный зал","Шлюз","Нижний уровень"],entities:["func_water","func_door","logic_relay","prop_physics","ambient_generic"]},
-     hard:{rooms:["yellow","green","red","green","blue","purple","blue"],names:["Мост","Диспетчерская","Технический тоннель","Машинный зал","Шлюз A","Зона закладки заряда","Шлюз B + волна"],entities:["func_water","func_door","logic_relay","env_explosion","trigger_once","prop_physics","ambient_generic"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Верхняя дорога',parent:null},
+         {id:1,t:'green',name:'Пункт управления',parent:0},
+         {id:2,t:'green',name:'Машинный зал',parent:1},
+         {id:3,t:'blue',name:'Нижнее водохранилище',parent:2},
+         {id:4,t:'red',name:'Технический тоннель',parent:1}
+       ],entities:["func_water","prop_physics","ambient_generic","func_door"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Мост',parent:null},
+         {id:1,t:'green',name:'Диспетчерская',parent:0},
+         {id:2,t:'green',name:'Машинный зал',parent:1},
+         {id:3,t:'red',name:'Технический тоннель',parent:2},
+         {id:4,t:'blue',name:'Шлюз A',parent:2},
+         {id:5,t:'blue',name:'Шлюз B',parent:2},
+         {id:6,t:'green',name:'Нижний уровень',parent:4},
+         {id:7,t:'yellow',name:'Нижняя дорога',parent:6}
+       ],entities:["func_water","func_door","logic_relay","prop_physics","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'yellow',name:'Верхний мост',parent:null},
+         {id:1,t:'green',name:'Диспетчерская',parent:0},
+         {id:2,t:'red',name:'Технический тоннель A',parent:1},
+         {id:3,t:'green',name:'Машинный зал',parent:1},
+         {id:4,t:'blue',name:'Шлюз A',parent:3},
+         {id:5,t:'purple',name:'Зона закладки заряда',parent:3},
+         {id:6,t:'blue',name:'Шлюз B',parent:3},
+         {id:7,t:'red',name:'Технический тоннель B',parent:5},
+         {id:8,t:'blue',name:'Затопляемый сектор',parent:4},
+         {id:9,t:'yellow',name:'Нижний периметр',parent:8},
+         {id:10,t:'blue',name:'Водохранилище',parent:6}
+       ],entities:["func_water","func_door","logic_relay","env_explosion","trigger_once","prop_physics","ambient_generic"]
+     }
    }},
   {title:"Командный центр Альянса",
    easy:"Круглый зал с экранами, стойками и центральной зоной управления.",
    med:"Несколько терминалов, офицерские секции, защищённые проходы.",
    hard:"Командный центр с мини-пазлом на терминале, тревогой и экстренной блокировкой.",
    generator:{
-     easy:{rooms:["green","purple","green"],names:["Зал входа","Центральный пульт","Сервисный отсек"],entities:["npc_combine_s","env_sprite","func_door"]},
-     med:{rooms:["green","green","purple","yellow","green"],names:["КПП","Оперативный зал","Главный пульт","Переход","Серверная"],entities:["npc_combine_s","npc_metropolice","env_sprite","logic_relay","func_door"]},
-     hard:{rooms:["red","green","green","purple","green","purple","yellow","green"],names:["Скрытое проникновение","КПП","Оперативный зал","Командный пульт","Серверная","Генераторный узел","Переход эвакуации","Ситуационный центр"],entities:["npc_combine_s","npc_metropolice","logic_relay","env_sprite","func_door","trigger_once","logic_case","ambient_generic"]}
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Главный вход',parent:null},
+         {id:1,t:'green',name:'Зал входа',parent:0},
+         {id:2,t:'purple',name:'Центральный пульт',parent:1},
+         {id:3,t:'green',name:'Сервисный отсек',parent:2},
+         {id:4,t:'red',name:'Технический лаз',parent:1}
+       ],entities:["npc_combine_s","env_sprite","func_door","logic_relay"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'red',name:'Скрытое проникновение',parent:null},
+         {id:1,t:'green',name:'КПП',parent:0},
+         {id:2,t:'green',name:'Оперативный зал',parent:1},
+         {id:3,t:'purple',name:'Главный пульт',parent:2},
+         {id:4,t:'green',name:'Офицерская секция',parent:2},
+         {id:5,t:'purple',name:'Серверная',parent:3},
+         {id:6,t:'yellow',name:'Переход',parent:4},
+         {id:7,t:'red',name:'Технический тоннель',parent:5}
+       ],entities:["npc_combine_s","npc_metropolice","env_sprite","logic_relay","func_door"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Секретное проникновение',parent:null},
+         {id:1,t:'yellow',name:'КПП-шлюз',parent:0},
+         {id:2,t:'green',name:'Оперативный зал',parent:1},
+         {id:3,t:'purple',name:'Командный пульт',parent:2},
+         {id:4,t:'green',name:'Офицерская секция A',parent:2},
+         {id:5,t:'green',name:'Офицерская секция B',parent:2},
+         {id:6,t:'purple',name:'Серверная',parent:3},
+         {id:7,t:'purple',name:'Генераторный узел',parent:3},
+         {id:8,t:'red',name:'Тоннель эвакуации',parent:5},
+         {id:9,t:'green',name:'Ситуационный центр',parent:6},
+         {id:10,t:'yellow',name:'Финальный выход',parent:8}
+       ],entities:["npc_combine_s","npc_metropolice","logic_relay","env_sprite","func_door","trigger_once","logic_case","ambient_generic"]
+     }
+   }},
+  {title:"Тир для тренировок",
+   easy:"Базовый тренировочный сектор с мишенями, укрытиями и безопасной зоной.",
+   med:"Тир с подвижными мишенями, рельсами. Зона старта, линия огня, финальный участок.",
+   hard:"Учебный комплекс с подсчётом очков, этапами стрельбы и финальным экраном результата.",
+   generator:{
+     easy:{
+       tree:[
+         {id:0,t:'green',name:'Зона ожидания',parent:null},
+         {id:1,t:'yellow',name:'Огневой рубеж',parent:0},
+         {id:2,t:'green',name:'Поле мишеней A',parent:1},
+         {id:3,t:'green',name:'Поле мишеней B',parent:1},
+         {id:4,t:'red',name:'Технический лаз',parent:0}
+       ],entities:["func_movelinear","prop_physics","ambient_generic"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'green',name:'Инструктаж',parent:null},
+         {id:1,t:'purple',name:'КП наблюдения',parent:0},
+         {id:2,t:'yellow',name:'Рубеж 1',parent:0},
+         {id:3,t:'green',name:'Тактическая зона A',parent:2},
+         {id:4,t:'yellow',name:'Рубеж 2',parent:3},
+         {id:5,t:'green',name:'Тактическая зона B',parent:4},
+         {id:6,t:'red',name:'Технический тоннель',parent:1},
+         {id:7,t:'purple',name:'Серверная тира',parent:6}
+       ],entities:["func_movelinear","logic_counter","prop_physics","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'green',name:'Инструктаж',parent:null},
+         {id:1,t:'purple',name:'КП наблюдения',parent:0},
+         {id:2,t:'yellow',name:'Рубеж снайперов',parent:0},
+         {id:3,t:'green',name:'Тактическая зона A',parent:2},
+         {id:4,t:'yellow',name:'Рубеж CQC',parent:3},
+         {id:5,t:'green',name:'Тактическая зона B',parent:4},
+         {id:6,t:'red',name:'Обходная тропа',parent:3},
+         {id:7,t:'purple',name:'Финальный экран',parent:5},
+         {id:8,t:'green',name:'Зал наград',parent:7},
+         {id:9,t:'red',name:'Аварийный тоннель',parent:1}
+       ],entities:["func_movelinear","logic_counter","npc_metropolice","prop_physics","ambient_generic","point_viewcontrol"]
+     }
+   }},
+  {title:"Арсенал повстанцев",
+   easy:"Комната с оружием, ящиками и защитной мебелью.",
+   med:"Замаскированный вход, охранник, запасной коридор, контроль доступа.",
+   hard:"Арсенал с кодовым замком, тревогой и маршрутом захвата.",
+   generator:{
+     easy:{
+       tree:[
+         {id:0,t:'yellow',name:'Маскировочный вход',parent:null},
+         {id:1,t:'red',name:'Скрытый лаз',parent:0},
+         {id:2,t:'green',name:'Оружейный зал',parent:1},
+         {id:3,t:'green',name:'Склад боеприпасов',parent:2},
+         {id:4,t:'purple',name:'Тайник командира',parent:2}
+       ],entities:["prop_physics","func_door","ambient_generic","npc_rebel"]
+     },
+     med:{
+       tree:[
+         {id:0,t:'yellow',name:'Маскировочный вход',parent:null},
+         {id:1,t:'red',name:'Запасной тоннель',parent:0},
+         {id:2,t:'green',name:'Оружейный зал A',parent:0},
+         {id:3,t:'green',name:'Оружейный зал B',parent:2},
+         {id:4,t:'green',name:'Склад боеприпасов',parent:2},
+         {id:5,t:'purple',name:'Штабная комната',parent:3},
+         {id:6,t:'red',name:'Путь эвакуации',parent:5},
+         {id:7,t:'yellow',name:'Выход',parent:6}
+       ],entities:["npc_rebel","func_door","prop_physics","logic_relay","ambient_generic"]
+     },
+     hard:{
+       tree:[
+         {id:0,t:'red',name:'Скрытый лаз',parent:null},
+         {id:1,t:'yellow',name:'Тамбур',parent:0},
+         {id:2,t:'green',name:'Оружейная A',parent:1},
+         {id:3,t:'green',name:'Оружейная B',parent:1},
+         {id:4,t:'green',name:'Склад боеприпасов',parent:2},
+         {id:5,t:'purple',name:'КЦ операции',parent:3},
+         {id:6,t:'green',name:'Мастерская',parent:2},
+         {id:7,t:'red',name:'Путь эвакуации',parent:5},
+         {id:8,t:'purple',name:'Сейф командира',parent:5},
+         {id:9,t:'yellow',name:'Выход на улицу',parent:7}
+       ],entities:["npc_rebel","npc_metropolice","func_door","logic_relay","trigger_once","prop_physics","ambient_generic"]
+     }
+   }}
+,
+  {title:"Ядерный бункер Cold War",
+   easy:"Советский бункер эпохи холодной войны: железобетонные стены, старые консоли, мигающий свет аварийного питания.",
+   med:"Активный бункер: командная рубка, карты ракетных пусков, аварийные переходы и сейфы с документами.",
+   hard:"Полный оперативный центр: шахты ракет, цепочка командования, подземные переходы к другим объектам, система самоуничтожения.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Бронированный вход',parent:null},{id:1,t:'red',name:'Дезактивационный шлюз',parent:0},{id:2,t:'green',name:'Жилой отсек',parent:1},{id:3,t:'purple',name:'Командная рубка',parent:2},{id:4,t:'green',name:'Хранилище документов',parent:3},{id:5,t:'red',name:'Вентиляционный тоннель',parent:2}],entities:["prop_physics","ambient_generic","func_door","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'red',name:'Шлюз дезактивации',parent:0},{id:2,t:'green',name:'Жилой блок',parent:1},{id:3,t:'purple',name:'Командная рубка',parent:2},{id:4,t:'green',name:'Связной центр',parent:3},{id:5,t:'red',name:'Технический тоннель',parent:3},{id:6,t:'purple',name:'Архив',parent:4},{id:7,t:'green',name:'Медпункт',parent:2},{id:8,t:'blue',name:'Система водоснабжения',parent:5}],entities:["prop_physics","func_door","logic_relay","ambient_generic","env_sprite"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'red',name:'Главный шлюз',parent:0},{id:2,t:'green',name:'Административный блок',parent:1},{id:3,t:'purple',name:'Командная рубка',parent:2},{id:4,t:'purple',name:'ЦУП ракет',parent:3},{id:5,t:'red',name:'Шахта ракеты',parent:4},{id:6,t:'green',name:'Жилой блок',parent:2},{id:7,t:'red',name:'Главный тоннель',parent:3},{id:8,t:'blue',name:'Охлаждающая система',parent:5},{id:9,t:'purple',name:'Пульт самоуничтожения',parent:4},{id:10,t:'yellow',name:'Запасной выход',parent:7}],entities:["func_door","logic_relay","trigger_once","ambient_generic","env_sprite","prop_physics"]}
+   }},
+  {title:"Химическая лаборатория",
+   easy:"Небольшая нелегальная лаборатория в подвале: стеллажи с колбами, вытяжные шкафы, незаконные вещества.",
+   med:"Заброшенный исследовательский центр: несколько лабораторных залов, утечка химикатов, зоны заражения.",
+   hard:"Секретный химический завод: производственные цеха, зона хранения, зараженные отсеки, система нейтрализации.",
+   generator:{
+     easy:{tree:[{id:0,t:'red',name:'Подвальный вход',parent:null},{id:1,t:'green',name:'Подготовительная',parent:0},{id:2,t:'purple',name:'Лаборатория',parent:1},{id:3,t:'blue',name:'Сточная камера',parent:2},{id:4,t:'green',name:'Склад химикатов',parent:1}],entities:["func_door","ambient_generic","env_sprite","trigger_hurt"]},
+     med:{tree:[{id:0,t:'yellow',name:'Загрузочный dok',parent:null},{id:1,t:'green',name:'Подготовительная',parent:0},{id:2,t:'purple',name:'Лаборатория A',parent:1},{id:3,t:'purple',name:'Лаборатория B',parent:1},{id:4,t:'blue',name:'Зона утечки',parent:2},{id:5,t:'green',name:'Склад',parent:3},{id:6,t:'red',name:'Вентиляционный лаз',parent:4},{id:7,t:'yellow',name:'Запасной выход',parent:6}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Цех производства',parent:0},{id:2,t:'purple',name:'Лаборатория контроля',parent:1},{id:3,t:'blue',name:'Реактор-смеситель',parent:2},{id:4,t:'green',name:'Склад сырья',parent:1},{id:5,t:'blue',name:'Зона заражения A',parent:3},{id:6,t:'blue',name:'Зона заражения B',parent:3},{id:7,t:'red',name:'Дренажный тоннель',parent:5},{id:8,t:'purple',name:'Система нейтрализации',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic","logic_relay","trigger_once"]}
+   }},
+  {title:"Исследовательская станция — Антарктида",
+   easy:"Маленькая арктическая станция: несколько жилых модулей, лаборатория, генераторная.",
+   med:"Расширенная полярная станция: жилые блоки, научные залы, склады, взлётно-посадочная полоса.",
+   hard:"Брошенная станция с аномалией: изолированные отсеки, следы борьбы, нечто в нижних уровнях.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Шлюз входа',parent:null},{id:1,t:'green',name:'Жилой модуль',parent:0},{id:2,t:'purple',name:'Научная лаборатория',parent:1},{id:3,t:'green',name:'Генераторная',parent:1},{id:4,t:'blue',name:'Ледяной туннель',parent:3}],entities:["func_door","ambient_generic","env_sprite","prop_physics"]},
+     med:{tree:[{id:0,t:'yellow',name:'Посадочная площадка',parent:null},{id:1,t:'green',name:'Административный блок',parent:0},{id:2,t:'green',name:'Жилой блок',parent:1},{id:3,t:'purple',name:'Научный модуль',parent:1},{id:4,t:'green',name:'Столовая',parent:2},{id:5,t:'purple',name:'Лаборатория образцов',parent:3},{id:6,t:'blue',name:'Ледяной тоннель',parent:5},{id:7,t:'red',name:'Техническая зона',parent:3}],entities:["func_door","ambient_generic","env_sprite","prop_physics","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Посадочная площадка',parent:null},{id:1,t:'green',name:'Основной блок',parent:0},{id:2,t:'green',name:'Жилые отсеки',parent:1},{id:3,t:'purple',name:'Научный центр',parent:1},{id:4,t:'blue',name:'Ледяной тоннель A',parent:3},{id:5,t:'red',name:'Нижний уровень',parent:4},{id:6,t:'purple',name:'АНОМАЛИЯ',parent:5},{id:7,t:'blue',name:'Ледяной тоннель B',parent:5},{id:8,t:'green',name:'Изолированный блок',parent:6},{id:9,t:'red',name:'Аварийный выход',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once","npc_zombie"]}
+   }},
+  {title:"Брошенный завод",
+   easy:"Заброшенный промышленный цех: ржавые машины, разбитые стёкла, голуби под крышей.",
+   med:"Старый завод с несколькими цехами: конвейер, котельная, цех сборки, склады.",
+   hard:"Огромный промышленный комплекс, частично занятый бандитами или зомби.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Заводские ворота',parent:null},{id:1,t:'green',name:'Цех A',parent:0},{id:2,t:'red',name:'Технический проход',parent:1},{id:3,t:'green',name:'Склад',parent:1},{id:4,t:'purple',name:'Мастерская',parent:2}],entities:["prop_physics","ambient_generic","func_door","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Проходная',parent:null},{id:1,t:'green',name:'Цех сборки',parent:0},{id:2,t:'green',name:'Котельная',parent:0},{id:3,t:'red',name:'Подземный переход',parent:1},{id:4,t:'green',name:'Цех окраски',parent:1},{id:5,t:'purple',name:'Офис директора',parent:4},{id:6,t:'green',name:'Склад готовой продукции',parent:2},{id:7,t:'red',name:'Технический тоннель',parent:3}],entities:["prop_physics","ambient_generic","func_door","env_sprite","npc_zombie"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Главные ворота',parent:null},{id:1,t:'green',name:'Заводской двор',parent:0},{id:2,t:'green',name:'Цех A',parent:1},{id:3,t:'green',name:'Цех B',parent:1},{id:4,t:'red',name:'Котельная',parent:2},{id:5,t:'green',name:'Цех сборки',parent:3},{id:6,t:'purple',name:'Офисный блок',parent:5},{id:7,t:'red',name:'Подземный склад',parent:4},{id:8,t:'blue',name:'Дренажные каналы',parent:7},{id:9,t:'yellow',name:'Задние ворота',parent:6},{id:10,t:'green',name:'Склад',parent:3}],entities:["prop_physics","ambient_generic","func_door","env_sprite","npc_zombie","logic_relay"]}
+   }},
+  {title:"HL Beta — Резервуар Xen",
+   easy:"Небольшой портал на Xen: кристаллы, левитирующие острова, биолюминесценция.",
+   med:"Исследовательская аномалия: нестабильный портал, пространственные разрывы, организмы Xen.",
+   hard:"Полноценная зона Xen: многоуровневые острова, врата Nihilanth, скопления организмов, нестабильная гравитация.",
+   generator:{
+     easy:{tree:[{id:0,t:'purple',name:'Портальная арка',parent:null},{id:1,t:'blue',name:'Озеро Xen',parent:0},{id:2,t:'purple',name:'Кристальный остров',parent:1},{id:3,t:'green',name:'Базовый лагерь',parent:2},{id:4,t:'purple',name:'Ядро портала',parent:3}],entities:["env_sprite","ambient_generic","trigger_teleport","npc_alien_grunt"]},
+     med:{tree:[{id:0,t:'purple',name:'Входной портал',parent:null},{id:1,t:'blue',name:'Первичный резервуар',parent:0},{id:2,t:'purple',name:'Остров кристаллов',parent:1},{id:3,t:'purple',name:'Перемычка A',parent:2},{id:4,t:'blue',name:'Вторичный резервуар',parent:3},{id:5,t:'green',name:'База учёных',parent:4},{id:6,t:'purple',name:'Алтарь Nihilanth',parent:5},{id:7,t:'red',name:'Нестабильный разлом',parent:6}],entities:["env_sprite","ambient_generic","trigger_teleport","npc_alien_grunt","npc_alien_slave"]},
+     hard:{tree:[{id:0,t:'purple',name:'Главный портал',parent:null},{id:1,t:'blue',name:'Море Xen',parent:0},{id:2,t:'purple',name:'Остров A',parent:1},{id:3,t:'purple',name:'Остров B',parent:1},{id:4,t:'purple',name:'Центральная перемычка',parent:2},{id:5,t:'blue',name:'Бездна',parent:4},{id:6,t:'purple',name:'Комплекс Nihilanth',parent:4},{id:7,t:'red',name:'Пространственный разлом',parent:3},{id:8,t:'purple',name:'Камера силы',parent:6},{id:9,t:'blue',name:'Первичный океан',parent:5},{id:10,t:'purple',name:'Ядро измерения',parent:8}],entities:["env_sprite","ambient_generic","trigger_teleport","npc_alien_grunt","npc_alien_slave","npc_nihilanth","logic_relay"]}
+   }},
+  {title:"Ядерный реактор",
+   easy:"Небольшая реакторная установка: реакторный зал, пульт управления, зона охлаждения.",
+   med:"Полноценная атомная станция: реакторный корпус, машинный зал, административный блок, охлаждение.",
+   hard:"АЭС в состоянии аварии: расплавление активной зоны, радиационные зоны, попытка остановить катастрофу.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Пульт управления',parent:0},{id:2,t:'purple',name:'Реакторный зал',parent:1},{id:3,t:'blue',name:'Система охлаждения',parent:2},{id:4,t:'red',name:'Кабельный тоннель',parent:1}],entities:["func_door","env_sprite","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный КПП',parent:null},{id:1,t:'green',name:'Административный блок',parent:0},{id:2,t:'green',name:'Машинный зал',parent:1},{id:3,t:'purple',name:'Реакторный корпус',parent:2},{id:4,t:'blue',name:'Первичный контур охл.',parent:3},{id:5,t:'blue',name:'Вторичный контур охл.',parent:3},{id:6,t:'red',name:'Технический тоннель',parent:4},{id:7,t:'green',name:'Насосная станция',parent:5}],entities:["func_door","env_sprite","ambient_generic","logic_relay","prop_physics"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Административный корпус',parent:0},{id:2,t:'green',name:'Турбинный зал',parent:1},{id:3,t:'purple',name:'Реакторный корпус',parent:2},{id:4,t:'blue',name:'Аварийное охлаждение',parent:3},{id:5,t:'red',name:'Зона заражения A',parent:3},{id:6,t:'red',name:'Зона заражения B',parent:3},{id:7,t:'purple',name:'Активная зона',parent:5},{id:8,t:'blue',name:'Бассейн выдержки',parent:4},{id:9,t:'red',name:'Аварийный тоннель',parent:6},{id:10,t:'yellow',name:'Эвакуационный выход',parent:9}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic","logic_relay","trigger_once"]}
+   }},
+  {title:"HL Beta — Остаток Black Mesa",
+   easy:"Ранняя версия корпуса Black Mesa: более открытые дворы, другое освещение, Beta-пропорции.",
+   med:"Beta-Black Mesa: другие коридоры, другие охранники, другая атмосфера — ощущение до-финального дизайна.",
+   hard:"Полноценный Beta-комплекс: несколько корпусов, секции Lambda, ранние версии зон с уникальной архитектурой.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Входной холл Beta',parent:null},{id:1,t:'green',name:'Коридор Beta A',parent:0},{id:2,t:'green',name:'Офис Beta',parent:1},{id:3,t:'purple',name:'Лаборатория Beta',parent:2},{id:4,t:'red',name:'Технический лаз',parent:1}],entities:["npc_scientist","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный вход Beta',parent:null},{id:1,t:'green',name:'Холл Beta',parent:0},{id:2,t:'green',name:'Административный блок',parent:1},{id:3,t:'purple',name:'Исследовательская зона',parent:2},{id:4,t:'red',name:'Технический коридор',parent:3},{id:5,t:'blue',name:'Прохладительный сектор',parent:4},{id:6,t:'green',name:'Тест-камера Beta',parent:3},{id:7,t:'yellow',name:'Внутренний двор',parent:1}],entities:["npc_scientist","npc_barney","func_door","ambient_generic","env_sprite"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП Beta',parent:null},{id:1,t:'green',name:'Транзитный узел',parent:0},{id:2,t:'green',name:'Корпус A',parent:1},{id:3,t:'green',name:'Корпус B',parent:1},{id:4,t:'purple',name:'Lambda-комплекс Beta',parent:2},{id:5,t:'red',name:'Нижние уровни',parent:3},{id:6,t:'blue',name:'Охлаждающий сектор',parent:4},{id:7,t:'purple',name:'Реакционная камера',parent:4},{id:8,t:'green',name:'Жилой сектор',parent:2},{id:9,t:'yellow',name:'Внешняя площадка',parent:3},{id:10,t:'red',name:'Аварийный выход',parent:5}],entities:["npc_scientist","npc_barney","func_door","ambient_generic","env_sprite","logic_relay"]}
+   }},
+  {title:"Психиатрическая больница",
+   easy:"Маленькое крыло: несколько палат, ординаторская, коридор с тусклым светом.",
+   med:"Полноценная клиника: несколько отделений, процедурные кабинеты, изоляторы, подвал.",
+   hard:"Заброшенная клиника с тёмным прошлым: тайные комнаты, следы экспериментов, нечто внизу.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Приёмный покой',parent:null},{id:1,t:'green',name:'Коридор отделения',parent:0},{id:2,t:'green',name:'Палата A',parent:1},{id:3,t:'green',name:'Палата B',parent:1},{id:4,t:'purple',name:'Ординаторская',parent:1}],entities:["func_door","ambient_generic","prop_physics","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный вход',parent:null},{id:1,t:'green',name:'Регистратура',parent:0},{id:2,t:'green',name:'Отделение A',parent:1},{id:3,t:'green',name:'Отделение B',parent:1},{id:4,t:'purple',name:'Процедурный кабинет',parent:2},{id:5,t:'red',name:'Изолятор',parent:2},{id:6,t:'purple',name:'Кабинет главврача',parent:3},{id:7,t:'red',name:'Подвал',parent:4}],entities:["func_door","ambient_generic","prop_physics","env_sprite","npc_zombie"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Ворота',parent:null},{id:1,t:'green',name:'Приёмный корпус',parent:0},{id:2,t:'green',name:'Терапевтическое крыло',parent:1},{id:3,t:'purple',name:'Хирургическое крыло',parent:1},{id:4,t:'red',name:'Изолятор строгого режима',parent:2},{id:5,t:'purple',name:'Экспериментальная секция',parent:3},{id:6,t:'red',name:'Подвал',parent:4},{id:7,t:'red',name:'Катакомбы',parent:6},{id:8,t:'purple',name:'Тайная лаборатория',parent:7},{id:9,t:'blue',name:'Затопленный подвал',parent:6},{id:10,t:'yellow',name:'Запасной выход',parent:5}],entities:["func_door","ambient_generic","prop_physics","env_sprite","npc_zombie","logic_relay","trigger_once"]}
+   }},
+  {title:"Биологическая лаборатория",
+   easy:"Небольшая биолаборатория: боксы с образцами, микроскопы, стерильные зоны.",
+   med:"Исследовательский центр биологии: несколько лабораторий, виварий, хранилище образцов, карантинный шлюз.",
+   hard:"Секретный объект биологического оружия: производственные мощности, зоны заражения, сбежавшие организмы.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Карантинный шлюз',parent:null},{id:1,t:'green',name:'Стерильная зона',parent:0},{id:2,t:'purple',name:'Лаборатория',parent:1},{id:3,t:'blue',name:'Аквариум образцов',parent:2},{id:4,t:'green',name:'Склад реагентов',parent:1}],entities:["func_door","ambient_generic","env_sprite","trigger_hurt"]},
+     med:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Зона дезактивации',parent:0},{id:2,t:'purple',name:'Лаборатория A',parent:1},{id:3,t:'purple',name:'Лаборатория B',parent:1},{id:4,t:'blue',name:'Виварий',parent:2},{id:5,t:'green',name:'Хранилище образцов',parent:3},{id:6,t:'red',name:'Карантинный тоннель',parent:4},{id:7,t:'yellow',name:'Запасной шлюз',parent:6}],entities:["func_door","ambient_generic","env_sprite","trigger_hurt","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Административный блок',parent:0},{id:2,t:'purple',name:'Лаборатория контроля',parent:1},{id:3,t:'blue',name:'Виварий A',parent:2},{id:4,t:'blue',name:'Виварий B',parent:2},{id:5,t:'red',name:'Зона заражения',parent:3},{id:6,t:'purple',name:'Производственный цех',parent:4},{id:7,t:'red',name:'Тоннель утилизации',parent:5},{id:8,t:'blue',name:'Резервуар утилизации',parent:7},{id:9,t:'green',name:'Аварийный центр',parent:6},{id:10,t:'yellow',name:'Аварийный выход',parent:9}],entities:["func_door","ambient_generic","env_sprite","trigger_hurt","logic_relay","trigger_once","npc_zombie"]}
+   }},
+  {title:"Нефтяная платформа",
+   easy:"Небольшая морская платформа: жилой блок, буровая вышка, причал.",
+   med:"Рабочая платформа: несколько уровней, машинное отделение, вертолётная площадка, склады.",
+   hard:"Захваченная платформа: боевики, заложники, взрывчатка у буровой, уровни под водой.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Причал',parent:null},{id:1,t:'green',name:'Жилой блок',parent:0},{id:2,t:'green',name:'Буровая вышка',parent:1},{id:3,t:'red',name:'Машинное отделение',parent:2},{id:4,t:'blue',name:'Подводный отсек',parent:3}],entities:["prop_physics","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Вертолётная площадка',parent:null},{id:1,t:'yellow',name:'Причал',parent:0},{id:2,t:'green',name:'Жилой блок',parent:1},{id:3,t:'green',name:'Рабочая палуба',parent:2},{id:4,t:'red',name:'Буровая шахта',parent:3},{id:5,t:'purple',name:'Центр управления',parent:3},{id:6,t:'blue',name:'Подводная секция',parent:4},{id:7,t:'red',name:'Машинное отделение',parent:2}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Вертолётная площадка',parent:null},{id:1,t:'green',name:'Командная палуба',parent:0},{id:2,t:'green',name:'Жилые отсеки',parent:1},{id:3,t:'purple',name:'Центр управления',parent:1},{id:4,t:'green',name:'Рабочая палуба',parent:2},{id:5,t:'red',name:'Буровая шахта',parent:4},{id:6,t:'blue',name:'Подводный уровень A',parent:5},{id:7,t:'blue',name:'Подводный уровень B',parent:6},{id:8,t:'red',name:'Машинный зал',parent:3},{id:9,t:'purple',name:'Пульт взрывчатки',parent:3},{id:10,t:'yellow',name:'Эвакуационный понтон',parent:9}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"HL Beta — Xen Borderworld ранний",
+   easy:"Самый ранний концепт Xen: геометричные платформы, минимальная флора, базовый портал.",
+   med:"Beta-Xen с механическими элементами: металлические конструкции Альянса среди органики.",
+   hard:"Пространство между измерениями: смесь промышленности и органики, несколько порталов, Vortex.",
+   generator:{
+     easy:{tree:[{id:0,t:'purple',name:'Портальный узел',parent:null},{id:1,t:'blue',name:'Плавающая платформа A',parent:0},{id:2,t:'purple',name:'Кристальный узел',parent:1},{id:3,t:'blue',name:'Плавающая платформа B',parent:2},{id:4,t:'purple',name:'Портал выхода',parent:3}],entities:["env_sprite","trigger_teleport","ambient_generic"]},
+     med:{tree:[{id:0,t:'purple',name:'Входной узел',parent:null},{id:1,t:'blue',name:'Первый остров',parent:0},{id:2,t:'purple',name:'Вортекс',parent:1},{id:3,t:'blue',name:'Механический мост',parent:2},{id:4,t:'green',name:'База HEV',parent:3},{id:5,t:'purple',name:'Энергетический кристалл',parent:4},{id:6,t:'blue',name:'Бездна',parent:5},{id:7,t:'purple',name:'Исходящий портал',parent:6}],entities:["env_sprite","trigger_teleport","ambient_generic","npc_alien_grunt","logic_relay"]},
+     hard:{tree:[{id:0,t:'purple',name:'Главный портал',parent:null},{id:1,t:'blue',name:'Первичное поле',parent:0},{id:2,t:'purple',name:'Остров A',parent:1},{id:3,t:'purple',name:'Остров B',parent:1},{id:4,t:'blue',name:'Промежуточная бездна',parent:2},{id:5,t:'green',name:'Механическая конструкция',parent:3},{id:6,t:'purple',name:'Генератор Vortex',parent:4},{id:7,t:'red',name:'Нестабильный разлом',parent:5},{id:8,t:'blue',name:'Вторичное поле',parent:6},{id:9,t:'purple',name:'Центральный узел',parent:8},{id:10,t:'purple',name:'Исходящий портал',parent:9}],entities:["env_sprite","trigger_teleport","ambient_generic","npc_alien_grunt","npc_alien_slave","logic_relay"]}
+   }},
+  {title:"Военная база — обычная армия",
+   easy:"Небольшой военный пост: КПП, казармы, склад оружия.",
+   med:"Действующая военная база: несколько зданий, парк техники, командный центр, оружейный склад.",
+   hard:"Укреплённый военный объект под осадой: бункеры, периметры обороны, оперативный штаб, арсенал.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'КПП вход',parent:null},{id:1,t:'green',name:'Казармы',parent:0},{id:2,t:'green',name:'Оружейный склад',parent:1},{id:3,t:'purple',name:'Командный пункт',parent:1},{id:4,t:'red',name:'Технический тоннель',parent:3}],entities:["npc_combine_s","func_door","prop_physics","ambient_generic"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главные ворота',parent:null},{id:1,t:'green',name:'Казармы A',parent:0},{id:2,t:'green',name:'Казармы B',parent:0},{id:3,t:'purple',name:'Командный центр',parent:1},{id:4,t:'green',name:'Оружейный склад',parent:2},{id:5,t:'yellow',name:'Плац',parent:1},{id:6,t:'red',name:'Бункер',parent:3},{id:7,t:'green',name:'Ангар техники',parent:2}],entities:["npc_combine_s","func_door","prop_physics","ambient_generic","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'yellow',name:'Главные ворота',parent:0},{id:2,t:'green',name:'Казарменный блок',parent:1},{id:3,t:'purple',name:'Штаб',parent:1},{id:4,t:'green',name:'Арсенал',parent:2},{id:5,t:'red',name:'Бункер командования',parent:3},{id:6,t:'green',name:'Ангар',parent:2},{id:7,t:'yellow',name:'Периметр обороны',parent:3},{id:8,t:'purple',name:'Ситуационная комната',parent:5},{id:9,t:'red',name:'Аварийный тоннель',parent:5},{id:10,t:'yellow',name:'Запасной выход',parent:9}],entities:["npc_combine_s","func_door","prop_physics","ambient_generic","logic_relay","trigger_once"]}
+   }},
+  {title:"Затопленный город",
+   easy:"Небольшой затопленный квартал: здания по пояс в воде, плавающий мусор.",
+   med:"Полузатопленный городской район: доступные через воду здания, подводные переходы, аварийные лодки.",
+   hard:"Глубоко затопленный город: подводные кварталы, воздушные карманы, морские существа.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Сухая улица',parent:null},{id:1,t:'blue',name:'Затопленный перекрёсток',parent:0},{id:2,t:'green',name:'Здание A (частично)',parent:1},{id:3,t:'blue',name:'Затопленный проспект',parent:2},{id:4,t:'green',name:'Здание B (крыша)',parent:3}],entities:["func_water","prop_physics","ambient_generic","func_door"]},
+     med:{tree:[{id:0,t:'yellow',name:'Сухой периметр',parent:null},{id:1,t:'blue',name:'Затопленный квартал A',parent:0},{id:2,t:'green',name:'Жилой дом',parent:1},{id:3,t:'blue',name:'Затопленный квартал B',parent:1},{id:4,t:'red',name:'Подземный переход',parent:2},{id:5,t:'green',name:'Торговый центр',parent:3},{id:6,t:'blue',name:'Глубокий канал',parent:4},{id:7,t:'yellow',name:'Сухой остров',parent:5}],entities:["func_water","prop_physics","ambient_generic","func_door","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Сухая зона',parent:null},{id:1,t:'blue',name:'Мелководье',parent:0},{id:2,t:'green',name:'Квартал на воде',parent:1},{id:3,t:'blue',name:'Глубокий район A',parent:2},{id:4,t:'blue',name:'Глубокий район B',parent:2},{id:5,t:'red',name:'Подводный тоннель',parent:3},{id:6,t:'green',name:'Воздушный карман',parent:4},{id:7,t:'blue',name:'Подводный сквер',parent:5},{id:8,t:'purple',name:'Подводная аномалия',parent:7},{id:9,t:'yellow',name:'Эвакуационная точка',parent:6}],entities:["func_water","prop_physics","ambient_generic","func_door","logic_relay","trigger_hurt"]}
+   }},
+  {title:"Метро — заброшенная линия",
+   easy:"Брошенная станция метро: платформа, пути, туннель в темноту.",
+   med:"Несколько станций заброшенной линии: залы, переходы, служебные комнаты.",
+   hard:"Целая подземная система: станции, депо, диспетчерская, затопленный тоннель, жители подземелья.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вестибюль станции',parent:null},{id:1,t:'green',name:'Платформа',parent:0},{id:2,t:'red',name:'Туннель A',parent:1},{id:3,t:'green',name:'Служебный отсек',parent:1},{id:4,t:'red',name:'Туннель B',parent:2}],entities:["prop_physics","ambient_generic","func_door","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Вестибюль A',parent:null},{id:1,t:'green',name:'Станция A',parent:0},{id:2,t:'red',name:'Туннель A-B',parent:1},{id:3,t:'green',name:'Станция B',parent:2},{id:4,t:'purple',name:'Диспетчерская',parent:3},{id:5,t:'red',name:'Технический тоннель',parent:4},{id:6,t:'green',name:'Склад инвентаря',parent:3},{id:7,t:'yellow',name:'Вестибюль B',parent:3}],entities:["prop_physics","ambient_generic","func_door","env_sprite","npc_zombie"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Главный вестибюль',parent:null},{id:1,t:'green',name:'Центральная станция',parent:0},{id:2,t:'red',name:'Туннель A',parent:1},{id:3,t:'red',name:'Туннель B',parent:1},{id:4,t:'green',name:'Станция A',parent:2},{id:5,t:'green',name:'Станция B',parent:3},{id:6,t:'purple',name:'Диспетчерская',parent:4},{id:7,t:'green',name:'Депо',parent:5},{id:8,t:'blue',name:'Затопленный тоннель',parent:2},{id:9,t:'red',name:'Аварийный выход',parent:6},{id:10,t:'purple',name:'Жилая зона подземелья',parent:7}],entities:["prop_physics","ambient_generic","func_door","env_sprite","npc_zombie","npc_citizen","logic_relay"]}
+   }},
+  {title:"HL Beta — Военная лаборатория HECU",
+   easy:"Военная лаборатория как в ранних версиях HL: другие текстуры HECU, ранние расположения.",
+   med:"Beta-объект HECU: командный пункт, казармы, зона допроса учёных.",
+   hard:"Полный военный объект Beta: стрельбище, оружейная, центр управления операцией, зона ликвидации.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'КПП HECU',parent:null},{id:1,t:'green',name:'Казармы',parent:0},{id:2,t:'purple',name:'Командный пост',parent:1},{id:3,t:'green',name:'Допросная',parent:2},{id:4,t:'red',name:'Тоннель отступления',parent:2}],entities:["npc_combine_s","func_door","ambient_generic","prop_physics"]},
+     med:{tree:[{id:0,t:'yellow',name:'Периметр HECU',parent:null},{id:1,t:'green',name:'Казармы',parent:0},{id:2,t:'purple',name:'КП операции',parent:1},{id:3,t:'green',name:'Оружейная',parent:1},{id:4,t:'green',name:'Зона допроса',parent:2},{id:5,t:'red',name:'Тоннель A',parent:3},{id:6,t:'purple',name:'Центр связи',parent:2},{id:7,t:'red',name:'Зона ликвидации',parent:4}],entities:["npc_combine_s","func_door","ambient_generic","prop_physics","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП внешний',parent:null},{id:1,t:'green',name:'Казарменный блок',parent:0},{id:2,t:'purple',name:'Штаб операции',parent:1},{id:3,t:'green',name:'Арсенал',parent:1},{id:4,t:'green',name:'Стрельбище',parent:3},{id:5,t:'purple',name:'Центр управления',parent:2},{id:6,t:'red',name:'Тоннель A',parent:4},{id:7,t:'green',name:'Зона ликвидации',parent:5},{id:8,t:'red',name:'Тоннель B',parent:7},{id:9,t:'purple',name:'Командная рубка',parent:5},{id:10,t:'yellow',name:'Вертолётная площадка',parent:9}],entities:["npc_combine_s","func_door","ambient_generic","prop_physics","logic_relay","trigger_once"]}
+   }},
+  {title:"Сервер-центр",
+   easy:"Небольшая серверная комната: стойки, мигающие огни, тихое гудение.",
+   med:"Корпоративный дата-центр: несколько залов, система охлаждения, центральная консоль.",
+   hard:"Секретный государственный сервер: несколько слоёв защиты, физическое и цифровое проникновение, уничтожение данных.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'green',name:'Серверный зал',parent:0},{id:2,t:'purple',name:'Центральная консоль',parent:1},{id:3,t:'blue',name:'Система охлаждения',parent:2},{id:4,t:'red',name:'Технический лаз',parent:1}],entities:["func_door","env_sprite","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Зал A',parent:0},{id:2,t:'green',name:'Зал B',parent:0},{id:3,t:'purple',name:'Центральный узел',parent:1},{id:4,t:'blue',name:'Система охлаждения A',parent:2},{id:5,t:'blue',name:'Система охлаждения B',parent:2},{id:6,t:'red',name:'Технический тоннель',parent:3},{id:7,t:'purple',name:'Бэкап-серверная',parent:3}],entities:["func_door","env_sprite","ambient_generic","logic_relay","trigger_once"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Зал доступа',parent:0},{id:2,t:'purple',name:'Первичная серверная',parent:1},{id:3,t:'purple',name:'Вторичная серверная',parent:1},{id:4,t:'blue',name:'Криогенное охлаждение',parent:2},{id:5,t:'red',name:'Технический тоннель',parent:3},{id:6,t:'purple',name:'Засекреченный сервер',parent:4},{id:7,t:'red',name:'Вентиляционный лаз',parent:5},{id:8,t:'purple',name:'Центр уничтожения данных',parent:6},{id:9,t:'green',name:'Аварийный генератор',parent:3},{id:10,t:'yellow',name:'Аварийный выход',parent:7}],entities:["func_door","env_sprite","ambient_generic","logic_relay","trigger_once","func_brush"]}
+   }},
+  {title:"Тюрьма — максималка",
+   easy:"Небольшой тюремный блок: камеры, пост надзирателя, двор.",
+   med:"Полноценная тюрьма: несколько блоков, столовая, административный корпус, медчасть.",
+   hard:"Побег из тюрьмы максимальной безопасности: охранные вышки, несколько путей, канализация, крыша.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Коридор блока',parent:0},{id:2,t:'red',name:'Камеры A',parent:1},{id:3,t:'green',name:'Пост охраны',parent:1},{id:4,t:'yellow',name:'Двор',parent:3}],entities:["func_door","ambient_generic","prop_physics","npc_metropolice"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный КПП',parent:null},{id:1,t:'green',name:'Блок A',parent:0},{id:2,t:'green',name:'Блок B',parent:0},{id:3,t:'purple',name:'Диспетчерская',parent:1},{id:4,t:'green',name:'Столовая',parent:2},{id:5,t:'yellow',name:'Внутренний двор',parent:2},{id:6,t:'green',name:'Медчасть',parent:3},{id:7,t:'red',name:'Канализация',parent:3}],entities:["func_door","ambient_generic","prop_physics","npc_metropolice","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Административный корпус',parent:0},{id:2,t:'green',name:'Блок A',parent:1},{id:3,t:'green',name:'Блок B',parent:1},{id:4,t:'purple',name:'Центр управления',parent:2},{id:5,t:'red',name:'Канализация',parent:3},{id:6,t:'yellow',name:'Двор',parent:3},{id:7,t:'red',name:'Технический тоннель',parent:4},{id:8,t:'green',name:'Крыша корпуса A',parent:2},{id:9,t:'yellow',name:'Внешняя стена',parent:6},{id:10,t:'yellow',name:'Побег через крышу',parent:8}],entities:["func_door","ambient_generic","prop_physics","npc_metropolice","logic_relay","trigger_once"]}
+   }},
+  {title:"HL Beta — Лаборатория Black Mesa Surface",
+   easy:"Наземная часть Black Mesa из Beta: открытые площадки, другое небо, бета-конструкции.",
+   med:"Территория БМ на поверхности: несколько корпусов, внутренняя дорога, военный периметр.",
+   hard:"Осаждённый кампус Black Mesa: несколько зданий в бою, вертолёты, военные машины.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Наружная площадка',parent:null},{id:1,t:'green',name:'Корпус A (поверхность)',parent:0},{id:2,t:'yellow',name:'Внутренняя дорога',parent:1},{id:3,t:'green',name:'Корпус B',parent:2},{id:4,t:'purple',name:'Центр исследований',parent:3}],entities:["npc_scientist","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Пропускной пункт',parent:null},{id:1,t:'yellow',name:'Внешняя дорога',parent:0},{id:2,t:'green',name:'Корпус A',parent:1},{id:3,t:'green',name:'Корпус B',parent:1},{id:4,t:'purple',name:'Исследовательский центр',parent:2},{id:5,t:'red',name:'Подземный переход',parent:3},{id:6,t:'green',name:'Лабораторный блок',parent:4},{id:7,t:'yellow',name:'Вертолётная площадка',parent:4}],entities:["npc_scientist","npc_barney","func_door","ambient_generic","env_sprite","npc_combine_s"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Периметр',parent:null},{id:1,t:'yellow',name:'Внешняя зона',parent:0},{id:2,t:'green',name:'Корпус A',parent:1},{id:3,t:'green',name:'Корпус B',parent:1},{id:4,t:'purple',name:'Центральный корпус',parent:2},{id:5,t:'red',name:'Подземный переход',parent:3},{id:6,t:'green',name:'Лабораторный блок',parent:4},{id:7,t:'yellow',name:'Вертолётная площадка',parent:4},{id:8,t:'green',name:'Гараж техники',parent:1},{id:9,t:'purple',name:'КП обороны',parent:7},{id:10,t:'yellow',name:'Точка эвакуации',parent:9}],entities:["npc_scientist","npc_barney","npc_combine_s","func_door","ambient_generic","env_sprite","logic_relay"]}
+   }},
+  {title:"Склад контрабанды",
+   easy:"Портовый склад: деревянные ящики, погрузчики, тусклый свет, несколько охранников.",
+   med:"Большой контрабандный склад: несколько отделений, офис босса, скрытые тайники, подземный переход.",
+   hard:"Преступная сеть: несколько складов, подземный рынок, причал для лодок, побег по воде.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Портовые ворота',parent:null},{id:1,t:'green',name:'Основной склад',parent:0},{id:2,t:'green',name:'Склад B',parent:1},{id:3,t:'purple',name:'Офис',parent:1},{id:4,t:'red',name:'Подвальный тайник',parent:3}],entities:["prop_physics","func_door","ambient_generic","npc_citizen"]},
+     med:{tree:[{id:0,t:'yellow',name:'Ворота',parent:null},{id:1,t:'green',name:'Склад A',parent:0},{id:2,t:'green',name:'Склад B',parent:0},{id:3,t:'purple',name:'Офис босса',parent:1},{id:4,t:'red',name:'Тайник A',parent:2},{id:5,t:'red',name:'Подземный переход',parent:3},{id:6,t:'green',name:'Секретный отсек',parent:4},{id:7,t:'blue',name:'Причал',parent:5}],entities:["prop_physics","func_door","ambient_generic","npc_citizen","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешние ворота',parent:null},{id:1,t:'green',name:'Склад A',parent:0},{id:2,t:'green',name:'Склад B',parent:0},{id:3,t:'purple',name:'Штаб организации',parent:1},{id:4,t:'red',name:'Подземный рынок',parent:2},{id:5,t:'red',name:'Тоннель A',parent:3},{id:6,t:'red',name:'Тоннель B',parent:4},{id:7,t:'blue',name:'Причал для лодок',parent:5},{id:8,t:'green',name:'Конспиративная квартира',parent:3},{id:9,t:'blue',name:'Водный путь',parent:7},{id:10,t:'yellow',name:'Точка побега',parent:9}],entities:["prop_physics","func_door","ambient_generic","npc_citizen","logic_relay","func_tracktrain"]}
+   }},
+  {title:"HL Beta — ранний Citadel",
+   easy:"Ранняя версия Цитадели: другие пропорции, другие текстуры, бета-архитектура.",
+   med:"Beta-Citadel внутри: другие коридоры, другие зоны Альянса, другие NPC.",
+   hard:"Полный Beta-Citadel: несколько уровней, иное расположение зон, Beta-оружие и Beta-NPC.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход в Citadel Beta',parent:null},{id:1,t:'green',name:'Вестибюль Beta',parent:0},{id:2,t:'purple',name:'Центральная зона',parent:1},{id:3,t:'green',name:'Служебный блок',parent:2},{id:4,t:'red',name:'Технический тоннель',parent:2}],entities:["npc_combine_s","env_sprite","func_door","ambient_generic"]},
+     med:{tree:[{id:0,t:'yellow',name:'КПП Beta',parent:null},{id:1,t:'green',name:'Транзитный зал',parent:0},{id:2,t:'purple',name:'Командный уровень',parent:1},{id:3,t:'green',name:'Офицерский блок',parent:2},{id:4,t:'purple',name:'Ядро управления',parent:2},{id:5,t:'red',name:'Технические уровни',parent:4},{id:6,t:'blue',name:'Система Beta',parent:5},{id:7,t:'yellow',name:'Верхний уровень',parent:3}],entities:["npc_combine_s","npc_metropolice","env_sprite","func_door","ambient_generic","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Нижний КПП',parent:null},{id:1,t:'green',name:'Уровень 1',parent:0},{id:2,t:'purple',name:'Уровень 2 — Команд.',parent:1},{id:3,t:'green',name:'Уровень 3 — Офицеры',parent:2},{id:4,t:'purple',name:'Уровень 4 — Ядро',parent:2},{id:5,t:'red',name:'Нижние тоннели',parent:1},{id:6,t:'blue',name:'Система энергии Beta',parent:4},{id:7,t:'purple',name:'Уровень 5 — Вершина',parent:3},{id:8,t:'green',name:'Зал аудиенции',parent:7},{id:9,t:'red',name:'Аварийный спуск',parent:4},{id:10,t:'purple',name:'Финальная камера',parent:8}],entities:["npc_combine_s","npc_metropolice","env_sprite","func_door","ambient_generic","logic_relay","trigger_once"]}
+   }},
+  {title:"Медицинский центр — кризис",
+   easy:"Больница в кризисе: опустевшие палаты, брошенные каталки, тусклый аварийный свет.",
+   med:"Несколько корпусов больницы: приёмный покой, операционные, рентген, подвал.",
+   hard:"Больница в карантине: заражённые пациенты, заблокированные выходы, тайный путь через морг.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Приёмный покой',parent:null},{id:1,t:'green',name:'Коридор отделения',parent:0},{id:2,t:'green',name:'Палаты',parent:1},{id:3,t:'purple',name:'Процедурная',parent:1},{id:4,t:'red',name:'Технический подвал',parent:3}],entities:["func_door","ambient_generic","prop_physics","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный вход',parent:null},{id:1,t:'green',name:'Приёмный покой',parent:0},{id:2,t:'green',name:'Терапия',parent:1},{id:3,t:'purple',name:'Операционный блок',parent:1},{id:4,t:'green',name:'Рентген',parent:2},{id:5,t:'red',name:'Подвал',parent:3},{id:6,t:'green',name:'Аптека',parent:4},{id:7,t:'purple',name:'Реанимация',parent:3}],entities:["func_door","ambient_generic","prop_physics","env_sprite","npc_zombie"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Блокированный вход',parent:null},{id:1,t:'green',name:'Приёмный покой',parent:0},{id:2,t:'green',name:'Терапевтическое крыло',parent:1},{id:3,t:'purple',name:'Хирургическое крыло',parent:1},{id:4,t:'red',name:'Карантинная зона',parent:2},{id:5,t:'purple',name:'Изолятор',parent:3},{id:6,t:'red',name:'Морг',parent:4},{id:7,t:'red',name:'Технический подвал',parent:6},{id:8,t:'blue',name:'Дренажная система',parent:7},{id:9,t:'yellow',name:'Путь через морг',parent:6},{id:10,t:'yellow',name:'Аварийный выход',parent:9}],entities:["func_door","ambient_generic","prop_physics","env_sprite","npc_zombie","logic_relay","trigger_hurt"]}
+   }},
+  {title:"Аэропорт — захват",
+   easy:"Маленький аэропорт: зал ожидания, стойки регистрации, взлётная полоса.",
+   med:"Полноценный аэропорт: несколько терминалов, техническая зона, диспетчерская башня.",
+   hard:"Аэропорт в кризисе: захват, несколько путей спасения, тоннели обслуживания, взлётная полоса.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход в аэропорт',parent:null},{id:1,t:'green',name:'Зал ожидания',parent:0},{id:2,t:'green',name:'Зона регистрации',parent:1},{id:3,t:'purple',name:'Диспетчерская',parent:2},{id:4,t:'yellow',name:'Взлётная полоса',parent:2}],entities:["prop_physics","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Внешняя зона',parent:null},{id:1,t:'green',name:'Терминал A',parent:0},{id:2,t:'green',name:'Терминал B',parent:0},{id:3,t:'purple',name:'Диспетчерская башня',parent:1},{id:4,t:'red',name:'Технические тоннели',parent:2},{id:5,t:'green',name:'Зона выдачи багажа',parent:1},{id:6,t:'yellow',name:'Перрон',parent:2},{id:7,t:'green',name:'VIP-зал',parent:3}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Периметр',parent:null},{id:1,t:'green',name:'Терминал A',parent:0},{id:2,t:'green',name:'Терминал B',parent:0},{id:3,t:'purple',name:'Диспетчерская',parent:1},{id:4,t:'red',name:'Тоннели обслуживания',parent:2},{id:5,t:'green',name:'Зал заложников',parent:1},{id:6,t:'yellow',name:'Взлётная полоса',parent:2},{id:7,t:'red',name:'Технический уровень',parent:3},{id:8,t:'purple',name:'Серверная аэропорта',parent:7},{id:9,t:'yellow',name:'Ангар самолётов',parent:6},{id:10,t:'yellow',name:'Путь спасения',parent:5}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"Геологическая пещера",
+   easy:"Природная пещера: сталактиты, подземное озеро, узкие лазы.",
+   med:"Система пещер: несколько залов, подземная река, следы присутствия людей.",
+   hard:"Огромный пещерный комплекс: природные залы, брошенная шахта, подземное поселение, аномалия.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход в пещеру',parent:null},{id:1,t:'red',name:'Узкий лаз',parent:0},{id:2,t:'green',name:'Основной зал',parent:1},{id:3,t:'blue',name:'Подземное озеро',parent:2},{id:4,t:'red',name:'Боковой тоннель',parent:2}],entities:["prop_physics","ambient_generic","env_sprite","func_door"]},
+     med:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'red',name:'Входной тоннель',parent:0},{id:2,t:'green',name:'Основной зал',parent:1},{id:3,t:'blue',name:'Подземное озеро',parent:2},{id:4,t:'red',name:'Боковой тоннель A',parent:2},{id:5,t:'green',name:'Второй зал',parent:4},{id:6,t:'blue',name:'Подземная река',parent:3},{id:7,t:'red',name:'Глубокий тоннель',parent:5}],entities:["prop_physics","ambient_generic","env_sprite","func_water"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'red',name:'Главный тоннель',parent:0},{id:2,t:'green',name:'Большой зал',parent:1},{id:3,t:'blue',name:'Озеро',parent:2},{id:4,t:'red',name:'Тоннель A',parent:2},{id:5,t:'red',name:'Тоннель B',parent:2},{id:6,t:'green',name:'Шахтёрский лагерь',parent:4},{id:7,t:'blue',name:'Подземная река',parent:3},{id:8,t:'purple',name:'Аномальный зал',parent:5},{id:9,t:'red',name:'Глубокий тоннель',parent:6},{id:10,t:'purple',name:'Источник аномалии',parent:8}],entities:["prop_physics","ambient_generic","env_sprite","func_water","logic_relay","trigger_hurt"]}
+   }},
+  {title:"Криогенная лаборатория",
+   easy:"Маленькая криолаборатория: заморозочные капсулы, панели управления, криогенные камеры.",
+   med:"Полноценный крио-комплекс: несколько секций, подготовительные комнаты, аварийное размораживание.",
+   hard:"Секретный проект заморозки: несколько субъектов, сбежавший субъект, аварийный протокол.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Подготовительная',parent:0},{id:2,t:'blue',name:'Криогенная камера',parent:1},{id:3,t:'purple',name:'Пульт управления',parent:2},{id:4,t:'blue',name:'Резервная камера',parent:2}],entities:["func_door","env_sprite","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'yellow',name:'Входной шлюз',parent:null},{id:1,t:'green',name:'Зона подготовки',parent:0},{id:2,t:'blue',name:'Секция A — капсулы',parent:1},{id:3,t:'blue',name:'Секция B — капсулы',parent:1},{id:4,t:'purple',name:'Центральный пульт',parent:2},{id:5,t:'red',name:'Аварийный тоннель',parent:3},{id:6,t:'green',name:'Медицинский отсек',parent:4},{id:7,t:'blue',name:'Резервная система',parent:5}],entities:["func_door","env_sprite","ambient_generic","logic_relay","prop_physics"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'green',name:'Медицинская подготовка',parent:0},{id:2,t:'blue',name:'Камеры субъектов A',parent:1},{id:3,t:'blue',name:'Камеры субъектов B',parent:1},{id:4,t:'purple',name:'Главный пульт',parent:2},{id:5,t:'red',name:'Зона побега субъекта',parent:3},{id:6,t:'blue',name:'Аварийное охлаждение',parent:4},{id:7,t:'red',name:'Тоннель преследования',parent:5},{id:8,t:'green',name:'Зал наблюдения',parent:4},{id:9,t:'purple',name:'Центр изоляции',parent:8},{id:10,t:'yellow',name:'Аварийный выход',parent:7}],entities:["func_door","env_sprite","ambient_generic","logic_relay","trigger_once","npc_zombie"]}
+   }},
+  {title:"HL Beta — PTMC Mining Complex",
+   easy:"Горнодобывающий комплекс в стиле ранних концептов Half-Life: вертикальные шахты, руда, лифты.",
+   med:"Многоуровневая шахта: несколько горизонтов, подъёмники, взрывчатые зоны.",
+   hard:"Полный Beta-шахтный комплекс: шахты, заводской уровень, зараженные секции, авария.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Шахтная надстройка',parent:null},{id:1,t:'red',name:'Главная шахта',parent:0},{id:2,t:'green',name:'Горизонт A',parent:1},{id:3,t:'purple',name:'Рудный зал',parent:2},{id:4,t:'red',name:'Боковая шахта',parent:2}],entities:["func_movelinear","prop_physics","ambient_generic","func_door"]},
+     med:{tree:[{id:0,t:'yellow',name:'Надземная часть',parent:null},{id:1,t:'red',name:'Главная шахта',parent:0},{id:2,t:'green',name:'Горизонт 1',parent:1},{id:3,t:'green',name:'Горизонт 2',parent:1},{id:4,t:'purple',name:'Рудный комплекс',parent:2},{id:5,t:'red',name:'Боковая шахта A',parent:3},{id:6,t:'blue',name:'Подземное озеро',parent:4},{id:7,t:'red',name:'Нижний горизонт',parent:5}],entities:["func_movelinear","prop_physics","ambient_generic","func_door","env_sprite"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Надземный комплекс',parent:null},{id:1,t:'red',name:'Главная шахта',parent:0},{id:2,t:'green',name:'Горизонт A',parent:1},{id:3,t:'green',name:'Горизонт B',parent:1},{id:4,t:'purple',name:'Рудный завод',parent:2},{id:5,t:'red',name:'Шахта B',parent:3},{id:6,t:'blue',name:'Подземный резервуар',parent:4},{id:7,t:'red',name:'Нижняя шахта',parent:5},{id:8,t:'purple',name:'Аварийная зона',parent:7},{id:9,t:'green',name:'Эвакуационный уровень',parent:4},{id:10,t:'yellow',name:'Подъёмник выхода',parent:9}],entities:["func_movelinear","prop_physics","ambient_generic","func_door","env_sprite","logic_relay","trigger_hurt"]}
+   }}
+,
+  {title:"Портовые доки ночью",
+   easy:"Ночные доки: краны, контейнеры, рыбацкие лодки, охрана.",
+   med:"Рабочий порт: несколько причалов, склады, диспетчерская, подозрительный груз.",
+   hard:"Контрабандная операция: подводная лодка, несколько уровней, морская охрана, взрыв.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Портовые ворота',parent:null},{id:1,t:'blue',name:'Причал A',parent:0},{id:2,t:'green',name:'Склад контейнеров',parent:1},{id:3,t:'red',name:'Технический переход',parent:2},{id:4,t:'blue',name:'Причал B',parent:2}],entities:["prop_physics","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Ворота порта',parent:null},{id:1,t:'blue',name:'Главный причал',parent:0},{id:2,t:'green',name:'Склад A',parent:1},{id:3,t:'green',name:'Склад B',parent:1},{id:4,t:'purple',name:'Диспетчерская',parent:2},{id:5,t:'red',name:'Подземный переход',parent:3},{id:6,t:'blue',name:'Причал B',parent:4},{id:7,t:'green',name:'Таможня',parent:4}],entities:["prop_physics","func_door","ambient_generic","npc_metropolice","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'blue',name:'Главный причал',parent:0},{id:2,t:'green',name:'Склад A',parent:1},{id:3,t:'green',name:'Склад B',parent:1},{id:4,t:'purple',name:'Диспетчерская',parent:2},{id:5,t:'red',name:'Подземный переход',parent:3},{id:6,t:'blue',name:'Причал субмарины',parent:5},{id:7,t:'purple',name:'Субмарина',parent:6},{id:8,t:'red',name:'Трюм',parent:7},{id:9,t:'blue',name:'Водный путь',parent:6},{id:10,t:'yellow',name:'Точка эвакуации',parent:4}],entities:["prop_physics","func_door","ambient_generic","npc_metropolice","logic_relay","func_tracktrain","env_explosion"]}
+   }},
+  ,{title:"HL Beta — Опытный образец HEV",
+   easy:"Лаборатория разработки HEV: прототипы костюмов, тесты, стенды.",
+   med:"Полигон испытаний HEV: стрельбище, полоса препятствий, тестовые нагрузки.",
+   hard:"Секретный проект HEV Mark VI: несколько залов испытаний, ИИ-противники, выход из-под контроля.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Лаборатория HEV',parent:null},{id:1,t:'green',name:'Зал прототипов',parent:0},{id:2,t:'purple',name:'Испытательный стенд',parent:1},{id:3,t:'green',name:'Склад компонентов',parent:2},{id:4,t:'red',name:'Технический тоннель',parent:1}],entities:["env_sprite","ambient_generic","func_door","prop_physics"]},
+     med:{tree:[{id:0,t:'yellow',name:'Вход в полигон',parent:null},{id:1,t:'green',name:'Снаряжение',parent:0},{id:2,t:'yellow',name:'Полоса препятствий',parent:1},{id:3,t:'purple',name:'Зал нагрузок',parent:2},{id:4,t:'green',name:'Стрельбище HEV',parent:3},{id:5,t:'red',name:'Аварийный коридор',parent:4},{id:6,t:'purple',name:'Центр управления',parent:3},{id:7,t:'green',name:'Медотсек',parent:5}],entities:["env_sprite","ambient_generic","func_door","prop_physics","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП доступа',parent:null},{id:1,t:'green',name:'Зона подготовки',parent:0},{id:2,t:'purple',name:'Испытательный зал A',parent:1},{id:3,t:'purple',name:'Испытательный зал B',parent:1},{id:4,t:'yellow',name:'Тест-коридор',parent:2},{id:5,t:'red',name:'Зона отказа систем',parent:3},{id:6,t:'purple',name:'Лаборатория Mark VI',parent:4},{id:7,t:'red',name:'Аварийная секция',parent:5},{id:8,t:'green',name:'Нейтральная зона',parent:6},{id:9,t:'purple',name:'Пульт ИИ-управления',parent:6},{id:10,t:'yellow',name:'Аварийный выход',parent:7}],entities:["env_sprite","ambient_generic","func_door","prop_physics","logic_relay","trigger_once","npc_combine_s"]}
+   }},
+  ,{title:"Заброшенная шахта",
+   easy:"Старая угольная шахта: рельсы вагонеток, крепи, тусклые лампочки.",
+   med:"Многоуровневая шахта: несколько горизонтов, обрушение, подземное озеро.",
+   hard:"Опасная шахта: газовые карманы, обрушения, скрытое подземное существо.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Шахтный двор',parent:null},{id:1,t:'red',name:'Главный штрек',parent:0},{id:2,t:'green',name:'Горизонт A',parent:1},{id:3,t:'red',name:'Боковой штрек',parent:2},{id:4,t:'blue',name:'Подземный ручей',parent:3}],entities:["prop_physics","ambient_generic","func_door","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Надземная станция',parent:null},{id:1,t:'red',name:'Главный штрек',parent:0},{id:2,t:'green',name:'Горизонт 1',parent:1},{id:3,t:'green',name:'Горизонт 2',parent:1},{id:4,t:'red',name:'Боковой штрек',parent:2},{id:5,t:'blue',name:'Подземное озеро',parent:3},{id:6,t:'red',name:'Обрушенный тоннель',parent:4},{id:7,t:'green',name:'Уцелевший горизонт',parent:6}],entities:["prop_physics","ambient_generic","func_door","env_sprite","trigger_hurt"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Шахтный двор',parent:null},{id:1,t:'red',name:'Главный ствол',parent:0},{id:2,t:'green',name:'Горизонт A',parent:1},{id:3,t:'red',name:'Горизонт B',parent:1},{id:4,t:'red',name:'Газовый карман',parent:2},{id:5,t:'blue',name:'Подземное озеро',parent:3},{id:6,t:'green',name:'Рудный зал',parent:4},{id:7,t:'red',name:'Нижний ствол',parent:5},{id:8,t:'purple',name:'Аномальный горизонт',parent:7},{id:9,t:'blue',name:'Затопленная секция',parent:5},{id:10,t:'yellow',name:'Аварийный подъём',parent:6}],entities:["prop_physics","ambient_generic","func_door","env_sprite","trigger_hurt","logic_relay"]}
+   }},
+  ,{title:"Космическая станция",
+   easy:"Небольшой модуль: жилой отсек, лаборатория, стыковочный узел.",
+   med:"Многомодульная станция: жилые отсеки, лаборатории, технические коридоры, двигательный отсек.",
+   hard:"Станция в кризисе: разгерметизация, аварийные шлюзы, саботаж, эвакуация.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Стыковочный узел',parent:null},{id:1,t:'green',name:'Жилой модуль',parent:0},{id:2,t:'purple',name:'Научный модуль',parent:1},{id:3,t:'blue',name:'Технический модуль',parent:2},{id:4,t:'red',name:'Служебный тоннель',parent:1}],entities:["func_door","env_sprite","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'yellow',name:'Стыковочный порт',parent:null},{id:1,t:'green',name:'Жилой блок',parent:0},{id:2,t:'purple',name:'Научный блок',parent:1},{id:3,t:'blue',name:'Двигательный отсек',parent:2},{id:4,t:'red',name:'Технический коридор',parent:3},{id:5,t:'green',name:'Медотсек',parent:1},{id:6,t:'purple',name:'Центр управления',parent:2},{id:7,t:'blue',name:'Солнечная батарея',parent:6}],entities:["func_door","env_sprite","ambient_generic","logic_relay","prop_physics"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Стыковочный узел',parent:null},{id:1,t:'green',name:'Жилые отсеки',parent:0},{id:2,t:'purple',name:'ЦУС',parent:1},{id:3,t:'blue',name:'Двигательный блок',parent:2},{id:4,t:'red',name:'Зона разгерметизации',parent:1},{id:5,t:'purple',name:'Научный блок',parent:2},{id:6,t:'red',name:'Аварийный шлюз',parent:4},{id:7,t:'blue',name:'Технический коридор',parent:3},{id:8,t:'green',name:'Спасательная капсула',parent:6},{id:9,t:'purple',name:'Реакторный отсек',parent:7},{id:10,t:'yellow',name:'Эвакуационный порт',parent:8}],entities:["func_door","env_sprite","ambient_generic","logic_relay","trigger_hurt","trigger_once"]}
+   }},
+  ,{title:"HL Beta — Исследовательский реактор BM",
+   easy:"Ранняя версия реакторного зала Black Mesa: другая планировка, Beta-текстуры.",
+   med:"Реакторный комплекс из Beta: несколько корпусов, другие коридоры, Beta-учёные.",
+   hard:"Авария в Beta-реакторе: цепочка событий, не как в релизной версии, уникальные маршруты.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход Beta-реактор',parent:null},{id:1,t:'green',name:'Пред-камера',parent:0},{id:2,t:'purple',name:'Реакторный зал Beta',parent:1},{id:3,t:'blue',name:'Охладитель Beta',parent:2},{id:4,t:'red',name:'Технический тоннель',parent:2}],entities:["npc_scientist","func_door","env_sprite","ambient_generic"]},
+     med:{tree:[{id:0,t:'yellow',name:'КПП Beta',parent:null},{id:1,t:'green',name:'Административный отсек',parent:0},{id:2,t:'green',name:'Технический этаж',parent:1},{id:3,t:'purple',name:'Реакторный зал A',parent:2},{id:4,t:'purple',name:'Реакторный зал B',parent:2},{id:5,t:'blue',name:'Охлаждающий контур',parent:3},{id:6,t:'red',name:'Кабельный тоннель',parent:4},{id:7,t:'green',name:'Пульт управления',parent:3}],entities:["npc_scientist","npc_barney","func_door","env_sprite","ambient_generic","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП входа',parent:null},{id:1,t:'green',name:'Административный корпус',parent:0},{id:2,t:'green',name:'Технический уровень',parent:1},{id:3,t:'purple',name:'Реактор A',parent:2},{id:4,t:'purple',name:'Реактор B',parent:2},{id:5,t:'blue',name:'Первичное охлаждение',parent:3},{id:6,t:'red',name:'Аварийная зона',parent:4},{id:7,t:'blue',name:'Вторичное охлаждение',parent:5},{id:8,t:'red',name:'Нижний аварийный уровень',parent:6},{id:9,t:'purple',name:'Lambda-секция',parent:3},{id:10,t:'yellow',name:'Аварийный выход',parent:8}],entities:["npc_scientist","npc_barney","func_door","env_sprite","ambient_generic","logic_relay","trigger_once","trigger_hurt"]}
+   }}
+,
+  {title:"Заброшенный отель",
+   easy:"Старый отель: холл, несколько номеров, кухня, тёмный коридор.",
+   med:"Большой заброшенный отель: несколько этажей, ресторан, бассейн, подвал.",
+   hard:"Отель с тайной: тайные комнаты, неугасающий огонь в камине, нечто на последнем этаже.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Главный вход',parent:null},{id:1,t:'green',name:'Холл',parent:0},{id:2,t:'green',name:'Номера A',parent:1},{id:3,t:'purple',name:'Ресепшн',parent:1},{id:4,t:'red',name:'Технический подвал',parent:3}],entities:["prop_physics","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Парадный вход',parent:null},{id:1,t:'green',name:'Холл 1-го этажа',parent:0},{id:2,t:'green',name:'Ресторан',parent:1},{id:3,t:'green',name:'Этаж 2',parent:1},{id:4,t:'green',name:'Этаж 3',parent:3},{id:5,t:'blue',name:'Бассейн',parent:2},{id:6,t:'red',name:'Подвал',parent:2},{id:7,t:'purple',name:'Офис менеджера',parent:3}],entities:["prop_physics","func_door","ambient_generic","env_sprite","npc_zombie"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний двор',parent:null},{id:1,t:'green',name:'Холл',parent:0},{id:2,t:'green',name:'Ресторан',parent:1},{id:3,t:'green',name:'Этаж 2',parent:1},{id:4,t:'green',name:'Этаж 3',parent:3},{id:5,t:'purple',name:'Пентхаус',parent:4},{id:6,t:'blue',name:'Бассейн',parent:2},{id:7,t:'red',name:'Подвал',parent:2},{id:8,t:'red',name:'Катакомбы',parent:7},{id:9,t:'purple',name:'Тайная комната',parent:5},{id:10,t:'red',name:'Потайной ход',parent:9}],entities:["prop_physics","func_door","ambient_generic","env_sprite","npc_zombie","logic_relay"]}
+   }},
+  {title:"Орбитальная станция",
+   easy:"Маленький модуль: шлюз, жилой отсек, иллюминаторы с видом на звёзды.",
+   med:"Орбитальная станция с несколькими секциями: стыковочный узел, лаборатория, двигательный отсек.",
+   hard:"Станция в аварии: разгерметизированные секции, дрейфующие объекты, путь к спасательной капсуле.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Шлюз стыковки',parent:null},{id:1,t:'green',name:'Жилой модуль',parent:0},{id:2,t:'purple',name:'Научный модуль',parent:1},{id:3,t:'blue',name:'Хранилище воды',parent:2},{id:4,t:'red',name:'Технический отсек',parent:1}],entities:["func_door","env_sprite","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'yellow',name:'Стыковочный узел',parent:null},{id:1,t:'green',name:'Жилой блок',parent:0},{id:2,t:'purple',name:'Лаборатория',parent:1},{id:3,t:'green',name:'Центр управления',parent:2},{id:4,t:'red',name:'Двигательный отсек',parent:3},{id:5,t:'blue',name:'Резервуары',parent:4},{id:6,t:'yellow',name:'Второй шлюз',parent:3},{id:7,t:'green',name:'Оранжерея',parent:1}],entities:["func_door","env_sprite","ambient_generic","logic_relay","prop_physics"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Стыковочный шлюз A',parent:null},{id:1,t:'green',name:'Жилой блок',parent:0},{id:2,t:'purple',name:'ЦУП',parent:1},{id:3,t:'red',name:'Аварийная секция A',parent:2},{id:4,t:'red',name:'Аварийная секция B',parent:2},{id:5,t:'purple',name:'Лаборатория',parent:3},{id:6,t:'blue',name:'Резервуары',parent:4},{id:7,t:'red',name:'Двигательный отсек',parent:5},{id:8,t:'yellow',name:'Шлюз спасателей',parent:6},{id:9,t:'green',name:'Спасательный модуль',parent:8}],entities:["func_door","env_sprite","ambient_generic","logic_relay","trigger_hurt","trigger_once"]}
+   }},
+  {title:"HL Beta — G-Man Facility",
+   easy:"Загадочный объект G-Man из бета-концептов: нестандартные комнаты, атмосфера сна.",
+   med:"Внепространственный офис G-Man: коридоры с неевклидовой геометрией, несколько переходов.",
+   hard:"Полноценная зона G-Man: несколько «комнат-снов», архивы, финальная встреча.",
+   generator:{
+     easy:{tree:[{id:0,t:'purple',name:'Коридор снов',parent:null},{id:1,t:'green',name:'Переговорная',parent:0},{id:2,t:'purple',name:'Архив G-Man',parent:1},{id:3,t:'blue',name:'Пространственный разрыв',parent:2},{id:4,t:'purple',name:'Внутренняя комната',parent:3}],entities:["env_sprite","trigger_teleport","ambient_generic","logic_relay"]},
+     med:{tree:[{id:0,t:'purple',name:'Входной коридор',parent:null},{id:1,t:'purple',name:'Зал ожидания',parent:0},{id:2,t:'green',name:'Переговорная A',parent:1},{id:3,t:'green',name:'Переговорная B',parent:1},{id:4,t:'purple',name:'Архив',parent:2},{id:5,t:'blue',name:'Разрыв A',parent:3},{id:6,t:'purple',name:'Внутренний офис',parent:4},{id:7,t:'blue',name:'Разрыв B',parent:6}],entities:["env_sprite","trigger_teleport","ambient_generic","logic_relay","point_viewcontrol"]},
+     hard:{tree:[{id:0,t:'purple',name:'Входная точка',parent:null},{id:1,t:'purple',name:'Коридор A',parent:0},{id:2,t:'purple',name:'Коридор B',parent:0},{id:3,t:'green',name:'Зал встречи',parent:1},{id:4,t:'purple',name:'Архив случаев',parent:2},{id:5,t:'blue',name:'Пространственный узел',parent:3},{id:6,t:'purple',name:'Кабинет G-Man',parent:4},{id:7,t:'blue',name:'Точка перехода',parent:5},{id:8,t:'purple',name:'Финальный зал',parent:7},{id:9,t:'green',name:'Выход из снов',parent:8}],entities:["env_sprite","trigger_teleport","ambient_generic","logic_relay","point_viewcontrol","trigger_once"]}
+   }},
+  {title:"Пиратский форт — остров",
+   easy:"Пиратский форт на острове: пушки, деревянные настилы, флаг.",
+   med:"Укреплённый остров: несколько башен, подземные тоннели, тайники с сокровищами.",
+   hard:"Большой пиратский анклав: порт, казематы, несколько кораблей, финальный бой с капитаном.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Пристань',parent:null},{id:1,t:'green',name:'Двор форта',parent:0},{id:2,t:'green',name:'Казармы',parent:1},{id:3,t:'purple',name:'Капитанский кабинет',parent:2},{id:4,t:'red',name:'Пороховой склад',parent:1}],entities:["prop_physics","func_door","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'blue',name:'Морской вход',parent:null},{id:1,t:'yellow',name:'Пристань',parent:0},{id:2,t:'green',name:'Двор',parent:1},{id:3,t:'green',name:'Башня A',parent:2},{id:4,t:'green',name:'Башня B',parent:2},{id:5,t:'red',name:'Подземный тоннель',parent:3},{id:6,t:'purple',name:'Тайник сокровищ',parent:5},{id:7,t:'green',name:'Склад',parent:4}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay"]},
+     hard:{tree:[{id:0,t:'blue',name:'Открытое море',parent:null},{id:1,t:'yellow',name:'Порт',parent:0},{id:2,t:'green',name:'Форт — двор',parent:1},{id:3,t:'green',name:'Башня-донжон',parent:2},{id:4,t:'green',name:'Казематы',parent:2},{id:5,t:'red',name:'Подземный склад',parent:3},{id:6,t:'purple',name:'Капитанские покои',parent:3},{id:7,t:'red',name:'Тоннель A',parent:4},{id:8,t:'blue',name:'Подводный грот',parent:5},{id:9,t:'purple',name:'Тронный зал капитана',parent:6},{id:10,t:'yellow',name:'Путь отступления',parent:8}],entities:["prop_physics","func_door","ambient_generic","env_sprite","logic_relay","func_tracktrain"]}
+   }},
+  {title:"Водоочистительная станция",
+   easy:"Небольшая водоочистка: резервуары, насосы, лаборатория анализа воды.",
+   med:"Полноценная станция: несколько резервуаров, хлораторная, пульт управления.",
+   hard:"Захваченная станция: отравление воды, хаотичные клапаны, аварийная система.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'blue',name:'Резервуар A',parent:0},{id:2,t:'green',name:'Насосная',parent:1},{id:3,t:'purple',name:'Лаборатория анализа',parent:2},{id:4,t:'blue',name:'Резервуар B',parent:2}],entities:["func_door","func_water","ambient_generic","env_sprite"]},
+     med:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'blue',name:'Первичный отстойник',parent:0},{id:2,t:'green',name:'Насосная станция',parent:1},{id:3,t:'blue',name:'Хлораторная',parent:2},{id:4,t:'purple',name:'Пульт управления',parent:3},{id:5,t:'blue',name:'Чистый резервуар',parent:3},{id:6,t:'red',name:'Технический тоннель',parent:4},{id:7,t:'green',name:'Лаборатория',parent:4}],entities:["func_door","func_water","ambient_generic","env_sprite","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'blue',name:'Отстойник A',parent:0},{id:2,t:'blue',name:'Отстойник B',parent:0},{id:3,t:'green',name:'Насосная',parent:1},{id:4,t:'purple',name:'Пульт управления',parent:2},{id:5,t:'blue',name:'Хлораторная',parent:3},{id:6,t:'red',name:'Технический тоннель',parent:4},{id:7,t:'blue',name:'Чистый резервуар',parent:5},{id:8,t:'purple',name:'Центр отравления',parent:4},{id:9,t:'red',name:'Аварийный слив',parent:6},{id:10,t:'yellow',name:'Аварийный выход',parent:9}],entities:["func_door","func_water","ambient_generic","env_sprite","logic_relay","trigger_hurt","trigger_once"]}
+   }},
+  {title:"Вулканическая зона",
+   easy:"Небольшой вулканический ландшафт: лавовые трещины, горячие скалы, дымовые столбы.",
+   med:"Вулканический комплекс: несколько уровней скал, лавовые реки, мосты, пещеры.",
+   hard:"Активный вулкан: кратер, лавовые пещеры, подземные ходы, ритуальное место.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Горная тропа',parent:null},{id:1,t:'red',name:'Лавовый тоннель',parent:0},{id:2,t:'green',name:'Скальный уступ',parent:1},{id:3,t:'red',name:'Горячий проход',parent:2},{id:4,t:'purple',name:'Жерло вулкана',parent:3}],entities:["trigger_hurt","env_sprite","ambient_generic","prop_physics"]},
+     med:{tree:[{id:0,t:'yellow',name:'Базовый лагерь',parent:null},{id:1,t:'red',name:'Лавовый тоннель A',parent:0},{id:2,t:'green',name:'Скальная терраса',parent:1},{id:3,t:'red',name:'Лавовая река',parent:2},{id:4,t:'green',name:'Пещера отдыха',parent:2},{id:5,t:'red',name:'Лавовый тоннель B',parent:3},{id:6,t:'purple',name:'Кратер',parent:5},{id:7,t:'red',name:'Магматический зал',parent:6}],entities:["trigger_hurt","env_sprite","ambient_generic","prop_physics","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний склон',parent:null},{id:1,t:'red',name:'Главный тоннель',parent:0},{id:2,t:'green',name:'Пещера A',parent:1},{id:3,t:'green',name:'Пещера B',parent:1},{id:4,t:'red',name:'Лавовая река',parent:2},{id:5,t:'purple',name:'Ритуальный зал',parent:3},{id:6,t:'red',name:'Нижний тоннель',parent:4},{id:7,t:'purple',name:'Кратер',parent:5},{id:8,t:'red',name:'Магматическая камера',parent:7},{id:9,t:'blue',name:'Подземный источник',parent:6},{id:10,t:'purple',name:'Центральное ядро',parent:8}],entities:["trigger_hurt","env_sprite","ambient_generic","logic_relay","trigger_once"]}
+   }},
+  {title:"Исследовательская подлодка",
+   easy:"Маленькая подводная лодка: рубка управления, жилой отсек, торпедный отсек.",
+   med:"Научная субмарина: несколько отсеков, водолазный шлюз, реакторная, наблюдательный купол.",
+   hard:"Субмарина в аварии: разгерметизированные отсеки, тонущая, путь спасения, аварийный буй.",
+   generator:{
+     easy:{tree:[{id:0,t:'green',name:'Рубка управления',parent:null},{id:1,t:'blue',name:'Водолазный шлюз',parent:0},{id:2,t:'green',name:'Жилой отсек',parent:0},{id:3,t:'red',name:'Машинный отсек',parent:2},{id:4,t:'purple',name:'Торпедный отсек',parent:3}],entities:["func_door","ambient_generic","env_sprite","func_water"]},
+     med:{tree:[{id:0,t:'green',name:'Рубка управления',parent:null},{id:1,t:'purple',name:'Научный отсек',parent:0},{id:2,t:'blue',name:'Водолазный шлюз',parent:1},{id:3,t:'green',name:'Жилой блок',parent:0},{id:4,t:'red',name:'Реакторный отсек',parent:3},{id:5,t:'blue',name:'Наблюдательный купол',parent:2},{id:6,t:'red',name:'Машинный отсек',parent:4},{id:7,t:'blue',name:'Балластные цистерны',parent:6}],entities:["func_door","ambient_generic","env_sprite","func_water","logic_relay"]},
+     hard:{tree:[{id:0,t:'green',name:'Рубка',parent:null},{id:1,t:'purple',name:'Науч. центр',parent:0},{id:2,t:'blue',name:'Водолазный шлюз',parent:1},{id:3,t:'green',name:'Жилой блок',parent:0},{id:4,t:'red',name:'Авар. отсек A',parent:2},{id:5,t:'blue',name:'Купол наблюдения',parent:2},{id:6,t:'red',name:'Авар. отсек B',parent:3},{id:7,t:'red',name:'Реакторный отсек',parent:4},{id:8,t:'blue',name:'Балласт',parent:6},{id:9,t:'green',name:'Спасательная капсула',parent:5}],entities:["func_door","ambient_generic","env_sprite","func_water","logic_relay","trigger_hurt","trigger_once"]}
+   }},
+  {title:"HL Beta — Rail Road Station",
+   easy:"Ранняя вокзальная сцена из Beta: другой дизайн, другая атмосфера, старые поезда.",
+   med:"Beta-вокзал: несколько платформ, залы ожидания, служебные зоны.",
+   hard:"Оживлённый Beta-узел: несколько поездов, подземные переходы, военный контроль Beta.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Зал ожидания Beta',parent:null},{id:1,t:'yellow',name:'Платформа 1',parent:0},{id:2,t:'green',name:'Зал касс',parent:0},{id:3,t:'red',name:'Технический тоннель',parent:1},{id:4,t:'yellow',name:'Платформа 2',parent:2}],entities:["func_tracktrain","prop_physics","ambient_generic","func_door"]},
+     med:{tree:[{id:0,t:'yellow',name:'Главный зал Beta',parent:null},{id:1,t:'yellow',name:'Платформа A',parent:0},{id:2,t:'yellow',name:'Платформа B',parent:0},{id:3,t:'red',name:'Перегонный тоннель',parent:1},{id:4,t:'green',name:'Служебный корпус',parent:2},{id:5,t:'purple',name:'Диспетчерская',parent:4},{id:6,t:'red',name:'Технический переход',parent:3},{id:7,t:'green',name:'Депо',parent:6}],entities:["func_tracktrain","prop_physics","ambient_generic","func_door","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Центральный зал',parent:null},{id:1,t:'yellow',name:'Платформа A',parent:0},{id:2,t:'yellow',name:'Платформа B',parent:0},{id:3,t:'yellow',name:'Платформа C',parent:0},{id:4,t:'red',name:'Тоннель A-B',parent:1},{id:5,t:'red',name:'Тоннель B-C',parent:2},{id:6,t:'green',name:'Депо',parent:3},{id:7,t:'purple',name:'Диспетчерская',parent:4},{id:8,t:'red',name:'Технический тоннель',parent:5},{id:9,t:'green',name:'Военный блокпост Beta',parent:6},{id:10,t:'yellow',name:'Запасной выход',parent:9}],entities:["func_tracktrain","prop_physics","ambient_generic","func_door","logic_relay","npc_combine_s"]}
+   }},
+  {title:"Рыбный рынок — порт",
+   easy:"Портовый рыбный рынок: прилавки, рыболовецкие суда, склад улова.",
+   med:"Оживлённый портовый район: рынок, ресторан, причал, складские зоны.",
+   hard:"Порт под контролем преступников: скрытый трафик, подземные склады, водный путь побега.",
+   generator:{
+     easy:{tree:[{id:0,t:'yellow',name:'Вход на рынок',parent:null},{id:1,t:'green',name:'Рыночный зал',parent:0},{id:2,t:'blue',name:'Причал',parent:1},{id:3,t:'green',name:'Склад улова',parent:1},{id:4,t:'red',name:'Задний двор',parent:3}],entities:["prop_physics","func_door","ambient_generic","func_water"]},
+     med:{tree:[{id:0,t:'yellow',name:'Портовые ворота',parent:null},{id:1,t:'green',name:'Рынок A',parent:0},{id:2,t:'green',name:'Рынок B',parent:0},{id:3,t:'blue',name:'Причал',parent:1},{id:4,t:'green',name:'Ресторан',parent:2},{id:5,t:'red',name:'Склад',parent:3},{id:6,t:'blue',name:'Водный канал',parent:3},{id:7,t:'green',name:'Офис администрации',parent:4}],entities:["prop_physics","func_door","ambient_generic","func_water","logic_relay"]},
+     hard:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'green',name:'Рынок A',parent:0},{id:2,t:'green',name:'Рынок B',parent:0},{id:3,t:'blue',name:'Главный причал',parent:1},{id:4,t:'red',name:'Подземный склад',parent:2},{id:5,t:'purple',name:'Штаб организации',parent:3},{id:6,t:'blue',name:'Тайный причал',parent:4},{id:7,t:'red',name:'Тоннель A',parent:5},{id:8,t:'green',name:'Конспиративный склад',parent:6},{id:9,t:'blue',name:'Водный путь побега',parent:6},{id:10,t:'yellow',name:'Точка эвакуации',parent:9}],entities:["prop_physics","func_door","ambient_generic","func_water","logic_relay","func_tracktrain"]}
+   }},
+  {title:"HL Beta — Nihilanth Chamber",
+   easy:"Ранняя версия камеры Nihilanth: другие пропорции, другие кристаллы, начальная стадия боя.",
+   med:"Полуфинальная arena Beta: несколько фаз Nihilanth, побочные тоннели.",
+   hard:"Полный финал Beta: несколько стадий, армии Xen, нестабильные порталы.",
+   generator:{
+     easy:{tree:[{id:0,t:'purple',name:'Входной тоннель',parent:null},{id:1,t:'blue',name:'Нижнее поле',parent:0},{id:2,t:'purple',name:'Арена',parent:1},{id:3,t:'purple',name:'Нихилант (ранний)',parent:2},{id:4,t:'blue',name:'Энергетический узел',parent:3}],entities:["npc_nihilanth","env_sprite","trigger_teleport","ambient_generic"]},
+     med:{tree:[{id:0,t:'purple',name:'Портальный коридор',parent:null},{id:1,t:'blue',name:'Первое поле',parent:0},{id:2,t:'purple',name:'Основная арена',parent:1},{id:3,t:'purple',name:'Нихилант фаза 1',parent:2},{id:4,t:'blue',name:'Боковой тоннель A',parent:3},{id:5,t:'purple',name:'Нихилант фаза 2',parent:4},{id:6,t:'blue',name:'Боковой тоннель B',parent:5},{id:7,t:'purple',name:'Ядро',parent:6}],entities:["npc_nihilanth","npc_alien_grunt","env_sprite","trigger_teleport","ambient_generic","logic_relay"]},
+     hard:{tree:[{id:0,t:'purple',name:'Финальный портал',parent:null},{id:1,t:'blue',name:'Поле A',parent:0},{id:2,t:'blue',name:'Поле B',parent:0},{id:3,t:'purple',name:'Арена фаза 1',parent:1},{id:4,t:'purple',name:'Арена фаза 2',parent:2},{id:5,t:'purple',name:'Нихилант',parent:3},{id:6,t:'blue',name:'Тоннель кристаллов',parent:4},{id:7,t:'purple',name:'Энергетические узлы',parent:5},{id:8,t:'blue',name:'Финальное поле',parent:7},{id:9,t:'purple',name:'Ядро измерения',parent:8}],entities:["npc_nihilanth","npc_alien_grunt","npc_alien_slave","env_sprite","trigger_teleport","ambient_generic","logic_relay","trigger_once"]}
    }}
 ];
 
@@ -403,7 +1418,7 @@ drawBg();
 const wC=document.getElementById('wheel'),wCtx=wC.getContext('2d');
 function drawWheel(a){wCtx.clearRect(0,0,W,W);const sl=Math.PI*2/N;for(let i=0;i<N;i++){const s=a+i*sl,e=s+sl,col=WHEEL_COLS[i%WHEEL_COLS.length],iH=i===hoverSector;wCtx.beginPath();wCtx.moveTo(CX,CY);wCtx.arc(CX,CY,R,s,e);wCtx.closePath();wCtx.fillStyle=iH?col+'44':col+'14';wCtx.strokeStyle=iH?col+'99':col+'44';wCtx.lineWidth=iH?1.5:.7;wCtx.fill();wCtx.stroke();wCtx.save();wCtx.translate(CX,CY);wCtx.rotate(s+sl/2);wCtx.translate(R*.65,0);wCtx.font=`bold ${iH?20:15}px Orbitron,monospace`;wCtx.fillStyle=iH?'#fff':col+'88';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('?',0,0);wCtx.restore()}wCtx.beginPath();wCtx.arc(CX,CY,R,0,Math.PI*2);wCtx.strokeStyle='#00b4ff22';wCtx.lineWidth=1.2;wCtx.stroke();wCtx.beginPath();wCtx.arc(CX,CY,22,0,Math.PI*2);wCtx.fillStyle='#050c16';wCtx.fill();wCtx.strokeStyle='#00b4ff77';wCtx.lineWidth=1.2;wCtx.stroke();wCtx.font='bold 7px Orbitron,monospace';wCtx.fillStyle='#00b4ff';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('HL2',CX,CY)}
 drawWheel(0);
-wC.addEventListener('mousemove',e=>{const r=wC.getBoundingClientRect(),mx=e.clientX-r.left-CX,my=e.clientY-r.top-CY,d=Math.sqrt(mx*mx+my*my);if(d<R&&d>20){let a=(Math.atan2(my,mx)-angle+Math.PI*4)%(Math.PI*2);hoverSector=Math.floor(a/(Math.PI*2/N))%N}else hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
+wC.addEventListener('mousemove',e=>{const r=wC.getBoundingClientRect(),mx=e.clientX-r.left-CX,my=e.clientY-r.top-CY,d=Math.sqrt(mx*mx+my*my);if(d<R&&d>20){let a=(((Math.atan2(my,mx)-angle)%(Math.PI*2))+(Math.PI*2*2))%(Math.PI*2);hoverSector=Math.floor(a/(Math.PI*2/N))%N}else hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
 wC.addEventListener('mouseleave',()=>{hoverSector=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
 
 // cursor
@@ -414,7 +1429,35 @@ document.getElementById('app').addEventListener('mouseleave',()=>{if(!document.g
 // ===================== SPIN =====================
 let progTimer=null;
 function animProgress(dur){const fill=document.getElementById('progress-fill'),t0=performance.now();clearInterval(progTimer);progTimer=setInterval(()=>{const t=Math.min((performance.now()-t0)/dur,1);fill.style.width=t*100+'%';if(t>=1){clearInterval(progTimer);setTimeout(()=>fill.style.width='0%',400)}},16)}
-function spin(){if(spinning)return;getACtx();spinning=true;document.getElementById('spin-btn').disabled=true;document.getElementById('luck-btn').disabled=true;const dur=3500+Math.random()*2500;animProgress(dur);const total=Math.PI*2*(7+Math.random()*10)+Math.random()*Math.PI*2;const t0=performance.now();let last=-1;function frame(now){const t=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-t,4);angle=ease*total;const cur=Math.floor(((-Math.PI/2-angle%( Math.PI*2)+Math.PI*4)%(Math.PI*2))/(Math.PI*2/N))%N;if(cur!==last){playClick();last=cur}drawWheel(angle);if(t<1){requestAnimationFrame(frame)}else{angle=total%(Math.PI*2);drawWheel(angle);resultIdx=Math.floor(((-Math.PI/2-angle+Math.PI*4)%(Math.PI*2))/(Math.PI*2/N))%N;spinning=false;spinCount++;document.getElementById('spin-counter').textContent='СПИН #'+spinCount;playStop();flashScreen();setTimeout(showCard,500)}}requestAnimationFrame(frame)}
+function spin(){
+  if(spinning)return;getACtx();spinning=true;
+  document.getElementById('spin-btn').disabled=true;document.getElementById('luck-btn').disabled=true;
+  const dur=3500+Math.random()*2500;animProgress(dur);
+  const TAU=Math.PI*2;
+  const total=TAU*(7+Math.random()*10)+Math.random()*TAU;
+  const t0=performance.now();let last=-1;
+  function pmod(x,m){return ((x%m)+m)%m}
+  function sectorAt(a){
+    const norm=pmod(-Math.PI/2-a,TAU);
+    return Math.floor(norm/(TAU/N))%N;
+  }
+  function frame(now){
+    const t=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-t,4);
+    angle=ease*total;
+    const cur=sectorAt(angle);
+    if(cur!==last){playClick();last=cur}
+    drawWheel(angle);
+    if(t<1){requestAnimationFrame(frame)}
+    else{
+      angle=pmod(total,TAU);drawWheel(angle);
+      resultIdx=sectorAt(angle);
+      spinning=false;spinCount++;
+      document.getElementById('spin-counter').textContent='СПИН #'+spinCount;
+      playStop();flashScreen();setTimeout(showCard,500);
+    }
+  }
+  requestAnimationFrame(frame);
+}
 function flashScreen(col){const f=document.getElementById('flash');f.style.background=col||'#00b4ff';f.style.opacity='.1';setTimeout(()=>f.style.opacity='0',120)}
 
 // ===================== CARD =====================
@@ -461,46 +1504,59 @@ function resetWheel(){document.getElementById('wheel-wrap').classList.remove('re
 // ===================== IDLE =====================
 let idleA=0;function idle(){if(!spinning&&resultIdx===-1){idleA+=.0015;angle=idleA;drawWheel(idleA)}requestAnimationFrame(idle)}idle();
 
-// ===================== MAP LAYOUT ENGINE =====================
-// Arranges rooms in a logical TREE from top to bottom (main chain with branches)
-function buildLayout(rooms,names){
-  const NODE_W=96,NODE_H=52,H_GAP=52,V_GAP=68;
-  const n=rooms.length;
-  // Build tree: main spine + optional branches
-  // Determine branch points: every 3rd node can branch off
-  const spine=[],branches=[];
-  let branchEvery=Math.max(2,Math.floor(n/3));
-  for(let i=0;i<n;i++){
-    if(i>0&&i%branchEvery===0&&branches.length<Math.floor(n/4)&&i<n-1){
-      branches.push({from:i-1,node:i});
-      spine.push(i+1<n?i+1:-1);
-    } else {
-      spine.push(i);
-    }
-  }
-  // Assign positions
-  const positions=new Array(n);
-  // Spine: vertical chain centred at x=0
-  let spineX=0,spineY=0,lastSpine=-1;
-  const spineNodes=[];
-  for(let i=0;i<n;i++){
-    const isBranch=branches.some(b=>b.node===i);
-    if(!isBranch){spineNodes.push(i)}
-  }
-  spineNodes.forEach((ni,si)=>{positions[ni]={x:0,y:si*(NODE_H+V_GAP)}});
-  // Branches: place to the right of their parent
-  branches.forEach(b=>{
-    const ppos=positions[b.from]||{x:0,y:0};
-    positions[b.node]={x:NODE_W+H_GAP,y:ppos.y};
+
+// ===================== MAP LAYOUT ENGINE — TREE-BASED =====================
+// Builds a proper tree layout from .tree[] node definitions
+function buildLayout(treeNodes){
+  const NODE_W=110, NODE_H=56, H_GAP=48, V_GAP=60;
+  const n=treeNodes.length;
+  // Build children map
+  const children={};
+  const roots=[];
+  treeNodes.forEach(nd=>{
+    children[nd.id]=[];
+    if(nd.parent===null)roots.push(nd.id);
   });
-  // Fill any remaining unassigned
-  for(let i=0;i<n;i++){if(!positions[i]){const prev=positions[i-1]||{x:0,y:0};positions[i]={x:0,y:prev.y+NODE_H+V_GAP}}}
-  // Build objects
-  const rects=rooms.map((t,i)=>({t,name:names[i]||`Zone ${i+1}`,w:NODE_W,h:NODE_H,x:positions[i].x,y:positions[i].y,id:i}));
-  // Connections: spine chain + branch edges
+  treeNodes.forEach(nd=>{
+    if(nd.parent!==null&&children[nd.parent]!==undefined)
+      children[nd.parent].push(nd.id);
+  });
+  // Compute subtree widths (in units)
+  const subW={};
+  function calcSubW(id){
+    const ch=children[id]||[];
+    if(ch.length===0){subW[id]=1;return 1}
+    let total=0;ch.forEach(c=>{total+=calcSubW(c)});
+    subW[id]=Math.max(1,total);return subW[id];
+  }
+  roots.forEach(r=>calcSubW(r));
+  // Assign positions via DFS
+  const pos={};
+  function assignPos(id,depth,left){
+    const ch=children[id]||[];
+    const sw=subW[id];
+    const cx2=left+sw/2;
+    pos[id]={x:(cx2-0.5)*(NODE_W+H_GAP), y:depth*(NODE_H+V_GAP)};
+    let cl=left;
+    ch.forEach(c=>{assignPos(c,depth+1,cl);cl+=subW[c]});
+  }
+  let rootLeft=0;
+  roots.forEach(r=>{assignPos(r,0,rootLeft);rootLeft+=subW[r]});
+  // Build rects and conns
+  const rects=treeNodes.map(nd=>({
+    t:nd.t, name:nd.name, w:NODE_W, h:NODE_H,
+    x:pos[nd.id]?pos[nd.id].x:0,
+    y:pos[nd.id]?pos[nd.id].y:0,
+    id:nd.id
+  }));
   const conns=[];
-  spineNodes.forEach((ni,si)=>{if(si>0)conns.push([spineNodes[si-1],ni])});
-  branches.forEach(b=>{conns.push([b.from,b.node])});
+  treeNodes.forEach(nd=>{
+    if(nd.parent!==null){
+      const pi=treeNodes.findIndex(x=>x.id===nd.parent);
+      const ci=treeNodes.findIndex(x=>x.id===nd.id);
+      if(pi>=0&&ci>=0)conns.push([pi,ci]);
+    }
+  });
   return{rects,conns};
 }
 
@@ -551,7 +1607,7 @@ function regenMap(){
   if(resultIdx<0||!vp.canvas)return;
   const idea=ideas[resultIdx];
   const genData=idea.generator[mapDiff]||idea.generator.easy;
-  const {rects,conns}=buildLayout(genData.rooms,genData.names);
+  const {rects,conns}=buildLayout(genData.tree);
   vp.rooms=rects;vp.conns=conns;
   // auto-fit view
   let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
@@ -603,31 +1659,39 @@ function drawVP(){
   c.beginPath();c.moveTo(0,vt);c.lineTo(0,vb);c.stroke();
   c.beginPath();c.moveTo(vl,0);c.lineTo(vr,0);c.stroke();
 
-  // connections - L-shaped paths
+  // connections — tree elbow lines: bottom-of-parent → top-of-child
   vp.conns.forEach(([ai,bi])=>{
     const a=vp.rooms[ai],b=vp.rooms[bi];if(!a||!b)return;
-    const ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
-    // determine connector color: use the type of source room
+    // connect bottom-centre of parent to top-centre of child
+    const ax=a.x+a.w/2, ay=a.y+a.h;
+    const bx=b.x+b.w/2, by=b.y;
     const col=ROOM_COL[a.t]||'#4dff4d';
-    // draw filled corridor
-    const cw=12;
-    c.fillStyle=col+'15';
-    if(Math.abs(ax-bx)<4){// vertical
-      c.fillRect(ax-cw/2,Math.min(ay,by),cw,Math.abs(ay-by));
-    } else {// L-shape
-      c.fillRect(Math.min(ax,bx),ay-cw/2,Math.abs(ax-bx)+cw/2,cw);
-      c.fillRect(bx-cw/2,Math.min(ay,by)-cw/2,cw,Math.abs(ay-by)+cw/2);
+    const midY=(ay+by)/2;
+    const cw=8/vp.scale;
+    // filled corridor background
+    c.fillStyle=col+'12';
+    if(Math.abs(ax-bx)<2){
+      c.fillRect(ax-cw/2,ay,cw,by-ay);
+    } else {
+      c.fillRect(ax-cw/2,ay,cw,midY-ay);
+      c.fillRect(Math.min(ax,bx)-cw/2,midY-cw/2,Math.abs(ax-bx)+cw,cw);
+      c.fillRect(bx-cw/2,midY,cw,by-midY);
     }
-    // outline
-    c.strokeStyle=col+'66';c.lineWidth=1.5/vp.scale;c.setLineDash([6/vp.scale,4/vp.scale]);
+    // elbow outline
+    c.strokeStyle=col+'88';c.lineWidth=1.5/vp.scale;c.setLineDash([]);
     c.beginPath();c.moveTo(ax,ay);
-    if(Math.abs(ax-bx)<4){c.lineTo(bx,by)}
-    else{c.lineTo(bx,ay);c.lineTo(bx,by)}
-    c.stroke();c.setLineDash([]);
-    // door icon at midpoint
-    const mx=(Math.abs(ax-bx)<4)?bx:(bx),my=(Math.abs(ax-bx)<4)?( ay+by)/2:ay;
-    c.strokeStyle='#ffaa00cc';c.lineWidth=1.5/vp.scale;
-    c.strokeRect(mx-5/vp.scale,my-8/vp.scale,10/vp.scale,16/vp.scale);
+    if(Math.abs(ax-bx)<2){c.lineTo(bx,by)}
+    else{c.lineTo(ax,midY);c.lineTo(bx,midY);c.lineTo(bx,by)}
+    c.stroke();
+    // arrow tip at child entry
+    const aw=5/vp.scale;
+    c.fillStyle=col+'cc';
+    c.beginPath();c.moveTo(bx,by);c.lineTo(bx-aw,by-aw*1.4);c.lineTo(bx+aw,by-aw*1.4);c.closePath();c.fill();
+    // door symbol at elbow midpoint
+    const dx=Math.abs(ax-bx)<2?ax:((ax+bx)/2);
+    const dy=Math.abs(ax-bx)<2?(ay+by)/2:midY;
+    c.strokeStyle='#ffaa00aa';c.lineWidth=1.2/vp.scale;
+    c.strokeRect(dx-4/vp.scale,dy-7/vp.scale,8/vp.scale,14/vp.scale);
   });
 
   // rooms
