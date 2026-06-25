@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCP Foundation — Site Oracle</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#c8c8c8;font-family:'Share Tech Mono',monospace;overflow-x:hidden}
+#app{width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;padding:16px 20px 30px;cursor:none}
+/* --- BG --- */
+canvas#bgC{position:fixed;inset:0;z-index:0;pointer-events:none}
+#vignette{position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 20%,rgba(0,0,0,.92)100%);z-index:1;pointer-events:none}
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,140,0,.008)2px,rgba(255,140,0,.008)4px);z-index:1;pointer-events:none}
+/* --- CURSOR --- */
+#cursor{position:fixed;width:28px;height:28px;pointer-events:none;z-index:200;transform:translate(-50%,-50%)}
+/* --- CORNERS --- */
+.corner{position:fixed;width:24px;height:24px;z-index:5}
+.corner.tl{top:6px;left:6px;border-top:1px solid #ff8c0055;border-left:1px solid #ff8c0055}
+.corner.tr{top:6px;right:6px;border-top:1px solid #ff8c0055;border-right:1px solid #ff8c0055}
+.corner.bl{bottom:6px;left:6px;border-bottom:1px solid #ff8c0055;border-left:1px solid #ff8c0055}
+.corner.br{bottom:6px;right:6px;border-bottom:1px solid #ff8c0055;border-right:1px solid #ff8c0055}
+/* --- MAIN CONTENT --- */
+#content{position:relative;z-index:10;width:100%;display:flex;flex-direction:column;align-items:center}
+/* --- HEADER --- */
+.site-header{text-align:center;margin-bottom:14px}
+.scp-logo{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:8px;color:#ff8c00;text-transform:uppercase;opacity:.7}
+h1{font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:4px;color:#e8d5b0;text-transform:uppercase;margin:4px 0 2px;text-shadow:0 0 10px #ff8c0066}
+.sub{font-size:7px;letter-spacing:3px;color:#666;margin-bottom:6px}
+.status-bar{display:flex;gap:14px;font-size:7px;color:#555;letter-spacing:2px}
+.sb-item{display:flex;align-items:center;gap:4px}
+.sb-dot{width:4px;height:4px;border-radius:50%;animation:sbp 2s infinite}
+.sb-dot.g{background:#4dff4d}
+.sb-dot.o{background:#ff8c00;animation-delay:.5s}
+.sb-dot.r{background:#ff4444;animation-delay:1s}
+@keyframes sbp{0%,100%{opacity:.25}50%{opacity:1}}
+/* --- WHEEL AREA --- */
+#wheel-section{display:flex;flex-direction:column;align-items:center;margin-bottom:10px}
+#wheel-wrap{position:relative;transition:transform .9s cubic-bezier(.4,0,.2,1)}
+#wheel-wrap.dimmed{transform:translateY(120px) scale(.45)!important;opacity:.12;pointer-events:none}
+#gR1{position:absolute;inset:-8px;border-radius:50%;border:1px solid #ff8c0018;pointer-events:none;animation:rp 3s ease-in-out infinite}
+#gR2{position:absolute;inset:-20px;border-radius:50%;border:1px solid #ff8c000a;pointer-events:none;animation:rp 3.5s ease-in-out infinite .6s}
+@keyframes rp{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.02)}}
+canvas#whl{display:block}
+svg#ndl{position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:5;filter:drop-shadow(0 0 6px #ff8c00)}
+#prog-bar{width:300px;height:2px;background:#ff8c0010;margin-top:8px}
+#prog-fill{height:100%;width:0%;background:linear-gradient(90deg,#ff8c00,#ff4444);transition:width .05s linear}
+/* --- BUTTONS --- */
+#btn-row{display:flex;gap:7px;margin-top:11px;align-items:center}
+.btn{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;background:transparent;border:1px solid;padding:8px 18px;cursor:none;text-transform:uppercase;transition:all .2s;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,140,0,.1),transparent);transition:left .5s}
+.btn:hover::after{left:100%}
+.btn-primary{border-color:#ff8c0055;color:#ff8c0099}
+.btn-primary:hover{border-color:#ff8c00;color:#ff8c00;box-shadow:0 0 16px #ff8c0033}
+.btn-primary:disabled{opacity:.2}
+.btn-secondary{border-color:#66666633;color:#66666699;padding:8px 11px}
+.btn-secondary:hover{border-color:#888;color:#ccc}
+/* --- RESULT AREA --- */
+#result-area{position:absolute;top:38px;left:50%;transform:translateX(-50%);z-index:15;opacity:0;pointer-events:none;transition:opacity .5s;width:min(1200px,calc(100% - 24px))}
+#result-area.visible{opacity:1;pointer-events:all}
+.result-layout{display:flex;gap:14px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+/* --- CARD --- */
+.card-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0}
+.scp-card{width:278px;background:rgba(10,10,10,.97);border:1px solid #ff8c0033;position:relative;overflow:hidden;animation:cardWob 2.5s ease-in-out infinite}
+.scp-card.flipped{animation:none}
+.scp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,140,0,.04),transparent 60%);pointer-events:none}
+.card-holo{position:absolute;inset:0;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
+.scp-card:hover .card-holo{opacity:1}
+@keyframes cardWob{0%,100%{transform:rotate(-1.5deg) translateY(0)}50%{transform:rotate(1.5deg) translateY(-3px)}}
+.card-header{background:rgba(255,140,0,.06);padding:8px 12px;font-size:8px;letter-spacing:3px;color:#ff8c0099;border-bottom:1px solid #ff8c0015;display:flex;align-items:center;justify-content:center;gap:7px;z-index:2;position:relative}
+.hl{flex:1;height:1px;background:linear-gradient(90deg,transparent,#ff8c0033)}
+.card-body{padding:16px;text-align:center;position:relative;z-index:2}
+.card-qmark{font-size:46px;color:#ff8c00;text-shadow:0 0 18px #ff8c0099;animation:qp 1.6s ease-in-out infinite}
+@keyframes qp{0%,100%{text-shadow:0 0 10px #ff8c0055;transform:scale(1)}50%{text-shadow:0 0 26px #ff8c00cc;transform:scale(1.06)}}
+.card-hint{font-size:8px;color:#ff8c0055;letter-spacing:2px;margin-top:9px;animation:bl 1.8s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+.card-back{display:none;padding:12px;text-align:left}
+.scp-card.flipped .card-qmark,.scp-card.flipped .card-hint{display:none}
+.scp-card.flipped .card-back{display:block}
+.scp-num{font-size:7px;color:#ff8c0044;letter-spacing:2px;margin-bottom:4px;text-align:center}
+.scp-title{font-family:'Rajdhani',sans-serif;font-size:12px;color:#e8d5b0;letter-spacing:1px;margin-bottom:8px;text-align:center;padding-bottom:6px;border-bottom:1px solid #ff8c0015}
+.class-badge{display:inline-block;font-size:7px;letter-spacing:2px;padding:3px 8px;margin:3px 0 1px;border-radius:1px;font-family:'Share Tech Mono',monospace}
+.cb-safe{background:rgba(0,180,0,.1);color:#4dff4d;border:1px solid #4dff4d22}
+.cb-euclid{background:rgba(255,140,0,.1);color:#ff8c00;border:1px solid #ff8c0022}
+.cb-keter{background:rgba(255,0,0,.1);color:#ff4444;border:1px solid #ff444422}
+.diff-desc{font-size:9.5px;color:#888;line-height:1.65;margin-top:2px;margin-bottom:7px}
+.diff-desc span.cur{border-right:1px solid #ff8c0088}
+#card-reset{display:none;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;background:transparent;border:1px solid #ff444433;color:#ff444455;padding:7px;cursor:none;transition:all .2s;margin-top:7px;width:100%}
+#card-reset:hover{background:rgba(255,68,68,.06);border-color:#ff4444;color:#ff4444}
+#card-reset.visible{display:block}
+/* --- MAP PANEL --- */
+#map-panel{flex:1;min-width:300px;max-width:740px;background:rgba(10,10,10,.97);border:1px solid #ff8c0018;padding:12px;opacity:0;transform:translateX(14px);transition:opacity .5s,transform .5s;pointer-events:none}
+#map-panel.visible{opacity:1;transform:translateX(0);pointer-events:all}
+.mp-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ff8c0012;padding-bottom:8px;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.mp-t{font-size:8px;letter-spacing:3px;color:#ff8c0088}
+.mp-proj{font-size:7px;color:#55555588;letter-spacing:1px}
+/* diff + layer row */
+.mp-ctrl-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.mpc{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;background:transparent;border:1px solid #ffffff18;color:#555;padding:5px 9px;cursor:none;transition:all .2s;text-transform:uppercase}
+.mpc:hover{border-color:#ff8c0055;color:#ff8c00}
+.mpc.active-safe{background:#4dff4d;color:#0a0a0a;border-color:transparent}
+.mpc.active-euclid{background:#ff8c00;color:#0a0a0a;border-color:transparent}
+.mpc.active-keter{background:#ff4444;color:#0a0a0a;border-color:transparent}
+.mpc.active-layer{background:rgba(255,140,0,.15);color:#ff8c00;border-color:#ff8c0066}
+.mpc.active-layer:hover{background:rgba(255,140,0,.25)}
+/* layer badge row */
+.layer-label{font-size:7px;color:#ff8c0077;letter-spacing:3px;margin-bottom:4px;padding-top:4px;border-top:1px solid #ff8c0012}
+/* viewport */
+.vp-shell{border:1px solid #ff8c0015;background:#080808}
+.vp-topbar{display:flex;justify-content:space-between;padding:5px 10px;border-bottom:1px solid #ff8c000d;font-size:6px;letter-spacing:2px;color:#555;text-transform:uppercase}
+.vp-cwrap{position:relative;width:100%;height:320px;overflow:hidden;cursor:none}
+canvas.vpc{width:100%;height:100%;display:block}
+.vp-ov{position:absolute;pointer-events:none;font-size:6px;letter-spacing:1px;color:#ff8c0044}
+/* stats */
+.mp-stats{display:flex;flex-wrap:wrap;gap:5px 12px;padding:7px 0 0;font-size:6px;letter-spacing:1px;color:#888;border-top:1px solid #ff8c000d;margin-top:7px;text-transform:uppercase}
+.mp-stats span{color:#ff8c00}
+.mp-ents{margin-top:7px;padding-top:7px;border-top:1px solid #ff8c000d}
+.mp-ent-t{font-size:6px;color:#ff444477;letter-spacing:2px;margin-bottom:5px}
+.mp-ent-list{display:flex;flex-wrap:wrap;gap:4px}
+.mp-ent{font-size:6px;color:#ff444466;border:1px solid #ff444418;padding:2px 6px;letter-spacing:1px}
+.mp-legend{display:flex;flex-wrap:wrap;gap:5px 11px;margin-top:7px;font-size:6px;letter-spacing:1px;color:#888}
+.leg{display:flex;align-items:center;gap:4px}
+.leg-sw{width:7px;height:7px;border:1px solid currentColor;display:inline-block}
+.mp-regen{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;background:transparent;border:1px solid #ff8c0022;color:#ff8c0055;padding:5px 12px;cursor:none;transition:all .2s;margin-top:8px;text-transform:uppercase}
+.mp-regen:hover{border-color:#ff8c00;color:#ff8c00;box-shadow:0 0 8px #ff8c0022}
+/* --- HISTORY --- */
+#hist-panel{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:20;width:340px;background:rgba(10,10,10,.98);border:1px solid #ff8c0022;padding:11px;display:none}
+#hist-panel.visible{display:block}
+#hist-panel h3{font-size:8px;color:#ff8c0077;letter-spacing:3px;margin-bottom:8px;text-align:center}
+.hist-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ffffff05;font-size:8px}
+.h-n{color:#ff8c0033;width:18px}.h-t{color:#aaa;flex:1;padding:0 7px}.h-s{color:#ff444455;font-size:7px}
+#hist-close{font-size:7px;color:#ff8c0055;background:transparent;border:1px solid #ff8c0018;padding:5px;cursor:none;margin-top:7px;width:100%;letter-spacing:2px;transition:all .2s}
+#hist-close:hover{color:#ff8c00;border-color:#ff8c0055}
+/* --- FLASH / PARTICLES --- */
+canvas#ptc{position:fixed;inset:0;pointer-events:none;z-index:50}
+#flash{position:fixed;inset:0;background:#ff8c00;opacity:0;pointer-events:none;z-index:60;transition:opacity .08s}
+@media(max-width:820px){#result-area{position:relative;top:auto;left:auto;transform:none;padding-top:28px;width:100%}.result-layout{flex-direction:column;align-items:center}#map-panel{max-width:100%;min-width:0;transform:translateY(10px)}#map-panel.visible{transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="bgC"></canvas>
+  <div id="vignette"></div>
+  <div class="scanlines"></div>
+  <svg id="cursor" viewBox="0 0 28 28">
+    <circle cx="14" cy="14" r="12" fill="none" stroke="#ff8c00" stroke-width=".7" opacity=".5"/>
+    <line x1="14" y1="1" x2="14" y2="8" stroke="#ff8c00" stroke-width=".7"/>
+    <line x1="14" y1="20" x2="14" y2="27" stroke="#ff8c00" stroke-width=".7"/>
+    <line x1="1" y1="14" x2="8" y2="14" stroke="#ff8c00" stroke-width=".7"/>
+    <line x1="20" y1="14" x2="27" y2="14" stroke="#ff8c00" stroke-width=".7"/>
+    <circle cx="14" cy="14" r="1.5" fill="#ff4444"/>
+  </svg>
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+  <div id="flash"></div>
+  <canvas id="ptc"></canvas>
+  <div id="content">
+    <div class="site-header">
+      <div class="scp-logo">SCP Foundation</div>
+      <h1>Site Construction Oracle</h1>
+      <div class="sub">SECURE · CONTAIN · PROTOTYPE · v1.0</div>
+      <div class="status-bar">
+        <div class="sb-item"><div class="sb-dot g"></div><span>ONLINE</span></div>
+        <div class="sb-item"><div class="sb-dot o"></div><span id="spin-ctr">SPIN #0</span></div>
+        <div class="sb-item"><div class="sb-dot r"></div><span>O5 LINK</span></div>
+      </div>
+    </div>
+    <div id="wheel-section">
+      <div id="wheel-wrap">
+        <div id="gR1"></div><div id="gR2"></div>
+        <svg id="ndl" width="20" height="28" viewBox="0 0 20 28"><polygon points="10,0 20,28 10,21 0,28" fill="#ff8c00"/><polygon points="10,0 20,28 10,21 0,28" fill="none" stroke="#ffaa44" stroke-width="1"/></svg>
+        <canvas id="whl" width="300" height="300"></canvas>
+      </div>
+      <div id="prog-bar"><div id="prog-fill"></div></div>
+      <div id="btn-row">
+        <button class="btn btn-primary" id="spin-btn" onclick="spin()">▶ ПОЛУЧИТЬ ЗАДАНИЕ</button>
+        <button class="btn btn-secondary" onclick="toggleHist()">📋</button>
+        <button class="btn btn-secondary" onclick="spin()">⚡</button>
+      </div>
+    </div>
+    <div id="result-area">
+      <div class="result-layout">
+        <div class="card-wrap">
+          <div class="scp-card" id="scp-card" onclick="flipCard()" onmousemove="holoMv(event)" onmouseleave="holoLv()">
+            <div class="card-holo" id="card-holo"></div>
+            <div class="card-header"><div class="hl"></div><span>CLASSIFIED ASSIGNMENT</span><div class="hl"></div></div>
+            <div class="card-body">
+              <div class="card-qmark">?</div>
+              <div class="card-hint">[ TAP TO DECLASSIFY ]</div>
+              <div class="card-back" id="card-back"></div>
+            </div>
+          </div>
+          <button id="card-reset" onclick="resetAll()">↺ NEW ASSIGNMENT</button>
+        </div>
+        <div id="map-panel"></div>
+      </div>
+    </div>
+  </div>
+  <div id="hist-panel">
+    <h3>◆ ASSIGNMENT HISTORY ◆</h3>
+    <div id="hist-list"></div>
+    <button id="hist-close" onclick="toggleHist()">[ CLOSE ]</button>
+  </div>
+</div>
+<script>
+// ===== SCP IDEAS =====
+const ideas=[
+  {title:"SCP-173 — Скульптура",scp:"SCP-173",cls:"keter",
+   easy:"Одиночная камера содержания с усиленным бетоном и стеклом наблюдения. Зал ожидания перед входом.",
+   med:"Блок содержания с двойными шлюзами, комнатой наблюдения, системой тревоги и обходным коридором.",
+   hard:"Полный комплекс: камера первичная, камера резервная, КП наблюдения, отсек D-класса, дезактивационный шлюз.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз A',parent:null},{id:1,t:'green',name:'Подготовительная',parent:0},{id:2,t:'red',name:'Камера SCP-173',parent:1},{id:3,t:'purple',name:'Пост наблюдения',parent:2}],entities:["trigger_hurt","func_door","logic_relay"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'green',name:'Раздевалка персонала',parent:0},{id:2,t:'yellow',name:'Коридор доступа',parent:1},{id:3,t:'red',name:'Первичная камера',parent:2},{id:4,t:'purple',name:'КП наблюдения',parent:2},{id:5,t:'green',name:'Инвентарь',parent:1},{id:6,t:'red',name:'Кормовая камера D-класса',parent:3}],entities:["func_door","trigger_hurt","logic_relay","ambient_generic"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП уровня 4',parent:null},{id:1,t:'green',name:'Предбанник',parent:0},{id:2,t:'yellow',name:'Первичный шлюз',parent:1},{id:3,t:'red',name:'Камера A',parent:2},{id:4,t:'red',name:'Камера B (резервная)',parent:2},{id:5,t:'purple',name:'Центр наблюдения',parent:1},{id:6,t:'green',name:'Отсек D-класса',parent:3},{id:7,t:'yellow',name:'Вторичный шлюз',parent:4},{id:8,t:'purple',name:'Сейф персонала',parent:5},{id:9,t:'red',name:'Дезактивация',parent:7}],entities:["func_door","trigger_hurt","logic_relay","ambient_generic","trigger_once"]}
+   }},
+  {title:"SCP-682 — Рептилия",scp:"SCP-682",cls:"keter",
+   easy:"Усиленная камера содержания с кислотной ванной и стенами из армированного бетона.",
+   med:"Комплекс с несколькими барьерами, инженерным отсеком, кабельной шахтой и отсеком тестирования.",
+   hard:"Мегакомплекс: первичный бассейн с кислотой, резервные отсеки, центр наблюдения, протокол уничтожения.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз входа',parent:null},{id:1,t:'blue',name:'Кислотный бассейн',parent:0},{id:2,t:'red',name:'Основная камера',parent:1},{id:3,t:'purple',name:'КП',parent:0}],entities:["trigger_hurt","func_door","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Инженерный отсек',parent:0},{id:2,t:'blue',name:'Первичный бассейн',parent:1},{id:3,t:'red',name:'Камера содержания',parent:2},{id:4,t:'red',name:'Резервная камера',parent:2},{id:5,t:'purple',name:'КП наблюдения',parent:0},{id:6,t:'red',name:'Кабельный тоннель',parent:3}],entities:["trigger_hurt","func_door","logic_relay","ambient_generic"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Периметр',parent:null},{id:1,t:'green',name:'Инженерный центр',parent:0},{id:2,t:'blue',name:'Кислотный резервуар A',parent:1},{id:3,t:'blue',name:'Кислотный резервуар B',parent:1},{id:4,t:'red',name:'Первичная камера',parent:2},{id:5,t:'red',name:'Резервная камера',parent:3},{id:6,t:'purple',name:'Командный центр',parent:0},{id:7,t:'red',name:'Тоннель отступления',parent:4},{id:8,t:'purple',name:'Зал протокола',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["trigger_hurt","func_door","logic_relay","ambient_generic","trigger_once"]}
+   }},
+  {title:"SCP-049 — Доктор Чума",scp:"SCP-049",cls:"euclid",
+   easy:"Камера содержания гуманоида с базовыми системами наблюдения и интеркомом.",
+   med:"Медицинский блок: камера, кабинет для интервью, морг для жертв 049-2, зал ожидания.",
+   hard:"Медицинский комплекс: камера, интервью, морг, лаборатория для SCP-049-2, охраняемые шлюзы.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Камера 049',parent:0},{id:2,t:'purple',name:'Кабинет интервью',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Медблок — вход',parent:null},{id:1,t:'green',name:'Камера 049',parent:0},{id:2,t:'purple',name:'Кабинет интервью',parent:1},{id:3,t:'red',name:'Морг (049-2)',parent:2},{id:4,t:'green',name:'Зал ожидания',parent:0},{id:5,t:'red',name:'Изолятор 049-2',parent:3},{id:6,t:'purple',name:'КП наблюдения',parent:0}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП уровня 3',parent:null},{id:1,t:'green',name:'Холл медблока',parent:0},{id:2,t:'green',name:'Камера 049',parent:1},{id:3,t:'purple',name:'Кабинет интервью',parent:2},{id:4,t:'red',name:'Морг',parent:3},{id:5,t:'red',name:'Карантин 049-2 A',parent:4},{id:6,t:'red',name:'Карантин 049-2 B',parent:4},{id:7,t:'purple',name:'Центр наблюдения',parent:1},{id:8,t:'green',name:'Лаборатория',parent:3},{id:9,t:'yellow',name:'Аварийный выход',parent:5}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-096 — Стеснительный",scp:"SCP-096",cls:"euclid",
+   easy:"Металлическая камера без окон, мешок на голове, базовые датчики.",
+   med:"Камера с системой автоматического закрытия лица, отсеком наблюдения через непрозрачный материал.",
+   hard:"Комплекс с несколькими антикамерами, системой предотвращения контакта, нейтрализационным отсеком.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'red',name:'Камера 096',parent:0},{id:2,t:'purple',name:'Пост (непрозрачная стена)',parent:1},{id:3,t:'green',name:'Хранилище оборудования',parent:0}],entities:["func_door","logic_relay","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'green',name:'Пред-камера',parent:0},{id:2,t:'red',name:'Основная камера',parent:1},{id:3,t:'purple',name:'КП (без прямого вида)',parent:1},{id:4,t:'green',name:'Комната снаряжения',parent:0},{id:5,t:'red',name:'Нейтральная зона',parent:2},{id:6,t:'yellow',name:'Аварийный шлюз',parent:5}],entities:["func_door","logic_relay","ambient_generic","trigger_once"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП уровня 4',parent:null},{id:1,t:'green',name:'Предбанник',parent:0},{id:2,t:'yellow',name:'Антикамера A',parent:1},{id:3,t:'red',name:'Основная камера',parent:2},{id:4,t:'yellow',name:'Антикамера B',parent:3},{id:5,t:'purple',name:'Безопасный КП',parent:1},{id:6,t:'green',name:'Снаряжение',parent:1},{id:7,t:'red',name:'Нейтрализационный отсек',parent:4},{id:8,t:'purple',name:'Архив инцидентов',parent:5},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["func_door","logic_relay","ambient_generic","trigger_once","env_sprite"]}
+   }},
+  {title:"SCP-106 — Старик",scp:"SCP-106",cls:"keter",
+   easy:"Электромагнитная камера с системой феромонов для приманки. Вход через крепкий шлюз.",
+   med:"Многослойная камера: EM-поле, кислотная ванна, феромонная система, КП.",
+   hard:"Полный блок: EM-генераторы, камера захвата, карманное измерение, туннели патруля.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'EM-шлюз',parent:null},{id:1,t:'purple',name:'EM-камера',parent:0},{id:2,t:'green',name:'Система феромонов',parent:1},{id:3,t:'purple',name:'КП',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний EM-КПП',parent:null},{id:1,t:'purple',name:'Первичная EM-камера',parent:0},{id:2,t:'blue',name:'Кислотная ванна',parent:1},{id:3,t:'purple',name:'Вторичная камера',parent:2},{id:4,t:'green',name:'Феромонная система',parent:0},{id:5,t:'red',name:'Тоннель патруля',parent:3},{id:6,t:'purple',name:'КП EM',parent:0}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_hurt"]},
+     keter:{tree:[{id:0,t:'yellow',name:'EM-периметр',parent:null},{id:1,t:'green',name:'EM-генераторный центр',parent:0},{id:2,t:'purple',name:'Первичная камера',parent:1},{id:3,t:'purple',name:'Вторичная камера',parent:2},{id:4,t:'blue',name:'Кислотная система',parent:2},{id:5,t:'red',name:'Карманное измерение',parent:3},{id:6,t:'green',name:'Феромонный центр',parent:1},{id:7,t:'red',name:'Туннель патруля A',parent:5},{id:8,t:'red',name:'Туннель патруля B',parent:5},{id:9,t:'purple',name:'Главный КП',parent:1},{id:10,t:'yellow',name:'Аварийный выход',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_hurt","trigger_once"]}
+   }},
+  {title:"SCP-914 — Тонкий механизм",scp:"SCP-914",cls:"safe",
+   easy:"Камера с механизмом 914, зоной ввода и вывода, комнатой ожидания.",
+   med:"Исследовательский блок: камера 914, несколько зон тестирования, хранилище результатов.",
+   hard:"Полный тест-комплекс: 914, зоны по настройкам, архив, наблюдательная галерея.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Камера SCP-914',parent:0},{id:2,t:'green',name:'Зона ввода',parent:1},{id:3,t:'green',name:'Зона вывода',parent:1},{id:4,t:'green',name:'Ожидание',parent:0}],entities:["func_door","logic_relay","prop_physics"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Входной шлюз',parent:null},{id:1,t:'purple',name:'Основная камера 914',parent:0},{id:2,t:'green',name:'Зона ввода',parent:1},{id:3,t:'green',name:'Зона вывода',parent:1},{id:4,t:'green',name:'Хранилище образцов',parent:3},{id:5,t:'purple',name:'Архив результатов',parent:0},{id:6,t:'green',name:'Зал ожидания',parent:0},{id:7,t:'red',name:'Изолятор опасных предметов',parent:3}],entities:["func_door","logic_relay","prop_physics","ambient_generic"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП уровня 2',parent:null},{id:1,t:'purple',name:'Основная камера 914',parent:0},{id:2,t:'green',name:'Зона грубой обработки',parent:1},{id:3,t:'green',name:'Зона тонкой обработки',parent:1},{id:4,t:'green',name:'Зона 1:1',parent:1},{id:5,t:'red',name:'Изолятор аномального',parent:3},{id:6,t:'purple',name:'Архив',parent:0},{id:7,t:'green',name:'Наблюдательная галерея',parent:1},{id:8,t:'green',name:'Склад материалов',parent:2},{id:9,t:'yellow',name:'Аварийный шлюз',parent:5}],entities:["func_door","logic_relay","prop_physics","ambient_generic","env_sprite"]}
+   }},
+  {title:"SCP-2399 — Нарушитель на Юпитере",scp:"SCP-2399",cls:"keter",
+   easy:"Наблюдательный пост: телескопическая комната, аналитический центр, комната связи.",
+   med:"Исследовательский комплекс: обсерватория, дата-центр, комнаты анализа, убежище персонала.",
+   hard:"Полный мониторинговый объект: обсерватория, EM-анализ, криптография, протокол Omega.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'green',name:'Наблюдательный пост',parent:0},{id:2,t:'purple',name:'Аналитика',parent:1},{id:3,t:'green',name:'Связь',parent:2}],entities:["env_sprite","ambient_generic","func_door"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'Обсерватория',parent:0},{id:2,t:'green',name:'Дата-центр',parent:1},{id:3,t:'purple',name:'Аналитический зал',parent:2},{id:4,t:'green',name:'Комната связи',parent:3},{id:5,t:'green',name:'Жилой блок',parent:0},{id:6,t:'red',name:'Убежище',parent:5}],entities:["env_sprite","ambient_generic","func_door","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'purple',name:'Обсерватория',parent:0},{id:2,t:'green',name:'EM-аналитика',parent:1},{id:3,t:'purple',name:'Криптографический центр',parent:2},{id:4,t:'green',name:'Дата-центр',parent:3},{id:5,t:'green',name:'Жилой блок',parent:0},{id:6,t:'red',name:'Протокол Omega — бункер',parent:5},{id:7,t:'purple',name:'Центр анализа',parent:3},{id:8,t:'green',name:'Серверная',parent:4},{id:9,t:'yellow',name:'Эвакуационный шлюз',parent:6}],entities:["env_sprite","ambient_generic","func_door","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-055 — Антимем",scp:"SCP-055",cls:"safe",
+   easy:"Нейтральная камера хранения без документации. Сотрудники не помнят что там.",
+   med:"Исследовательский блок: камера, зона интервью персонала, комнаты дебрифинга.",
+   hard:"Антимем-комплекс: камера, циклы дебрифинга, архив-петля, медицинское наблюдение.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Нейтральный шлюз',parent:null},{id:1,t:'green',name:'Камера (содержимое неизвестно)',parent:0},{id:2,t:'purple',name:'Зал дебрифинга',parent:1},{id:3,t:'green',name:'Медпункт',parent:2}],entities:["func_door","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз A',parent:null},{id:1,t:'green',name:'Камера ?',parent:0},{id:2,t:'purple',name:'Дебрифинг A',parent:1},{id:3,t:'purple',name:'Дебрифинг B',parent:1},{id:4,t:'green',name:'Медицинский отсек',parent:2},{id:5,t:'red',name:'Изолятор амнезии',parent:3},{id:6,t:'yellow',name:'Шлюз выхода',parent:4}],entities:["func_door","ambient_generic","env_sprite"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Нейтральный КПП',parent:null},{id:1,t:'green',name:'Предбанник (персонал забывает)',parent:0},{id:2,t:'red',name:'Камера',parent:1},{id:3,t:'purple',name:'Дебрифинг A',parent:2},{id:4,t:'purple',name:'Дебрифинг B',parent:2},{id:5,t:'green',name:'Медицина',parent:3},{id:6,t:'purple',name:'Архив-петля',parent:4},{id:7,t:'red',name:'Амнезиак-изолятор',parent:5},{id:8,t:'green',name:'Наблюдение за персоналом',parent:6},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]}
+   }},
+  {title:"SCP-500 — Панацея",scp:"SCP-500",cls:"safe",
+   easy:"Небольшой медицинский отсек с хранилищем банки, защищённым сейфом.",
+   med:"Медицинский исследовательский центр: хранилище, лаборатория репликации, тестовые секции.",
+   hard:"Фармацевтический комплекс: первичное хранилище, попытка репликации, защищённый архив.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Медотсек',parent:0},{id:2,t:'purple',name:'Сейф SCP-500',parent:1},{id:3,t:'green',name:'Аптека',parent:1}],entities:["func_door","prop_physics","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Медицинский шлюз',parent:null},{id:1,t:'green',name:'Хранилище',parent:0},{id:2,t:'purple',name:'Сейф SCP-500',parent:1},{id:3,t:'purple',name:'Лаборатория репликации',parent:1},{id:4,t:'green',name:'Тест-зона A',parent:3},{id:5,t:'green',name:'Тест-зона B',parent:3},{id:6,t:'red',name:'Карантин провалов',parent:4}],entities:["func_door","prop_physics","ambient_generic","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Первичный медцентр',parent:0},{id:2,t:'purple',name:'Первичный сейф',parent:1},{id:3,t:'purple',name:'Лаборатория A',parent:1},{id:4,t:'purple',name:'Лаборатория B',parent:1},{id:5,t:'green',name:'Клиника',parent:3},{id:6,t:'red',name:'Карантин',parent:4},{id:7,t:'purple',name:'Архив результатов',parent:2},{id:8,t:'green',name:'Фармацевтика',parent:5},{id:9,t:'yellow',name:'Аварийный медшлюз',parent:6}],entities:["func_door","prop_physics","ambient_generic","logic_relay","env_sprite"]}
+   }},
+  {title:"SCP-076 — Авель",scp:"SCP-076",cls:"keter",
+   easy:"Многослойная камера с гробницей внутри. Бронированные двери, системы сдерживания.",
+   med:"Комплекс с гробницей, зоной активации, хранилищем вооружения, КП.",
+   hard:"Полный объект: гробница, активационные шлюзы, вооружённые посты, нейтрализационный центр.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Бронешлюз',parent:null},{id:1,t:'red',name:'Гробница Авеля',parent:0},{id:2,t:'purple',name:'Пост наблюдения',parent:1},{id:3,t:'green',name:'Вооружённый КПП',parent:0}],entities:["func_door","trigger_once","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'red',name:'Гробница',parent:0},{id:2,t:'red',name:'Зона активации',parent:1},{id:3,t:'purple',name:'КП наблюдения',parent:2},{id:4,t:'green',name:'Арсенал MTF',parent:0},{id:5,t:'green',name:'Брифинг-зал',parent:0},{id:6,t:'yellow',name:'Аварийный шлюз',parent:4}],entities:["func_door","trigger_once","ambient_generic","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Периметр',parent:null},{id:1,t:'green',name:'Боевой КПП',parent:0},{id:2,t:'red',name:'Гробница Авеля',parent:1},{id:3,t:'red',name:'Зона пробуждения',parent:2},{id:4,t:'purple',name:'Центр управления',parent:1},{id:5,t:'green',name:'Арсенал MTF',parent:1},{id:6,t:'green',name:'Казармы MTF',parent:5},{id:7,t:'red',name:'Нейтрализационный отсек',parent:3},{id:8,t:'purple',name:'Ситуационный центр',parent:4},{id:9,t:'yellow',name:'Путь эвакуации',parent:7}],entities:["func_door","trigger_once","ambient_generic","logic_relay","trigger_hurt"]}
+   }},
+  {title:"SCP-1048 — Строитель-медведь",scp:"SCP-1048",cls:"keter",
+   easy:"Небольшие тюремные клетки с постоянным мониторингом, поиск медведя и его копий.",
+   med:"Блок с мягким пространством, патрулями, запертыми кабинетами и системой меток.",
+   hard:"Объект в режиме вспышки: карантин, эвакуация, изолятор 1048-A/B/C.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Мягкая зона',parent:0},{id:2,t:'purple',name:'КП наблюдения',parent:1},{id:3,t:'green',name:'Хранение поделок',parent:1}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Патрульный блок A',parent:0},{id:2,t:'green',name:'Патрульный блок B',parent:0},{id:3,t:'purple',name:'Наблюдение',parent:1},{id:4,t:'red',name:'Карантин копий',parent:2},{id:5,t:'green',name:'Зал персонала',parent:0},{id:6,t:'yellow',name:'Аварийный шлюз',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП вспышки',parent:null},{id:1,t:'green',name:'Зона A (карантин)',parent:0},{id:2,t:'green',name:'Зона B (карантин)',parent:0},{id:3,t:'red',name:'Изолятор 1048-A',parent:1},{id:4,t:'red',name:'Изолятор 1048-B',parent:1},{id:5,t:'red',name:'Изолятор 1048-C',parent:2},{id:6,t:'purple',name:'Ситуационный центр',parent:0},{id:7,t:'green',name:'Медицинский блок',parent:2},{id:8,t:'yellow',name:'Эвакуационный коридор',parent:6},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-3008 — ИКЕА",scp:"SCP-3008",cls:"euclid",
+   easy:"Аномальный магазин-пространство: входной портал, бескрайний торговый зал.",
+   med:"Мониторинговый блок: точка входа, временный лагерь, зоны исследования, эвакуация.",
+   hard:"Полный мониторинг: порталы, поселения выживших, зоны ночных существ, путь эвакуации.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Портал-вход',parent:null},{id:1,t:'purple',name:'Аномальный торговый зал',parent:0},{id:2,t:'green',name:'Временный лагерь',parent:1},{id:3,t:'red',name:'Зона существ (ночь)',parent:1}],entities:["trigger_teleport","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Точка входа',parent:null},{id:1,t:'purple',name:'Зал A',parent:0},{id:2,t:'purple',name:'Зал B',parent:0},{id:3,t:'green',name:'Лагерь выживших',parent:1},{id:4,t:'red',name:'Ночная зона A',parent:2},{id:5,t:'green',name:'Исследовательский лагерь',parent:2},{id:6,t:'yellow',name:'Точка эвакуации',parent:5}],entities:["trigger_teleport","ambient_generic","env_sprite","npc_citizen"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Портал-вход',parent:null},{id:1,t:'purple',name:'Зал А (первичный)',parent:0},{id:2,t:'purple',name:'Зал Б (вторичный)',parent:1},{id:3,t:'green',name:'Поселение A',parent:1},{id:4,t:'green',name:'Поселение B',parent:2},{id:5,t:'red',name:'Ночная зона A',parent:2},{id:6,t:'red',name:'Ночная зона B',parent:3},{id:7,t:'purple',name:'Глубинный зал',parent:5},{id:8,t:'green',name:'Экспедиционный лагерь',parent:4},{id:9,t:'yellow',name:'Точка эвакуации',parent:8}],entities:["trigger_teleport","ambient_generic","env_sprite","npc_citizen","trigger_hurt"]}
+   }},
+  {title:"SCP-939 — Много голосов",scp:"SCP-939",cls:"euclid",
+   easy:"Камера с туманом, голосовые приманки-ловушки, базовый мониторинг.",
+   med:"Стайный блок: несколько камер, система обнаружения, шлюзы кормления.",
+   hard:"Полный объект стаи: изолированные камеры, аудиосистема, тестирование на D-классе.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'red',name:'Камера 939',parent:0},{id:2,t:'purple',name:'Аудио-КП',parent:1},{id:3,t:'green',name:'Шлюз кормления',parent:1}],entities:["func_door","ambient_generic","trigger_hurt"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'red',name:'Камера A',parent:0},{id:2,t:'red',name:'Камера B',parent:0},{id:3,t:'purple',name:'Аудио-центр',parent:1},{id:4,t:'green',name:'Шлюз кормления',parent:2},{id:5,t:'red',name:'Транзитный тоннель',parent:3},{id:6,t:'purple',name:'КП наблюдения',parent:0}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Изолированный КПП',parent:null},{id:1,t:'red',name:'Камера A',parent:0},{id:2,t:'red',name:'Камера B',parent:0},{id:3,t:'red',name:'Камера C',parent:1},{id:4,t:'purple',name:'Аудио-центр',parent:2},{id:5,t:'green',name:'Шлюз кормления A',parent:1},{id:6,t:'green',name:'Шлюз кормления B',parent:3},{id:7,t:'purple',name:'Тест-зона D-класса',parent:4},{id:8,t:'red',name:'Транзитный тоннель',parent:5},{id:9,t:'yellow',name:'Аварийный шлюз',parent:8}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-035 — Маска-обладатель",scp:"SCP-035",cls:"keter",
+   easy:"Камера с маской под стеклом, антикоррозийная обработка, базовый мониторинг.",
+   med:"Исследовательский блок: камера маски, кабинет интервью, морг жертв, химотсек.",
+   hard:"Полный объект: камера, химзащита, интервью, мёртвая зона разлива, архив жертв.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Камера маски',parent:0},{id:2,t:'green',name:'Химическая обработка',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","trigger_hurt"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'purple',name:'Камера SCP-035',parent:0},{id:2,t:'green',name:'Химическая зона',parent:1},{id:3,t:'purple',name:'Кабинет интервью',parent:2},{id:4,t:'red',name:'Морг жертв',parent:3},{id:5,t:'green',name:'КП наблюдения',parent:0},{id:6,t:'red',name:'Зона разлива',parent:1}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'Камера SCP-035',parent:0},{id:2,t:'green',name:'Хим-защита A',parent:1},{id:3,t:'green',name:'Хим-защита B',parent:1},{id:4,t:'purple',name:'Зал интервью',parent:2},{id:5,t:'red',name:'Морг',parent:4},{id:6,t:'red',name:'Зона разлива',parent:3},{id:7,t:'purple',name:'Архив жертв',parent:5},{id:8,t:'green',name:'Медицинский блок',parent:4},{id:9,t:'yellow',name:'Аварийный шлюз',parent:6}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay","env_sprite"]}
+   }},
+  {title:"SCP-087 — Лестничный пролёт",scp:"SCP-087",cls:"euclid",
+   easy:"Дверь в аномальную лестницу, пост наблюдения, оборудование снаряжения.",
+   med:"Мониторинговый блок: вход, пост, архив экспедиций, медотсек.",
+   hard:"Полный мониторинг: входной пост, несколько команд экспедиции, архив, протоколы потери.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Вход к лестнице',parent:null},{id:1,t:'red',name:'SCP-087 — Спуск',parent:0},{id:2,t:'purple',name:'Пост наблюдения',parent:0},{id:3,t:'green',name:'Снаряжение',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Мониторинговый пост',parent:null},{id:1,t:'red',name:'Лестничный спуск',parent:0},{id:2,t:'purple',name:'КП наблюдения',parent:0},{id:3,t:'green',name:'Снаряжение экспедиции',parent:0},{id:4,t:'purple',name:'Архив инцидентов',parent:2},{id:5,t:'green',name:'Медотсек',parent:3},{id:6,t:'red',name:'Зона потери контакта',parent:1}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Входной пост',parent:null},{id:1,t:'red',name:'SCP-087 Вход',parent:0},{id:2,t:'purple',name:'КП Альфа',parent:0},{id:3,t:'purple',name:'КП Бета',parent:0},{id:4,t:'green',name:'Экспедиция A',parent:1},{id:5,t:'green',name:'Экспедиция B (ожидание)',parent:1},{id:6,t:'red',name:'Зона молчания',parent:4},{id:7,t:'purple',name:'Архив потерянных',parent:2},{id:8,t:'green',name:'Медцентр',parent:3},{id:9,t:'yellow',name:'Протокол завершения',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-343 — «Бог»",scp:"SCP-343",cls:"safe",
+   easy:"Зал аудиенции, комфортная обстановка, комнаты для персонала O5.",
+   med:"Исследовательский блок: зал встреч, кабинеты интервью, архив высказываний.",
+   hard:"Дипломатический комплекс: залы аудиенции, архив, зоны переговоров O5.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Вход',parent:null},{id:1,t:'purple',name:'Зал аудиенции',parent:0},{id:2,t:'green',name:'Ожидание',parent:1},{id:3,t:'green',name:'Архив беседы',parent:1}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Зал аудиенции',parent:0},{id:2,t:'green',name:'Кабинет интервью A',parent:1},{id:3,t:'green',name:'Кабинет интервью B',parent:1},{id:4,t:'purple',name:'Архив',parent:2},{id:5,t:'green',name:'Зона отдыха',parent:0},{id:6,t:'purple',name:'КП наблюдения',parent:0}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Дипломатический шлюз',parent:null},{id:1,t:'purple',name:'Главный зал',parent:0},{id:2,t:'purple',name:'Зал переговоров A',parent:1},{id:3,t:'purple',name:'Зал переговоров B',parent:1},{id:4,t:'green',name:'Комнаты O5',parent:2},{id:5,t:'green',name:'Архив A',parent:3},{id:6,t:'green',name:'Архив B',parent:3},{id:7,t:'purple',name:'Зал финальной аудиенции',parent:1},{id:8,t:'green',name:'Зона отдыха персонала',parent:0},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]}
+   }},
+  {title:"SCP-1000 — Бигфут",scp:"SCP-1000",cls:"keter",
+   easy:"Зона наблюдения в лесу, пост слежения, небольшой исследовательский лагерь.",
+   med:"Мониторинговый лесной пост: вышки наблюдения, подземный бункер, зона контакта.",
+   hard:"Полный исследовательский объект: множество постов, подземный центр, протокол первого контакта.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Лесной пост',parent:null},{id:1,t:'green',name:'Наблюдательная вышка',parent:0},{id:2,t:'green',name:'Базовый лагерь',parent:1},{id:3,t:'purple',name:'Архив следов',parent:2}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Периметр леса',parent:null},{id:1,t:'green',name:'Вышка A',parent:0},{id:2,t:'green',name:'Вышка B',parent:0},{id:3,t:'red',name:'Подземный бункер',parent:1},{id:4,t:'purple',name:'Аналитический центр',parent:3},{id:5,t:'green',name:'Зона контакта',parent:2},{id:6,t:'yellow',name:'Путь отступления',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'green',name:'Пост A',parent:0},{id:2,t:'green',name:'Пост B',parent:0},{id:3,t:'green',name:'Пост C',parent:0},{id:4,t:'red',name:'Подземный центр',parent:1},{id:5,t:'purple',name:'Протокол контакта',parent:4},{id:6,t:'green',name:'Зона контакта A',parent:2},{id:7,t:'green',name:'Зона контакта B',parent:3},{id:8,t:'purple',name:'Архив',parent:5},{id:9,t:'yellow',name:'Эвакуационный тоннель',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }},
+  {title:"SCP-662 — Серебряный колокольчик",scp:"SCP-662",cls:"safe",
+   easy:"Небольшая комната хранения, сейф с колокольчиком, зал ожидания.",
+   med:"Исследовательский блок: хранилище, зона вызова, кабинет интервью с Мандел-бадром.",
+   hard:"Дипломатический комплекс: хранение, зоны встреч, архив запросов.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Комната хранения',parent:0},{id:2,t:'purple',name:'Сейф с колокольчиком',parent:1},{id:3,t:'green',name:'Зал ожидания',parent:1}],entities:["func_door","ambient_generic","prop_physics"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Хранилищный шлюз',parent:null},{id:1,t:'green',name:'Основное хранилище',parent:0},{id:2,t:'purple',name:'Сейф SCP-662',parent:1},{id:3,t:'purple',name:'Зона вызова',parent:1},{id:4,t:'green',name:'Кабинет интервью',parent:3},{id:5,t:'green',name:'Архив запросов',parent:4},{id:6,t:'yellow',name:'Выход',parent:5}],entities:["func_door","ambient_generic","prop_physics","env_sprite"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Хранилище A',parent:0},{id:2,t:'purple',name:'Сейф (первичный)',parent:1},{id:3,t:'green',name:'Зона вызова',parent:1},{id:4,t:'purple',name:'Зона встречи A',parent:3},{id:5,t:'purple',name:'Зона встречи B',parent:3},{id:6,t:'green',name:'Архив A',parent:4},{id:7,t:'green',name:'Архив B',parent:5},{id:8,t:'green',name:'Зал ожидания',parent:0},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","prop_physics","env_sprite","logic_relay"]}
+   }},
+  {title:"SCP-280 — Черная тень",scp:"SCP-280",cls:"keter",
+   easy:"Тёмная камера с минимальным освещением, экранирование от света.",
+   med:"Темный блок: камера, тоннель наблюдения, система света-ловушки.",
+   hard:"Полный объект: тёмные зоны, световые ловушки, нейтрализационный протокол.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Световой шлюз',parent:null},{id:1,t:'red',name:'Тёмная камера',parent:0},{id:2,t:'purple',name:'КП (со светом)',parent:0},{id:3,t:'green',name:'Световая ловушка',parent:1}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Световой шлюз',parent:null},{id:1,t:'red',name:'Первичная тёмная зона',parent:0},{id:2,t:'red',name:'Вторичная тёмная зона',parent:1},{id:3,t:'purple',name:'КП (изолирован)',parent:0},{id:4,t:'green',name:'Световая ловушка A',parent:1},{id:5,t:'green',name:'Световая ловушка B',parent:2},{id:6,t:'yellow',name:'Аварийный световой шлюз',parent:5}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний световой КПП',parent:null},{id:1,t:'green',name:'Переходная зона',parent:0},{id:2,t:'red',name:'Тёмная зона A',parent:1},{id:3,t:'red',name:'Тёмная зона B',parent:1},{id:4,t:'green',name:'Световая ловушка A',parent:2},{id:5,t:'green',name:'Световая ловушка B',parent:3},{id:6,t:'purple',name:'Командный центр',parent:0},{id:7,t:'red',name:'Нейтрализационная зона',parent:4},{id:8,t:'purple',name:'Протокол А',parent:6},{id:9,t:'yellow',name:'Световой эвакуационный путь',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_hurt"]}
+   }}
+];
+
+// Room colors matching SCP aesthetic  
+const ROOM_COL={green:'#4dff4d',red:'#ff4444',yellow:'#ffaa00',blue:'#00b4ff',purple:'#cc44ff'};
+const ROOM_LABEL={green:'Зона',red:'Изолятор',yellow:'Шлюз',blue:'Резервуар',purple:'Особый отсек'};
+const N=ideas.length;
+const W=300,R=136,CX=150,CY=150;
+const WCOLS=["#ff8c00","#ff4444","#cc44ff","#4dff4d","#00b4ff","#ffaa00","#ff6644","#cc8800","#886600","#aa2244","#448844","#224488","#884422","#226688","#882266","#448866","#664488","#886644","#226644","#664422"];
+
+let angle=0,spinning=false,resultIdx=-1,particles=[],spinCt=0,history=[],histVis=false,hvSec=-1;
+let mapDiff='safe',curLayer=1;
+let vp={c:null,x:null,ox:0,oy:0,sc:1,drag:false,lx:0,ly:0,rooms:[],conns:[]};
+
+// ===== AUDIO =====
+let actx=null;
+function gAC(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx}
+function playClick(){try{const a=gAC(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.setValueAtTime(900,a.currentTime);o.frequency.exponentialRampToValueAtTime(300,a.currentTime+.04);g.gain.setValueAtTime(.07,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.04);o.start();o.stop(a.currentTime+.04)}catch(e){}}
+function playStop(){try{const a=gAC();[60,45,30].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sawtooth';o.frequency.setValueAtTime(f,a.currentTime+i*.15);g.gain.setValueAtTime(.1,a.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+i*.15+.5);o.start(a.currentTime+i*.15);o.stop(a.currentTime+i*.15+.5)})}catch(e){}}
+function playZap(){try{const a=gAC(),buf=a.createBuffer(1,a.sampleRate*.25,a.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);const s=a.createBufferSource(),g=a.createGain(),f=a.createBiquadFilter();s.buffer=buf;f.type='bandpass';f.frequency.value=1500;s.connect(f);f.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.25);s.start()}catch(e){}}
+
+// ===== BG =====
+const bgC=document.getElementById('bgC'),bgX=bgC.getContext('2d');
+let bgW=0,bgH=0;
+function resizeBg(){bgW=bgC.width=window.innerWidth;bgH=bgC.height=window.innerHeight}
+resizeBg();window.addEventListener('resize',resizeBg);
+const beams=Array.from({length:4},(_,i)=>({x:Math.random()*1200,y:-200,speed:.3+Math.random()*.2,w:60+Math.random()*100,opacity:.015+Math.random()*.02,hue:i%3===0?20:i%3===1?0:270}));
+let bf=0;
+function drawBg(){bgX.clearRect(0,0,bgW,bgH);bgX.fillStyle='#080808';bgX.fillRect(0,0,bgW,bgH);bgX.strokeStyle='rgba(255,140,0,0.025)';bgX.lineWidth=1;for(let x=0;x<bgW;x+=50){bgX.beginPath();bgX.moveTo(x,0);bgX.lineTo(x,bgH);bgX.stroke()}for(let y=0;y<bgH;y+=50){bgX.beginPath();bgX.moveTo(0,y);bgX.lineTo(bgW,y);bgX.stroke()}beams.forEach(b=>{const bx=b.x+Math.sin(bf*.006)*60;const gr=bgX.createLinearGradient(bx,0,bx,bgH);gr.addColorStop(0,`hsla(${b.hue},80%,50%,${b.opacity*1.5})`);gr.addColorStop(1,'transparent');bgX.beginPath();bgX.moveTo(bx-b.w,0);bgX.lineTo(bx+b.w,0);bgX.lineTo(bx+b.w*.7,bgH);bgX.lineTo(bx-b.w*.7,bgH);bgX.closePath();bgX.fillStyle=gr;bgX.fill();b.y+=b.speed;if(b.y>bgH+400)b.y=-400});if(bf%4===0){bgX.fillStyle='rgba(255,140,0,0.4)';for(let i=0;i<2;i++){const rx=Math.random()*bgW,ry=Math.random()*bgH;bgX.fillRect(rx,ry,.8,3+Math.random()*6)}}bf++;requestAnimationFrame(drawBg)}
+drawBg();
+
+// ===== CURSOR =====
+const curEl=document.getElementById('cursor');
+document.addEventListener('mousemove',e=>{curEl.style.left=e.clientX+'px';curEl.style.top=e.clientY+'px';if(!document.getElementById('wheel-wrap').classList.contains('dimmed')&&!spinning){const ww=document.getElementById('wheel-wrap');const dx=(e.clientX/window.innerWidth-.5)*6,dy=(e.clientY/window.innerHeight-.5)*4;ww.style.transform=`perspective(700px) rotateY(${dx}deg) rotateX(${-dy}deg)`}});
+
+// ===== WHEEL =====
+const wC=document.getElementById('whl'),wCtx=wC.getContext('2d');
+function drawWheel(a){wCtx.clearRect(0,0,W,W);const sl=Math.PI*2/N;for(let i=0;i<N;i++){const s=a+i*sl,e=s+sl,col=WCOLS[i%WCOLS.length],iH=i===hvSec;wCtx.beginPath();wCtx.moveTo(CX,CY);wCtx.arc(CX,CY,R,s,e);wCtx.closePath();wCtx.fillStyle=iH?col+'55':col+'15';wCtx.strokeStyle=iH?col+'aa':col+'44';wCtx.lineWidth=iH?1.5:.6;wCtx.fill();wCtx.stroke();wCtx.save();wCtx.translate(CX,CY);wCtx.rotate(s+sl/2);wCtx.translate(R*.63,0);wCtx.font=`bold ${iH?17:12}px Share Tech Mono,monospace`;wCtx.fillStyle=iH?'#fff':col+'88';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('?',0,0);wCtx.restore()}wCtx.beginPath();wCtx.arc(CX,CY,R,0,Math.PI*2);wCtx.strokeStyle='#ff8c0022';wCtx.lineWidth=1;wCtx.stroke();wCtx.beginPath();wCtx.arc(CX,CY,20,0,Math.PI*2);wCtx.fillStyle='#0a0a0a';wCtx.fill();wCtx.strokeStyle='#ff8c0077';wCtx.lineWidth=1;wCtx.stroke();wCtx.font='bold 6px Share Tech Mono,monospace';wCtx.fillStyle='#ff8c00';wCtx.textAlign='center';wCtx.textBaseline='middle';wCtx.fillText('SCP',CX,CY)}
+drawWheel(0);
+wC.addEventListener('mousemove',e=>{const r=wC.getBoundingClientRect(),mx=e.clientX-r.left-CX,my=e.clientY-r.top-CY,d=Math.sqrt(mx*mx+my*my);if(d<R&&d>18){let a=(((Math.atan2(my,mx)-angle)%(Math.PI*2))+Math.PI*4)%(Math.PI*2);hvSec=Math.floor(a/(Math.PI*2/N))%N}else hvSec=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
+wC.addEventListener('mouseleave',()=>{hvSec=-1;if(!spinning&&resultIdx===-1)drawWheel(angle)});
+
+// ===== PROGRESS =====
+let progT=null;
+function animProg(dur){const f=document.getElementById('prog-fill'),t0=performance.now();clearInterval(progT);progT=setInterval(()=>{const t=Math.min((performance.now()-t0)/dur,1);f.style.width=t*100+'%';if(t>=1){clearInterval(progT);setTimeout(()=>f.style.width='0%',400)}},16)}
+
+// ===== SPIN =====
+function pmod(x,m){return((x%m)+m)%m}
+function secAt(a){return Math.floor(pmod(-Math.PI/2-a,Math.PI*2)/(Math.PI*2/N))%N}
+function spin(){if(spinning)return;gAC();spinning=true;document.getElementById('spin-btn').disabled=true;const dur=3500+Math.random()*2500;animProg(dur);const total=Math.PI*2*(8+Math.random()*9)+Math.random()*Math.PI*2;const t0=performance.now();let last=-1;function frame(now){const t=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-t,4);angle=ease*total;const c=secAt(angle);if(c!==last){playClick();last=c}drawWheel(angle);if(t<1){requestAnimationFrame(frame)}else{angle=pmod(total,Math.PI*2);drawWheel(angle);resultIdx=secAt(angle);spinning=false;spinCt++;document.getElementById('spin-ctr').textContent='SPIN #'+spinCt;playStop();flash();setTimeout(showCard,500)}}requestAnimationFrame(frame)}
+function flash(col){const f=document.getElementById('flash');f.style.background=col||'#ff8c00';f.style.opacity='.08';setTimeout(()=>f.style.opacity='0',120)}
+
+// ===== CARD =====
+function showCard(){
+  document.getElementById('wheel-wrap').classList.add('dimmed');
+  document.getElementById('wheel-wrap').style.transform='';
+  document.getElementById('result-area').classList.add('visible');
+  mapDiff='safe';curLayer=1;
+  buildMapPanel();
+  const idea=ideas[resultIdx];
+  const clsMap={safe:'cb-safe',euclid:'cb-euclid',keter:'cb-keter'};
+  document.getElementById('card-back').innerHTML=
+    `<div class="scp-num">ОБЪЕКТ #${resultIdx+1} / ${N} — SPIN #${spinCt}</div>
+     <div class="scp-title" id="ctt"></div>
+     <div id="dblock" style="display:none">
+       <div><span class="class-badge ${clsMap.safe}">◆ SAFE</span><div class="diff-desc" id="dte"></div></div>
+       <div><span class="class-badge ${clsMap.euclid}">◆ EUCLID</span><div class="diff-desc" id="dtm"></div></div>
+       <div><span class="class-badge ${clsMap.keter}" id="kbadge">◆ KETER</span><div class="diff-desc" id="dth"></div></div>
+     </div>`;
+  document.getElementById('card-reset').classList.add('visible');
+}
+function flipCard(){const card=document.getElementById('scp-card');if(card.classList.contains('flipped'))return;card.classList.add('flipped');playZap();flash('#ff4444');launchP();history.unshift({title:ideas[resultIdx].scp+' — '+ideas[resultIdx].title.split('—')[1].trim(),spin:spinCt});if(history.length>5)history.pop();const idea=ideas[resultIdx];typeText('ctt',idea.title,()=>{document.getElementById('dblock').style.display='block';typeText('dte',idea.easy,()=>{typeText('dtm',idea.med,()=>{typeText('dth',idea.hard,()=>{const kb=document.getElementById('kbadge');if(kb)kb.style.animation='shake .18s infinite'})})})});buildMapPanel()}
+function typeText(id,text,cb){const el=document.getElementById(id);if(!el)return;el.innerHTML='';let i=0;const iv=setInterval(()=>{el.innerHTML=text.slice(0,i)+'<span class="cur"> </span>';i++;if(i>text.length){clearInterval(iv);el.innerHTML=text;if(cb)cb()}},20)}
+function holoMv(e){const r=document.getElementById('scp-card').getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;const h=document.getElementById('card-holo');h.style.background=`radial-gradient(circle at ${x*100}% ${y*100}%,rgba(255,140,0,.12),rgba(255,68,68,.07),transparent 70%)`;h.style.opacity='1'}
+function holoLv(){document.getElementById('card-holo').style.opacity='0'}
+
+// ===== PARTICLES =====
+const ptC=document.getElementById('ptc'),ptX=ptC.getContext('2d');
+function resizePt(){ptC.width=window.innerWidth;ptC.height=window.innerHeight}resizePt();window.addEventListener('resize',resizePt);
+function launchP(){const aR={left:0,top:0},cR=document.getElementById('scp-card').getBoundingClientRect(),ox=cR.left+cR.width/2,oy=cR.top+cR.height/2;const cols=["#ff8c00","#ff4444","#cc44ff","#ffaa00","#fff","#ff6600","#884400"];particles=[];for(let i=0;i<80;i++){const a=Math.random()*Math.PI*2,spd=2+Math.random()*9;particles.push({x:ox,y:oy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd-3,w:3+Math.random()*10,h:3+Math.random()*10,rot:Math.random()*360,vr:(Math.random()-.5)*15,col:cols[Math.floor(Math.random()*cols.length)],life:1,trail:[]})}animPt()}
+function animPt(){ptX.clearRect(0,0,ptC.width,ptC.height);let alive=false;for(const p of particles){if(p.life<=0)continue;alive=true;p.trail.push({x:p.x,y:p.y,a:p.life});if(p.trail.length>12)p.trail.shift();for(let i=0;i<p.trail.length-1;i++){ptX.beginPath();ptX.moveTo(p.trail[i].x,p.trail[i].y);ptX.lineTo(p.trail[i+1].x,p.trail[i+1].y);ptX.strokeStyle=`rgba(255,255,255,${p.trail[i].a*(i/p.trail.length)*.4})`;ptX.lineWidth=1.4;ptX.stroke()}ptX.save();ptX.translate(p.x,p.y);ptX.rotate(p.rot*Math.PI/180);ptX.fillStyle=p.col+Math.floor(p.life*255).toString(16).padStart(2,'0');ptX.fillRect(-p.w/2,-p.h/2,p.w,p.h);ptX.restore();p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.985;p.rot+=p.vr;p.life-=.015}if(alive)requestAnimationFrame(animPt);else ptX.clearRect(0,0,ptC.width,ptC.height)}
+
+// ===== HISTORY =====
+function toggleHist(){histVis=!histVis;const p=document.getElementById('hist-panel');if(histVis){p.classList.add('visible');const l=document.getElementById('hist-list');l.innerHTML=history.length===0?'<div style="font-size:8px;color:#333;text-align:center;padding:10px">NO RECORDS</div>':history.map((h,i)=>`<div class="hist-item"><span class="h-n">${i+1}</span><span class="h-t">${h.title}</span><span class="h-s">SPIN #${h.spin}</span></div>`).join('')}else p.classList.remove('visible')}
+
+// ===== RESET =====
+function resetAll(){document.getElementById('wheel-wrap').classList.remove('dimmed');document.getElementById('wheel-wrap').style.transform='';document.getElementById('result-area').classList.remove('visible');document.getElementById('scp-card').classList.remove('flipped');document.getElementById('card-reset').classList.remove('visible');document.getElementById('spin-btn').disabled=false;const mp=document.getElementById('map-panel');mp.classList.remove('visible');mp.innerHTML='';resultIdx=-1;particles=[];ptX.clearRect(0,0,ptC.width,ptC.height);drawWheel(angle)}
+
+// ===== IDLE =====
+let idleA=0;function idle(){if(!spinning&&resultIdx===-1){idleA+=.001;angle=idleA;drawWheel(idleA)}requestAnimationFrame(idle)}idle();
+
+// ===== LAYOUT ENGINE =====
+function buildLayout(treeNodes){
+  const NW=104,NH=52,HG=46,VG=64;
+  const children={};const roots=[];
+  treeNodes.forEach(nd=>{children[nd.id]=[];if(nd.parent===null)roots.push(nd.id)});
+  treeNodes.forEach(nd=>{if(nd.parent!==null&&children[nd.parent]!==undefined)children[nd.parent].push(nd.id)});
+  const subW={};
+  function cSW(id){const ch=children[id]||[];if(!ch.length){subW[id]=1;return 1}let t=0;ch.forEach(c=>{t+=cSW(c)});subW[id]=Math.max(1,t);return subW[id]}
+  roots.forEach(r=>cSW(r));
+  const pos={};
+  function aPos(id,depth,left){const ch=children[id]||[];const sw=subW[id];pos[id]={x:(left+sw/2-.5)*(NW+HG),y:depth*(NH+VG)};let cl=left;ch.forEach(c=>{aPos(c,depth+1,cl);cl+=subW[c]})}
+  let rl=0;roots.forEach(r=>{aPos(r,0,rl);rl+=subW[r]});
+  const rects=treeNodes.map(nd=>({t:nd.t,name:nd.name,w:NW,h:NH,x:pos[nd.id]?pos[nd.id].x:0,y:pos[nd.id]?pos[nd.id].y:0,id:nd.id}));
+  const conns=[];treeNodes.forEach(nd=>{if(nd.parent!==null){const pi=treeNodes.findIndex(x=>x.id===nd.parent),ci=treeNodes.findIndex(x=>x.id===nd.id);if(pi>=0&&ci>=0)conns.push([pi,ci])}});
+  return{rects,conns};
+}
+
+// ===== MAP PANEL =====
+function buildMapPanel(){
+  if(resultIdx<0)return;
+  const idea=ideas[resultIdx];
+  const mp=document.getElementById('map-panel');
+  mp.innerHTML=`
+  <div class="mp-head">
+    <div><div class="mp-t">&#x2B21; SCP SITE VIEWPORT</div><div class="mp-proj">${idea.scp} &#x2014; ${idea.title.split('\u2014').slice(1).join('\u2014').trim()}</div></div>
+    <button class="mp-regen" onclick="regenMap()">&#x21BA; REGEN</button>
+  </div>
+  <div class="mp-ctrl-row">
+    <button class="mpc${mapDiff==='safe'?' active-safe':''}" onclick="setDiff('safe')">&#x25C6; SAFE</button>
+    <button class="mpc${mapDiff==='euclid'?' active-euclid':''}" onclick="setDiff('euclid')">&#x25C6; EUCLID</button>
+    <button class="mpc${mapDiff==='keter'?' active-keter':''}" onclick="setDiff('keter')">&#x25C6; KETER</button>
+  </div>
+  <div class="layer-label">&#x2514; LAYER / ЭТАЖ</div>
+  <div class="mp-ctrl-row">
+    <button class="mpc${curLayer===1?' active-layer':''}" onclick="setLayer(1)">LAYER 1 &#x2014; ПОВЕРХНОСТЬ</button>
+    <button class="mpc${curLayer===2?' active-layer':''}" onclick="setLayer(2)">LAYER 2 &#x2014; ПОДЗЕМНЫЙ</button>
+    <button class="mpc${curLayer===3?' active-layer':''}" onclick="setLayer(3)">LAYER 3 &#x2014; ГЛУБОКИЙ</button>
+  </div>
+  <div class="vp-shell">
+    <div class="vp-topbar">
+      <span>ORTHO / TOP-DOWN</span>
+      <span id="vp-layer-tag">LAYER ${curLayer}</span>
+      <span style="color:#ff8c00">${mapDiff.toUpperCase()}</span>
+      <span id="vpZt">100%</span>
+    </div>
+    <div class="vp-cwrap" id="vpW">
+      <canvas class="vpc" id="vpC"></canvas>
+      <div class="vp-ov" style="top:8px;right:8px" id="vp-co">0u, 0u</div>
+      <div class="vp-ov" style="bottom:8px;right:8px">ZOOM: WHEEL &middot; PAN: DRAG</div>
+      <div class="vp-ov" style="bottom:8px;left:8px">SCP GRID 32u</div>
+    </div>
+  </div>
+  <div class="mp-stats" id="mpS"></div>
+  <div class="mp-ents"><div class="mp-ent-t">&#x25C6; ENTITY</div><div class="mp-ent-list" id="mpE"></div></div>
+  <div class="mp-legend">
+    <div class="leg"><span class="leg-sw" style="color:#4dff4d"></span><span>Зона</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#ff4444"></span><span>Изолятор</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#ffaa00"></span><span>Шлюз</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#00b4ff"></span><span>Резервуар</span></div>
+    <div class="leg"><span class="leg-sw" style="color:#cc44ff"></span><span>Особый</span></div>
+  </div>`;
+  mp.classList.add('visible');
+  initVP();regenMap();
+}
+
+function setDiff(d){mapDiff=d;buildMapPanel()}
+function setLayer(l){curLayer=l;buildMapPanel()}
+
+function regenMap(){
+  if(resultIdx<0||!vp.c)return;
+  const idea=ideas[resultIdx];
+  const gd=idea.generator[mapDiff]||idea.generator.safe;
+  let tree=[...gd.tree.map(n=>({...n}))];
+  // Layer 2: add underground nodes
+  if(curLayer>=2){
+    const maxId=Math.max(...tree.map(n=>n.id));
+    const root0=tree.find(n=>n.parent===null);
+    if(root0){
+      tree.push({id:maxId+1,t:'red',name:'Тех. тоннель L2',parent:root0.id});
+      tree.push({id:maxId+2,t:'purple',name:'Подземный центр',parent:maxId+1});
+      tree.push({id:maxId+3,t:'green',name:'Служ. отсек L2',parent:maxId+2});
+      if(mapDiff==='keter'||mapDiff==='euclid'){
+        tree.push({id:maxId+4,t:'red',name:'Бункер L2',parent:maxId+2});
+      }
+    }
+  }
+  // Layer 3: deep nodes
+  if(curLayer===3){
+    const maxId2=Math.max(...tree.map(n=>n.id));
+    const deepParent=tree[tree.length-1];
+    tree.push({id:maxId2+1,t:'red',name:'Шахта L3',parent:deepParent.id});
+    tree.push({id:maxId2+2,t:'purple',name:'Глубокий узел',parent:maxId2+1});
+    tree.push({id:maxId2+3,t:'red',name:'Критич. зона',parent:maxId2+2});
+    tree.push({id:maxId2+4,t:'purple',name:'Ядро объекта',parent:maxId2+3});
+    if(mapDiff==='keter'){
+      tree.push({id:maxId2+5,t:'red',name:'Нейтрализация',parent:maxId2+4});
+      tree.push({id:maxId2+6,t:'purple',name:'Протокол Omega',parent:maxId2+5});
+    }
+  }
+  const {rects,conns}=buildLayout(tree);
+  vp.rooms=rects;vp.conns=conns;
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  rects.forEach(r=>{minX=Math.min(minX,r.x);minY=Math.min(minY,r.y);maxX=Math.max(maxX,r.x+r.w);maxY=Math.max(maxY,r.y+r.h)});
+  const mw=maxX-minX+80,mh=maxY-minY+80;
+  vp.sc=Math.min((vp.c.width-40)/mw,(vp.c.height-40)/mh,2.5);
+  vp.ox=vp.c.width/2-(minX+mw/2-40)*vp.sc;
+  vp.oy=vp.c.height/2-(minY+mh/2-40)*vp.sc;
+  const zt=document.getElementById('vpZt');if(zt)zt.textContent=Math.round(vp.sc*100)+'%';
+  const lt=document.getElementById('vp-layer-tag');if(lt)lt.textContent='LAYER '+curLayer;
+  const c2={green:0,red:0,yellow:0,blue:0,purple:0};rects.forEach(r=>c2[r.t]=(c2[r.t]||0)+1);
+  const mps=document.getElementById('mpS');
+  if(mps)mps.innerHTML=`<div>ВСЕГО <span>${rects.length}</span></div><div>ЗОНЫ <span>${c2.green}</span></div><div>ИЗОЛЯТОРЫ <span>${c2.red}</span></div><div>ШЛЮЗЫ <span>${c2.yellow}</span></div><div>ОСОБЫЕ <span>${c2.purple}</span></div><div>КЛАСС <span>${mapDiff.toUpperCase()}</span></div><div>ЭТАЖ <span>L${curLayer}</span></div>`;
+  const mpe=document.getElementById('mpE');
+  if(mpe)mpe.innerHTML=gd.entities.map(e=>`<div class="mp-ent">${e}</div>`).join('');
+  drawVP();
+}
+
+function initVP(){
+  vp.c=document.getElementById('vpC');if(!vp.c)return;
+  const wrap=document.getElementById('vpW');
+  vp.c.width=wrap.offsetWidth||600;vp.c.height=wrap.offsetHeight||320;
+  vp.x=vp.c.getContext('2d');vp.sc=1;vp.ox=vp.c.width/2;vp.oy=vp.c.height/2;
+  vp.c.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.12:.89,mx=e.offsetX,my=e.offsetY;vp.ox=(vp.ox-mx)*f+mx;vp.oy=(vp.oy-my)*f+my;vp.sc=Math.max(.08,Math.min(5,vp.sc*f));const zt=document.getElementById('vpZt');if(zt)zt.textContent=Math.round(vp.sc*100)+'%';drawVP()},{passive:false});
+  vp.c.addEventListener('mousedown',e=>{vp.drag=true;vp.lx=e.clientX;vp.ly=e.clientY;e.preventDefault()});
+  document.addEventListener('mouseup',()=>vp.drag=false);
+  document.addEventListener('mousemove',e=>{if(vp.drag&&vp.c){vp.ox+=e.clientX-vp.lx;vp.oy+=e.clientY-vp.ly;vp.lx=e.clientX;vp.ly=e.clientY;drawVP()}if(vp.c){const r=vp.c.getBoundingClientRect();const cx2=Math.round((e.clientX-r.left-vp.ox)/vp.sc*32),cy2=Math.round((e.clientY-r.top-vp.oy)/vp.sc*32);const co=document.getElementById('vp-co');if(co)co.textContent=`${cx2}u, ${cy2}u`}});
+  window.addEventListener('resize',()=>{if(!vp.c)return;const w=document.getElementById('vpW');if(!w)return;vp.c.width=w.offsetWidth;vp.c.height=w.offsetHeight;drawVP()});
+}
+
+function drawVP(){
+  const c=vp.x,cv=vp.c;if(!c||!cv)return;
+  const W2=cv.width,H2=cv.height;
+  c.clearRect(0,0,W2,H2);
+  const layerBg={1:'#080808',2:'#070b0e',3:'#0b0707'};
+  c.fillStyle=layerBg[curLayer]||'#080808';c.fillRect(0,0,W2,H2);
+  c.save();c.translate(vp.ox,vp.oy);c.scale(vp.sc,vp.sc);
+  const GRID=32,vl=-vp.ox/vp.sc,vt=-vp.oy/vp.sc,vr=vl+W2/vp.sc,vb=vt+H2/vp.sc;
+  const sx=Math.floor(vl/GRID)*GRID,sy=Math.floor(vt/GRID)*GRID;
+  const layerGrid={1:'rgba(255,140,0,',2:'rgba(0,180,255,',3:'rgba(255,68,68,'};
+  const lg=layerGrid[curLayer]||'rgba(255,140,0,';
+  for(let x=sx;x<vr;x+=GRID){const big=x%128===0;c.strokeStyle=big?lg+'0.15)':lg+'0.04)';c.lineWidth=(big?1.2:.5)/vp.sc;c.beginPath();c.moveTo(x,vt);c.lineTo(x,vb);c.stroke()}
+  for(let y=sy;y<vb;y+=GRID){const big=y%128===0;c.strokeStyle=big?lg+'0.15)':lg+'0.04)';c.lineWidth=(big?1.2:.5)/vp.sc;c.beginPath();c.moveTo(vl,y);c.lineTo(vr,y);c.stroke()}
+  c.strokeStyle=lg+'0.2)';c.lineWidth=.8/vp.sc;
+  c.beginPath();c.moveTo(0,vt);c.lineTo(0,vb);c.stroke();
+  c.beginPath();c.moveTo(vl,0);c.lineTo(vr,0);c.stroke();
+  const layerLabel={1:'SURFACE L1',2:'UNDERGROUND L2',3:'DEEP LEVEL L3'};
+  c.fillStyle=lg+'0.09)';c.font=`bold ${55/vp.sc}px Share Tech Mono,monospace`;
+  c.textAlign='center';c.textBaseline='middle';
+  c.fillText(layerLabel[curLayer],vl+(vr-vl)/2,vt+(vb-vt)/2);
+  // connections
+  vp.conns.forEach(([ai,bi])=>{
+    const a=vp.rooms[ai],b=vp.rooms[bi];if(!a||!b)return;
+    const ax=a.x+a.w/2,ay=a.y+a.h,bx=b.x+b.w/2,by=b.y;
+    const col=ROOM_COL[a.t]||'#ff8c00';
+    const midY=(ay+by)/2,cw=8/vp.sc;
+    c.fillStyle=col+'10';
+    if(Math.abs(ax-bx)<2){c.fillRect(ax-cw/2,ay,cw,by-ay)}
+    else{c.fillRect(ax-cw/2,ay,cw,midY-ay);c.fillRect(Math.min(ax,bx)-cw/2,midY-cw/2,Math.abs(ax-bx)+cw,cw);c.fillRect(bx-cw/2,midY,cw,by-midY)}
+    c.strokeStyle=col+'77';c.lineWidth=1.2/vp.sc;c.setLineDash([]);
+    c.beginPath();c.moveTo(ax,ay);
+    if(Math.abs(ax-bx)<2){c.lineTo(bx,by)}else{c.lineTo(ax,midY);c.lineTo(bx,midY);c.lineTo(bx,by)}
+    c.stroke();
+    const aw=5/vp.sc;c.fillStyle=col+'cc';
+    c.beginPath();c.moveTo(bx,by);c.lineTo(bx-aw,by-aw*1.4);c.lineTo(bx+aw,by-aw*1.4);c.closePath();c.fill();
+    const dx=Math.abs(ax-bx)<2?ax:(ax+bx)/2,dy=Math.abs(ax-bx)<2?(ay+by)/2:midY;
+    c.strokeStyle='#ffaa00aa';c.lineWidth=1.2/vp.sc;
+    c.strokeRect(dx-4/vp.sc,dy-7/vp.sc,8/vp.sc,14/vp.sc);
+  });
+  // rooms
+  const fs=Math.max(6,9/vp.sc),fs2=Math.max(5,6.5/vp.sc);
+  vp.rooms.forEach((r,i)=>{
+    const col=ROOM_COL[r.t]||'#ff8c00';
+    c.shadowColor=col;c.shadowBlur=10;
+    c.fillStyle=col+'18';c.strokeStyle=col;c.lineWidth=1.4/vp.sc;
+    c.beginPath();c.roundRect(r.x,r.y,r.w,r.h,4/vp.sc);c.fill();c.stroke();
+    c.shadowBlur=0;
+    c.strokeStyle=col+'28';c.lineWidth=.6/vp.sc;c.setLineDash([3/vp.sc,3/vp.sc]);
+    c.strokeRect(r.x+4/vp.sc,r.y+4/vp.sc,r.w-8/vp.sc,r.h-8/vp.sc);c.setLineDash([]);
+    c.fillStyle=col;c.font=`bold ${fs}px Share Tech Mono,monospace`;
+    c.textAlign='center';c.textBaseline='middle';
+    c.fillText(ROOM_LABEL[r.t]||'?',r.x+r.w/2,r.y+r.h/2-fs*.65);
+    c.fillStyle='#c8c8c8';c.font=`${fs2}px Share Tech Mono,monospace`;
+    const words=r.name.split(' ');let line='',lines=[];
+    words.forEach(w=>{const test=line+(line?' ':'')+w;if(test.length>13&&line){lines.push(line);line=w}else line=test});
+    lines.push(line);
+    if(lines.length===1){c.fillText(r.name,r.x+r.w/2,r.y+r.h/2+fs*.5)}
+    else{lines.slice(0,2).forEach((ln,li)=>c.fillText(ln,r.x+r.w/2,r.y+r.h/2+fs*.25+li*fs2*1.2))}
+    c.fillStyle=col+'88';c.font=`${fs2*.9}px Share Tech Mono,monospace`;
+    c.fillText(`#${i+1}`,r.x+4/vp.sc+fs2*.4,r.y+fs2*.8);
+    if(i===0){c.strokeStyle='#4dff4d';c.lineWidth=2/vp.sc;c.beginPath();c.roundRect(r.x-3/vp.sc,r.y-3/vp.sc,r.w+6/vp.sc,r.h+6/vp.sc,6/vp.sc);c.stroke();c.fillStyle='#4dff4d';c.font=`${fs2}px Share Tech Mono`;c.textAlign='center';c.fillText('ENTER',r.x+r.w/2,r.y-9/vp.sc)}
+    if(i===vp.rooms.length-1){c.strokeStyle='#ff4444';c.lineWidth=2/vp.sc;c.beginPath();c.roundRect(r.x-3/vp.sc,r.y-3/vp.sc,r.w+6/vp.sc,r.h+6/vp.sc,6/vp.sc);c.stroke();c.fillStyle='#ff4444';c.font=`${fs2}px Share Tech Mono`;c.textAlign='center';c.fillText('EXIT',r.x+r.w/2,r.y-9/vp.sc)}
+  });
+  c.restore();
+}
+</script>
+</body>
+</html>
