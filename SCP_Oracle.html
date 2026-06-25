@@ -376,6 +376,197 @@ const ideas=[
      euclid:{tree:[{id:0,t:'yellow',name:'Световой шлюз',parent:null},{id:1,t:'red',name:'Первичная тёмная зона',parent:0},{id:2,t:'red',name:'Вторичная тёмная зона',parent:1},{id:3,t:'purple',name:'КП (изолирован)',parent:0},{id:4,t:'green',name:'Световая ловушка A',parent:1},{id:5,t:'green',name:'Световая ловушка B',parent:2},{id:6,t:'yellow',name:'Аварийный световой шлюз',parent:5}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
      keter:{tree:[{id:0,t:'yellow',name:'Внешний световой КПП',parent:null},{id:1,t:'green',name:'Переходная зона',parent:0},{id:2,t:'red',name:'Тёмная зона A',parent:1},{id:3,t:'red',name:'Тёмная зона B',parent:1},{id:4,t:'green',name:'Световая ловушка A',parent:2},{id:5,t:'green',name:'Световая ловушка B',parent:3},{id:6,t:'purple',name:'Командный центр',parent:0},{id:7,t:'red',name:'Нейтрализационная зона',parent:4},{id:8,t:'purple',name:'Протокол А',parent:6},{id:9,t:'yellow',name:'Световой эвакуационный путь',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_hurt"]}
    }}
+
+  ,{title:"SCP-002 — Живая комната",scp:"SCP-002",cls:"euclid",
+   easy:"Органическая комната с биологическими структурами вместо мебели. Один шлюз, пост наблюдения.",
+   med:"Блок с двойными шлюзами, медицинским постом, зоной карантина и комнатой дебрифинга.",
+   hard:"Полный объект: биосодержащая камера, медицинский центр, изолятор превращённых, архив инцидентов.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз входа',parent:null},{id:1,t:'purple',name:'SCP-002 (комната)',parent:0},{id:2,t:'green',name:'КП наблюдения',parent:0},{id:3,t:'red',name:'Биологический лаз',parent:1}],entities:["func_door","ambient_generic","trigger_hurt"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'yellow',name:'Карантинный шлюз',parent:0},{id:2,t:'purple',name:'SCP-002',parent:1},{id:3,t:'red',name:'Биологический лаз',parent:2},{id:4,t:'green',name:'Медицинский пост',parent:1},{id:5,t:'green',name:'Дебрифинг',parent:4},{id:6,t:'red',name:'Изолятор контакта',parent:2}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП уровня 4',parent:null},{id:1,t:'yellow',name:'Карантинный шлюз A',parent:0},{id:2,t:'yellow',name:'Карантинный шлюз B',parent:1},{id:3,t:'purple',name:'SCP-002 — комната',parent:2},{id:4,t:'red',name:'Биолаз A',parent:3},{id:5,t:'red',name:'Биолаз B',parent:3},{id:6,t:'green',name:'Медцентр',parent:1},{id:7,t:'red',name:'Изолятор превращённых',parent:6},{id:8,t:'purple',name:'Архив инцидентов',parent:6},{id:9,t:'yellow',name:'Аварийный шлюз',parent:7}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-008 — Зомби-вирус",scp:"SCP-008",cls:"keter",
+   easy:"Камера биологической угрозы с усиленной изоляцией, шлюз декантаминации, пост в скафандрах.",
+   med:"Вирусологический блок: хранилище образца, лабораторный анализ, карантинная зона.",
+   hard:"Полный биообъект: хранение, ПЦР-лаборатория, карантин заражённых, протокол уничтожения.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Деконтаминационный шлюз',parent:null},{id:1,t:'red',name:'Камера хранения 008',parent:0},{id:2,t:'green',name:'КП в скафандрах',parent:0},{id:3,t:'blue',name:'Стерилизующий резервуар',parent:1}],entities:["trigger_hurt","func_door","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Биошлюз',parent:null},{id:1,t:'red',name:'Хранилище образца',parent:0},{id:2,t:'purple',name:'Лаборатория анализа',parent:1},{id:3,t:'blue',name:'Карантинный резервуар',parent:2},{id:4,t:'green',name:'КП наблюдения',parent:0},{id:5,t:'red',name:'Изолятор заражённых',parent:3},{id:6,t:'yellow',name:'Аварийный шлюз',parent:5}],entities:["trigger_hurt","func_door","ambient_generic","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний биошлюз',parent:null},{id:1,t:'green',name:'Зона снаряжения',parent:0},{id:2,t:'red',name:'Хранилище образца 008',parent:1},{id:3,t:'purple',name:'ПЦР-лаборатория',parent:2},{id:4,t:'blue',name:'Карантинный резервуар A',parent:3},{id:5,t:'blue',name:'Карантинный резервуар B',parent:3},{id:6,t:'red',name:'Изолятор заражённых A',parent:4},{id:7,t:'red',name:'Изолятор заражённых B',parent:5},{id:8,t:'purple',name:'Протокол уничтожения',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:8}],entities:["trigger_hurt","func_door","ambient_generic","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-011 — Поющая статуя",scp:"SCP-011",cls:"safe",
+   easy:"Открытый дворик с гражданской статуей, пост наблюдения, аудиозапись.",
+   med:"Исследовательский двор: статуя, акустические измерения, архив записей, комната персонала.",
+   hard:"Полный культурный объект: двор, акустическая лаборатория, архив, зал прослушивания.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Ворота объекта',parent:null},{id:1,t:'green',name:'Двор со статуей',parent:0},{id:2,t:'purple',name:'Пост наблюдения',parent:1},{id:3,t:'green',name:'Архив записей',parent:2}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Ворота',parent:null},{id:1,t:'green',name:'Наружный двор',parent:0},{id:2,t:'purple',name:'SCP-011 — статуя',parent:1},{id:3,t:'green',name:'Акустический пост',parent:2},{id:4,t:'purple',name:'Лаборатория анализа',parent:3},{id:5,t:'green',name:'Комната персонала',parent:0},{id:6,t:'green',name:'Архив',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешние ворота',parent:null},{id:1,t:'green',name:'Периметр двора',parent:0},{id:2,t:'purple',name:'Платформа статуи',parent:1},{id:3,t:'green',name:'Акустическая вышка A',parent:2},{id:4,t:'green',name:'Акустическая вышка B',parent:2},{id:5,t:'purple',name:'Лаборатория звука',parent:3},{id:6,t:'green',name:'Зал прослушивания',parent:5},{id:7,t:'purple',name:'Архив полный',parent:6},{id:8,t:'green',name:'Жилой блок',parent:0},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","prop_physics"]}
+   }}
+  ,{title:"SCP-017 — Теневое существо",scp:"SCP-017",cls:"keter",
+   easy:"Абсолютно тёмная камера с источниками света у входа. Минимальный персонал.",
+   med:"Световой блок: тёмная камера, посты ультрафиолета, коридор прожекторов, убежище.",
+   hard:"Полный световой объект: камера, UV-барьеры, нейтрализационный луч, аварийные прожекторы.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Световой шлюз',parent:null},{id:1,t:'red',name:'Абсолютная тьма (SCP-017)',parent:0},{id:2,t:'purple',name:'UV-пост',parent:0},{id:3,t:'green',name:'Световое убежище',parent:2}],entities:["func_door","env_sprite","trigger_hurt"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Световой КПП',parent:null},{id:1,t:'red',name:'Тёмная зона A',parent:0},{id:2,t:'red',name:'Тёмная зона B (SCP-017)',parent:1},{id:3,t:'purple',name:'UV-барьер',parent:2},{id:4,t:'green',name:'Световой коридор',parent:0},{id:5,t:'green',name:'Убежище персонала',parent:4},{id:6,t:'yellow',name:'Аварийный свет-шлюз',parent:5}],entities:["func_door","env_sprite","trigger_hurt","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний световой КПП',parent:null},{id:1,t:'green',name:'Световой периметр',parent:0},{id:2,t:'red',name:'Переходная тьма',parent:1},{id:3,t:'red',name:'SCP-017 — ядро тьмы',parent:2},{id:4,t:'purple',name:'UV-барьер A',parent:3},{id:5,t:'purple',name:'UV-барьер B',parent:3},{id:6,t:'green',name:'Нейтрализационный луч',parent:4},{id:7,t:'green',name:'Аварийные прожекторы',parent:5},{id:8,t:'purple',name:'Командный световой центр',parent:1},{id:9,t:'yellow',name:'Аварийный выход',parent:8}],entities:["func_door","env_sprite","trigger_hurt","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-035 — Маска обладатель",scp:"SCP-035",cls:"keter",
+   easy:"Стеклянная витрина с маской, антикоррозийная обработка пола, пост наблюдения.",
+   med:"Исследовательский блок: витрина маски, химический отсек, кабинет интервью, морг жертв.",
+   hard:"Полный объект: камера маски, химзащита, интервью, морг, зона разлива, архив жертв.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Витрина SCP-035',parent:0},{id:2,t:'green',name:'Антикоррозийный пост',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","trigger_hurt"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'purple',name:'Камера SCP-035',parent:0},{id:2,t:'blue',name:'Химический отсек',parent:1},{id:3,t:'purple',name:'Кабинет интервью',parent:2},{id:4,t:'red',name:'Морг жертв',parent:3},{id:5,t:'green',name:'КП наблюдения',parent:0},{id:6,t:'red',name:'Зона разлива',parent:1}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'Камера SCP-035',parent:0},{id:2,t:'blue',name:'Хим-защита A',parent:1},{id:3,t:'blue',name:'Хим-защита B',parent:1},{id:4,t:'purple',name:'Зал интервью',parent:2},{id:5,t:'red',name:'Морг',parent:4},{id:6,t:'red',name:'Зона разлива',parent:3},{id:7,t:'purple',name:'Архив жертв',parent:5},{id:8,t:'green',name:'Медицинский блок',parent:4},{id:9,t:'yellow',name:'Аварийный шлюз',parent:6}],entities:["func_door","ambient_generic","trigger_hurt","logic_relay","env_sprite"]}
+   }}
+  ,{title:"SCP-073 — Каин",scp:"SCP-073",cls:"euclid",
+   easy:"Жилая камера с гуманоидом, зал для беседы, пост охраны.",
+   med:"Гуманоидный блок: жилая камера, кабинет интервью, защищённый обеденный зал, медпост.",
+   hard:"Полноценный жилой комплекс: камера, интервью, столовая, медцентр, учёт органики в радиусе.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Жилая камера (Каин)',parent:0},{id:2,t:'purple',name:'Зал беседы',parent:1},{id:3,t:'green',name:'Пост охраны',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз гуманоида',parent:null},{id:1,t:'green',name:'Жилая камера',parent:0},{id:2,t:'purple',name:'Кабинет интервью',parent:1},{id:3,t:'green',name:'Защищённая столовая',parent:2},{id:4,t:'green',name:'Медицинский пост',parent:0},{id:5,t:'purple',name:'Архив разговоров',parent:2},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Жилая камера Каина',parent:0},{id:2,t:'purple',name:'Интервью A',parent:1},{id:3,t:'purple',name:'Интервью B',parent:1},{id:4,t:'green',name:'Столовая (без органики)',parent:2},{id:5,t:'green',name:'Зона отдыха',parent:3},{id:6,t:'red',name:'Зона аномальной активности',parent:4},{id:7,t:'purple',name:'Архив',parent:5},{id:8,t:'green',name:'Медцентр',parent:0},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]}
+   }}
+  ,{title:"SCP-079 — Старый ИИ",scp:"SCP-079",cls:"euclid",
+   easy:"Изолированный компьютер на старом железе, экранированная комната, пост с интерфейсом.",
+   med:"ИИ-блок: экранированная камера, пульт ввода, изолированная сеть, КП.",
+   hard:"Полный компьютерный объект: камера ИИ, сетевой изолятор, мониторинговый центр, протокол отключения.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз ЭМИ',parent:null},{id:1,t:'purple',name:'Камера SCP-079',parent:0},{id:2,t:'green',name:'Пульт ввода',parent:1},{id:3,t:'red',name:'Сетевой изолятор',parent:1}],entities:["func_door","env_sprite","logic_relay"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'ЭМИ-КПП',parent:null},{id:1,t:'purple',name:'Экранированная камера',parent:0},{id:2,t:'green',name:'Терминал ввода',parent:1},{id:3,t:'red',name:'Изолированная сеть',parent:2},{id:4,t:'purple',name:'Мониторинговый центр',parent:0},{id:5,t:'green',name:'Резервный пульт',parent:3},{id:6,t:'red',name:'Протокол отключения',parent:4}],entities:["func_door","env_sprite","logic_relay","ambient_generic"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний ЭМИ-КПП',parent:null},{id:1,t:'green',name:'Зона изоляции',parent:0},{id:2,t:'purple',name:'Камера SCP-079',parent:1},{id:3,t:'green',name:'Терминал A',parent:2},{id:4,t:'green',name:'Терминал B',parent:2},{id:5,t:'red',name:'Сетевой изолятор',parent:3},{id:6,t:'purple',name:'Центр мониторинга',parent:1},{id:7,t:'red',name:'Протокол отключения A',parent:6},{id:8,t:'red',name:'Протокол отключения B',parent:6},{id:9,t:'yellow',name:'Аварийный шлюз',parent:7}],entities:["func_door","env_sprite","logic_relay","ambient_generic","trigger_once"]}
+   }}
+  ,{title:"SCP-093 — Красный диск",scp:"SCP-093",cls:"euclid",
+   easy:"Зеркало с диском на стойке, пост наблюдателя, базовый шлюз.",
+   med:"Блок с зеркалом, комнатой снаряжения, архивом экспедиций, медпостом.",
+   hard:"Полный объект: зеркало, снаряжение, архив, дебрифинговая цепочка, медцентр.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Зеркало + SCP-093',parent:0},{id:2,t:'green',name:'КП наблюдателя',parent:1},{id:3,t:'green',name:'Базовый склад',parent:0}],entities:["func_door","ambient_generic","env_sprite","trigger_teleport"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз входа',parent:null},{id:1,t:'purple',name:'Камера зеркала',parent:0},{id:2,t:'green',name:'Снаряжение D-класса',parent:1},{id:3,t:'purple',name:'Архив экспедиций',parent:2},{id:4,t:'green',name:'Медпост',parent:0},{id:5,t:'green',name:'Дебрифинговая комната',parent:3},{id:6,t:'yellow',name:'Карантин после возврата',parent:5}],entities:["func_door","ambient_generic","env_sprite","trigger_teleport","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'Камера зеркала',parent:0},{id:2,t:'green',name:'Снаряжение A',parent:1},{id:3,t:'green',name:'Снаряжение B',parent:1},{id:4,t:'purple',name:'Архив полный',parent:2},{id:5,t:'green',name:'Дебрифинг A',parent:3},{id:6,t:'green',name:'Дебрифинг B',parent:3},{id:7,t:'red',name:'Карантин возврата',parent:5},{id:8,t:'green',name:'Медцентр',parent:6},{id:9,t:'yellow',name:'Аварийный шлюз',parent:7}],entities:["func_door","ambient_generic","env_sprite","trigger_teleport","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-131 — Глаза",scp:"SCP-131",cls:"safe",
+   easy:"Маленькая мягкая комната с двумя существами-каплями, базовые камеры.",
+   med:"Мягкий блок: комната SCP-131, игровая зона, комната кормления, наблюдательный пост.",
+   hard:"Полный жилой блок: комната, игровая, кормление, ветеринарный пост, зал взаимодействия.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Мягкий шлюз',parent:null},{id:1,t:'green',name:'Комната SCP-131',parent:0},{id:2,t:'green',name:'Игровое пространство',parent:1},{id:3,t:'purple',name:'КП наблюдения',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Основная комната',parent:0},{id:2,t:'green',name:'Игровая зона',parent:1},{id:3,t:'green',name:'Кормление',parent:1},{id:4,t:'purple',name:'Наблюдательный пост',parent:0},{id:5,t:'green',name:'Ветеринарный осмотр',parent:3},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","prop_physics"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Основная комната',parent:0},{id:2,t:'green',name:'Игровая A',parent:1},{id:3,t:'green',name:'Игровая B',parent:1},{id:4,t:'green',name:'Зона кормления',parent:2},{id:5,t:'green',name:'Ветеринарный блок',parent:3},{id:6,t:'purple',name:'Зал взаимодействия',parent:4},{id:7,t:'purple',name:'Архив поведения',parent:5},{id:8,t:'green',name:'Зона отдыха',parent:0},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","prop_physics","logic_relay"]}
+   }}
+  ,{title:"SCP-178 — 3D-очки",scp:"SCP-178",cls:"safe",
+   easy:"Герметичный контейнер с очками, пост наблюдения, изолированная комната тестирования.",
+   med:"Тест-блок: хранилище очков, комната надевания, зона наблюдения за SCP-178-1.",
+   hard:"Полный тест-объект: хранилище, тест-камеры, наблюдение, архив описаний существ.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Хранилище очков',parent:0},{id:2,t:'purple',name:'Тест-комната',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Хранилище SCP-178',parent:0},{id:2,t:'purple',name:'Комната надевания',parent:1},{id:3,t:'purple',name:'Зона наблюдения 178-1',parent:2},{id:4,t:'green',name:'Дебрифинг',parent:3},{id:5,t:'green',name:'КП',parent:0},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Хранилище очков',parent:0},{id:2,t:'purple',name:'Тест-комната A',parent:1},{id:3,t:'purple',name:'Тест-комната B',parent:1},{id:4,t:'green',name:'Наблюдение 178-1',parent:2},{id:5,t:'green',name:'Дебрифинг A',parent:3},{id:6,t:'green',name:'Дебрифинг B',parent:3},{id:7,t:'purple',name:'Архив существ',parent:4},{id:8,t:'green',name:'Медпост',parent:5},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","prop_physics"]}
+   }}
+  ,{title:"SCP-294 — Кофеавтомат",scp:"SCP-294",cls:"safe",
+   easy:"Небольшая комната с автоматом, пост наблюдения, журнал запросов.",
+   med:"Исследовательский блок: автомат, лаборатория анализа жидкостей, архив, зона дегустации D-класса.",
+   hard:"Полный объект: автомат, лаборатория, изолятор опасных жидкостей, архив аномалий.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'SCP-294 — автомат',parent:0},{id:2,t:'green',name:'Журнал запросов',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","prop_physics"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'SCP-294',parent:0},{id:2,t:'green',name:'Зона дегустации D-класса',parent:1},{id:3,t:'purple',name:'Лаборатория анализа',parent:2},{id:4,t:'green',name:'Архив запросов',parent:3},{id:5,t:'green',name:'КП',parent:0},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","prop_physics","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'SCP-294 — основной',parent:0},{id:2,t:'green',name:'Дегустация D A',parent:1},{id:3,t:'green',name:'Дегустация D B',parent:1},{id:4,t:'purple',name:'Лаборатория жидкостей',parent:2},{id:5,t:'red',name:'Изолятор опасных жидкостей',parent:4},{id:6,t:'purple',name:'Архив аномалий',parent:5},{id:7,t:'green',name:'Медпост',parent:3},{id:8,t:'green',name:'КП наблюдения',parent:0},{id:9,t:'yellow',name:'Аварийный шлюз',parent:5}],entities:["func_door","ambient_generic","prop_physics","logic_relay","trigger_hurt"]}
+   }}
+  ,{title:"SCP-354 — Красный пруд",scp:"SCP-354",cls:"keter",
+   easy:"Охраняемый лесной периметр вокруг пруда, пост наблюдения, КПП.",
+   med:"Лесной объект: периметр, наблюдательная вышка, бункер готовности, ворота сдерживания.",
+   hard:"Полный объект: многослойный периметр, бункер MTF, ворота, протокол нейтрализации выходящих.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'КПП периметра',parent:null},{id:1,t:'green',name:'Лесной периметр',parent:0},{id:2,t:'red',name:'SCP-354 — пруд',parent:1},{id:3,t:'purple',name:'Наблюдательная вышка',parent:1}],entities:["func_door","ambient_generic","trigger_hurt","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Периметр A',parent:0},{id:2,t:'green',name:'Периметр B',parent:1},{id:3,t:'red',name:'SCP-354 — пруд',parent:2},{id:4,t:'purple',name:'Вышка наблюдения',parent:2},{id:5,t:'green',name:'Бункер готовности',parent:1},{id:6,t:'red',name:'Ворота сдерживания',parent:3}],entities:["func_door","ambient_generic","trigger_hurt","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'green',name:'Периметр A',parent:0},{id:2,t:'green',name:'Периметр B',parent:1},{id:3,t:'red',name:'SCP-354 — пруд',parent:2},{id:4,t:'purple',name:'Главная вышка',parent:2},{id:5,t:'green',name:'Бункер MTF',parent:1},{id:6,t:'red',name:'Ворота нейтрализации',parent:3},{id:7,t:'purple',name:'Командный центр',parent:5},{id:8,t:'red',name:'Зона нейтрализации A',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["func_door","ambient_generic","trigger_hurt","env_sprite","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-409 — Заразный кристалл",scp:"SCP-409",cls:"keter",
+   easy:"Герметичная витрина с кристаллом, усиленное стекло, роботизированный манипулятор.",
+   med:"Изолированный блок: витрина кристалла, карантинная камера, дистанционный манипулятор.",
+   hard:"Полный объект: витрина, карантин, дистанционное управление, протокол кристаллизации.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Витрина SCP-409',parent:0},{id:2,t:'red',name:'Карантинная камера',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","trigger_hurt","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Изоляционный шлюз',parent:null},{id:1,t:'purple',name:'Витрина кристалла',parent:0},{id:2,t:'red',name:'Карантин A',parent:1},{id:3,t:'red',name:'Карантин B',parent:1},{id:4,t:'green',name:'Манипуляторная',parent:2},{id:5,t:'green',name:'КП дистанционного управления',parent:0},{id:6,t:'yellow',name:'Аварийный шлюз',parent:5}],entities:["func_door","trigger_hurt","ambient_generic","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний шлюз',parent:null},{id:1,t:'purple',name:'Витрина SCP-409',parent:0},{id:2,t:'red',name:'Карантин A',parent:1},{id:3,t:'red',name:'Карантин B',parent:1},{id:4,t:'green',name:'Дистанционный манипулятор',parent:2},{id:5,t:'red',name:'Кристаллизационный изолятор',parent:3},{id:6,t:'purple',name:'Протокол кристаллизации',parent:5},{id:7,t:'green',name:'КП дист. управления',parent:4},{id:8,t:'green',name:'Аварийный деструктор',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:8}],entities:["func_door","trigger_hurt","ambient_generic","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-457 — Горящий человек",scp:"SCP-457",cls:"keter",
+   easy:"Огнеупорная камера с системой подавления огня, асбестовые стены, пост наблюдения.",
+   med:"Противопожарный блок: камера, CO2-система, тепловые датчики, аварийный протокол.",
+   hard:"Полный объект: камера огня, CO2-барьеры, тепловые посты, нейтрализационный водяной экран.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Огнеупорный шлюз',parent:null},{id:1,t:'red',name:'Камера SCP-457',parent:0},{id:2,t:'blue',name:'CO2-система',parent:1},{id:3,t:'purple',name:'КП наблюдения',parent:0}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Огнеупорный шлюз',parent:null},{id:1,t:'red',name:'Первичная камера',parent:0},{id:2,t:'blue',name:'CO2-барьер A',parent:1},{id:3,t:'blue',name:'CO2-барьер B',parent:1},{id:4,t:'purple',name:'Тепловой КП',parent:0},{id:5,t:'green',name:'Аварийный протокол',parent:4},{id:6,t:'yellow',name:'Аварийный выход',parent:5}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Огнеупорный периметр',parent:null},{id:1,t:'red',name:'Камера содержания',parent:0},{id:2,t:'blue',name:'CO2-система A',parent:1},{id:3,t:'blue',name:'CO2-система B',parent:1},{id:4,t:'blue',name:'Водяной экран',parent:2},{id:5,t:'purple',name:'Тепловой КП A',parent:3},{id:6,t:'purple',name:'Тепловой КП B',parent:3},{id:7,t:'red',name:'Нейтрализационный отсек',parent:4},{id:8,t:'green',name:'Аварийный деструктор',parent:7},{id:9,t:'yellow',name:'Аварийный шлюз',parent:8}],entities:["trigger_hurt","func_door","env_sprite","ambient_generic","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-507 — Нехотящий путешественник",scp:"SCP-507",cls:"safe",
+   easy:"Жилая камера с мягкой обстановкой, пост мониторинга перемещений, кнопка вызова.",
+   med:"Жилой блок: камера, зал отдыха, мониторинговый центр, кабинет дебрифинга после смещений.",
+   hard:"Полный жилой объект: камера, отдых, центр мониторинга смещений, кабинеты, медпост.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Жилая камера (SCP-507)',parent:0},{id:2,t:'purple',name:'Мониторинг смещений',parent:1},{id:3,t:'green',name:'КП',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Жилая камера',parent:0},{id:2,t:'green',name:'Зал отдыха',parent:1},{id:3,t:'purple',name:'Центр мониторинга',parent:2},{id:4,t:'green',name:'Дебрифинг',parent:3},{id:5,t:'green',name:'КП',parent:0},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Жилая камера 507',parent:0},{id:2,t:'green',name:'Гостиная',parent:1},{id:3,t:'green',name:'Спальня',parent:1},{id:4,t:'purple',name:'Центр мониторинга',parent:2},{id:5,t:'green',name:'Дебрифинг A',parent:3},{id:6,t:'green',name:'Дебрифинг B',parent:3},{id:7,t:'purple',name:'Архив смещений',parent:4},{id:8,t:'green',name:'Медпост',parent:5},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","prop_physics"]}
+   }}
+  ,{title:"SCP-553 — Кристальные бабочки",scp:"SCP-553",cls:"safe",
+   easy:"Просторная оранжерея с бабочками, стеклянный купол, пост наблюдения снаружи.",
+   med:"Экологический блок: оранжерея, питомник, лаборатория кристаллов, зона взаимодействия.",
+   hard:"Полный экоблок: оранжерея, питомник, хрустальная лаборатория, медпост ранений от кристаллов.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Оранжерея SCP-553',parent:0},{id:2,t:'purple',name:'Кристальный питомник',parent:1},{id:3,t:'green',name:'Наружный КП',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз-оранжерея',parent:null},{id:1,t:'green',name:'Оранжерея A',parent:0},{id:2,t:'green',name:'Оранжерея B',parent:0},{id:3,t:'purple',name:'Питомник',parent:1},{id:4,t:'purple',name:'Хрустальная лаборатория',parent:2},{id:5,t:'green',name:'Зона взаимодействия',parent:3},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Главная оранжерея',parent:0},{id:2,t:'green',name:'Вторичная оранжерея',parent:1},{id:3,t:'purple',name:'Питомник',parent:2},{id:4,t:'purple',name:'Лаборатория кристаллов A',parent:3},{id:5,t:'purple',name:'Лаборатория кристаллов B',parent:3},{id:6,t:'green',name:'Зона взаимодействия',parent:4},{id:7,t:'green',name:'Медпост (ранения)',parent:5},{id:8,t:'green',name:'Архив исследований',parent:6},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","prop_physics"]}
+   }}
+  ,{title:"SCP-610 — Мясная чума",scp:"SCP-610",cls:"keter",
+   easy:"Первичная зона заражения в лесу, периметр сдерживания, пост огнемётчиков.",
+   med:"Карантинный лесной объект: внешний периметр, зона заражения, огнемётные посты, бункер.",
+   hard:"Полный карантин: многослойный периметр, зона B-610, огнемётный корпус, медицинский центр.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Карантинный КПП',parent:null},{id:1,t:'red',name:'Зона заражения (610)',parent:0},{id:2,t:'green',name:'Огнемётный пост',parent:1},{id:3,t:'purple',name:'Наблюдение',parent:0}],entities:["trigger_hurt","func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Периметр A',parent:0},{id:2,t:'red',name:'Зона заражения B-610',parent:1},{id:3,t:'green',name:'Огнемётный пост A',parent:2},{id:4,t:'green',name:'Огнемётный пост B',parent:2},{id:5,t:'purple',name:'Наблюдательный бункер',parent:1},{id:6,t:'yellow',name:'Аварийный КПП',parent:5}],entities:["trigger_hurt","func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Внешний периметр',parent:null},{id:1,t:'green',name:'Периметр A',parent:0},{id:2,t:'green',name:'Периметр B',parent:1},{id:3,t:'red',name:'Зона заражения A',parent:2},{id:4,t:'red',name:'Зона заражения B (ядро)',parent:3},{id:5,t:'green',name:'Огнемётный корпус A',parent:3},{id:6,t:'green',name:'Огнемётный корпус B',parent:4},{id:7,t:'purple',name:'Командный бункер',parent:1},{id:8,t:'green',name:'Медцентр',parent:7},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["trigger_hurt","func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-682 — Неуничтожимая рептилия",scp:"SCP-682",cls:"keter",
+   easy:"Усиленная кислотная ванна с рептилией, бронированные стены, система наблюдения.",
+   med:"Кислотный блок: резервуар, инженерный отсек, кабельная шахта, пост и протокол.",
+   hard:"Мегакомплекс: кислотный резервуар, резервные камеры, центр наблюдения, протокол уничтожения.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Бронешлюз',parent:null},{id:1,t:'blue',name:'Кислотный резервуар',parent:0},{id:2,t:'red',name:'Камера содержания 682',parent:1},{id:3,t:'purple',name:'КП',parent:0}],entities:["trigger_hurt","func_door","ambient_generic"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Внешний КПП',parent:null},{id:1,t:'green',name:'Инженерный отсек',parent:0},{id:2,t:'blue',name:'Кислотный резервуар A',parent:1},{id:3,t:'red',name:'Камера содержания',parent:2},{id:4,t:'red',name:'Резервная камера',parent:2},{id:5,t:'purple',name:'КП наблюдения',parent:0},{id:6,t:'red',name:'Кабельный тоннель',parent:3}],entities:["trigger_hurt","func_door","logic_relay","ambient_generic"]},
+     keter:{tree:[{id:0,t:'yellow',name:'Периметр',parent:null},{id:1,t:'green',name:'Инженерный центр',parent:0},{id:2,t:'blue',name:'Резервуар A',parent:1},{id:3,t:'blue',name:'Резервуар B',parent:1},{id:4,t:'red',name:'Первичная камера',parent:2},{id:5,t:'red',name:'Резервная камера',parent:3},{id:6,t:'purple',name:'Командный центр',parent:0},{id:7,t:'red',name:'Тоннель отступления',parent:4},{id:8,t:'purple',name:'Зал протокола',parent:6},{id:9,t:'yellow',name:'Аварийный выход',parent:7}],entities:["trigger_hurt","func_door","logic_relay","ambient_generic","trigger_once"]}
+   }}
+  ,{title:"SCP-895 — Камера наблюдения",scp:"SCP-895",cls:"euclid",
+   easy:"Гроб в морге, одна камера с экраном, минимальный персонал.",
+   med:"Морг-блок: камера гроба, экран наблюдения, экранированный пост, медицинский отсек.",
+   hard:"Полный объект: камера гроба, несколько экранов, экранированные посты, медцентр, архив.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Камера гроба (SCP-895)',parent:0},{id:2,t:'green',name:'Экранированный пост',parent:1},{id:3,t:'red',name:'Морг',parent:0}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'purple',name:'Камера гроба',parent:0},{id:2,t:'green',name:'Экранированный пост A',parent:1},{id:3,t:'green',name:'Экранированный пост B',parent:1},{id:4,t:'red',name:'Морг',parent:0},{id:5,t:'green',name:'Медицинский отсек',parent:4},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'purple',name:'Камера SCP-895',parent:0},{id:2,t:'green',name:'Экр. пост A',parent:1},{id:3,t:'green',name:'Экр. пост B',parent:1},{id:4,t:'red',name:'Морг A',parent:2},{id:5,t:'red',name:'Морг B',parent:3},{id:6,t:'purple',name:'Архив инцидентов',parent:4},{id:7,t:'green',name:'Медцентр',parent:5},{id:8,t:'green',name:'Психиатрический пост',parent:6},{id:9,t:'yellow',name:'Аварийный шлюз',parent:7}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }}
+  ,{title:"SCP-999 — Щекотун",scp:"SCP-999",cls:"safe",
+   easy:"Открытая мягкая комната с оранжевым существом, пост наблюдения, зона взаимодействия.",
+   med:"Жилой блок: комната 999, игровая, терапевтические сессии, архив эффектов на персонал.",
+   hard:"Полный жилой объект: комната, игровая, терапевтический центр, кабинеты D-класса.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Мягкий шлюз',parent:null},{id:1,t:'green',name:'Комната SCP-999',parent:0},{id:2,t:'green',name:'Игровая зона',parent:1},{id:3,t:'purple',name:'Наблюдение',parent:0}],entities:["func_door","ambient_generic","env_sprite","prop_physics"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Комната 999',parent:0},{id:2,t:'green',name:'Игровая зона',parent:1},{id:3,t:'purple',name:'Терапевтическая сессия',parent:2},{id:4,t:'green',name:'Архив эффектов',parent:3},{id:5,t:'purple',name:'Наблюдение',parent:0},{id:6,t:'yellow',name:'Выход',parent:4}],entities:["func_door","ambient_generic","env_sprite","prop_physics","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП',parent:null},{id:1,t:'green',name:'Комната SCP-999',parent:0},{id:2,t:'green',name:'Игровая A',parent:1},{id:3,t:'green',name:'Игровая B',parent:1},{id:4,t:'purple',name:'Терапевтический центр',parent:2},{id:5,t:'green',name:'Кабинет D-класса A',parent:3},{id:6,t:'green',name:'Кабинет D-класса B',parent:3},{id:7,t:'purple',name:'Архив наблюдений',parent:4},{id:8,t:'green',name:'Зона отдыха',parent:5},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","prop_physics","logic_relay"]}
+   }}
+  ,{title:"SCP-1048 — Медведь строитель",scp:"SCP-1048",cls:"keter",
+   easy:"Мягкая зона с постоянным мониторингом, поиск медведя и его поделок.",
+   med:"Блок с патрулями, запертыми кабинетами, системой меток, изолятором копий.",
+   hard:"Объект в режиме вспышки: карантин, эвакуация, изоляторы копий 1048-A/B/C.",
+   generator:{
+     safe:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Мягкая зона',parent:0},{id:2,t:'purple',name:'КП наблюдения',parent:1},{id:3,t:'green',name:'Архив поделок',parent:1}],entities:["func_door","ambient_generic","env_sprite"]},
+     euclid:{tree:[{id:0,t:'yellow',name:'Шлюз',parent:null},{id:1,t:'green',name:'Патрульный блок A',parent:0},{id:2,t:'green',name:'Патрульный блок B',parent:0},{id:3,t:'purple',name:'Наблюдение',parent:1},{id:4,t:'red',name:'Карантин копий',parent:2},{id:5,t:'green',name:'Зал персонала',parent:0},{id:6,t:'yellow',name:'Аварийный шлюз',parent:4}],entities:["func_door","ambient_generic","env_sprite","logic_relay"]},
+     keter:{tree:[{id:0,t:'yellow',name:'КПП вспышки',parent:null},{id:1,t:'green',name:'Зона A (карантин)',parent:0},{id:2,t:'green',name:'Зона B (карантин)',parent:0},{id:3,t:'red',name:'Изолятор 1048-A',parent:1},{id:4,t:'red',name:'Изолятор 1048-B',parent:1},{id:5,t:'red',name:'Изолятор 1048-C',parent:2},{id:6,t:'purple',name:'Ситуационный центр',parent:0},{id:7,t:'green',name:'Медицинский блок',parent:2},{id:8,t:'yellow',name:'Эвакуационный коридор',parent:6},{id:9,t:'yellow',name:'Выход',parent:8}],entities:["func_door","ambient_generic","env_sprite","logic_relay","trigger_once"]}
+   }}
+
 ];
 
 // Room colors matching SCP aesthetic  
